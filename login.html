@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sign In — Aneesa Hampers</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{--blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;--burgundy:#3b0d1a;--cream:#fdf6f0;--white:#fff;--green:#25D366;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);min-height:100vh;display:flex;}
+@media(pointer:fine){body{cursor:none;}.cursor{width:10px;height:10px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}.cursor-ring{width:30px;height:30px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .1s,top .1s;opacity:.4;}}
+@media(pointer:coarse){.cursor,.cursor-ring{display:none;}button,a,[onclick]{cursor:pointer;}}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:#fff;padding:10px 22px;border-radius:30px;font-size:.77rem;z-index:9999;display:none;white-space:nowrap;}
+
+/* LEFT */
+.left{width:44%;background:linear-gradient(155deg,var(--burgundy),#5a1528);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 44px;}
+.lb{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-style:italic;color:#fff;margin-bottom:4px;}
+.lb span{color:var(--rose);}
+.lt{font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:44px;}
+.perks{display:flex;flex-direction:column;gap:14px;width:100%;}
+.perk{display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,.07);border-radius:13px;border:1px solid rgba(232,160,176,.13);}
+.pk{font-size:1.25rem;}
+.pt{font-size:.82rem;color:#fff;font-weight:500;margin-bottom:1px;}
+.pd{font-size:.72rem;color:rgba(255,255,255,.38);}
+
+/* RIGHT */
+.right{flex:1;display:flex;align-items:center;justify-content:center;padding:44px 56px;}
+.box{width:100%;max-width:420px;}
+
+/* SUCCESS */
+.success{display:none;text-align:center;padding:24px 0;}
+.success.show{display:block;}
+.si{font-size:3.5rem;margin-bottom:14px;}
+.st{font-family:'Cormorant Garamond',serif;font-size:2rem;margin-bottom:8px;}
+.ss{font-size:.83rem;opacity:.55;margin-bottom:22px;line-height:1.7;}
+.btn-go{display:inline-block;padding:11px 24px;background:var(--burgundy);color:#fff;border-radius:30px;font-family:'Jost',sans-serif;font-size:.74rem;letter-spacing:2px;text-transform:uppercase;margin:4px;transition:background .2s;text-decoration:none;}
+.btn-go:hover{background:var(--deep-rose);}
+.btn-go.rose{background:var(--deep-rose);}
+
+/* FORM */
+.at{font-family:'Cormorant Garamond',serif;font-size:2.1rem;font-weight:300;margin-bottom:5px;}
+.at em{font-style:italic;color:var(--deep-rose);}
+.as{font-size:.8rem;opacity:.48;margin-bottom:24px;line-height:1.6;}
+/* TABS */
+.tabs{display:flex;background:var(--blush);border-radius:30px;padding:4px;margin-bottom:22px;}
+.tab{flex:1;padding:10px;border:none;background:none;font-family:'Jost',sans-serif;font-size:.71rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--burgundy);opacity:.48;cursor:pointer;border-radius:26px;transition:all .3s;}
+.tab.on{background:#fff;opacity:1;box-shadow:0 2px 10px rgba(59,13,26,.09);}
+.pane{display:none;}
+.pane.on{display:block;animation:fu .25s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* GOOGLE */
+.gbtn{width:100%;padding:13px;background:#fff;color:#333;border:1.5px solid rgba(192,100,122,.22);border-radius:13px;font-family:'Jost',sans-serif;font-size:.82rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:11px;transition:all .25s;margin-bottom:16px;}
+.gbtn:hover{border-color:var(--deep-rose);box-shadow:0 4px 16px rgba(192,100,122,.15);}
+.or{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.or::before,.or::after{content:'';flex:1;height:1px;background:rgba(192,100,122,.15);}
+.or span{font-size:.68rem;opacity:.4;text-transform:uppercase;letter-spacing:1px;}
+/* FIELDS */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:13px;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fl{font-size:.61rem;letter-spacing:2.5px;text-transform:uppercase;opacity:.46;}
+.fi{border:1.5px solid rgba(192,100,122,.2);border-radius:11px;padding:11px 14px;font-family:'Jost',sans-serif;font-size:.85rem;color:var(--burgundy);background:#fff;outline:none;transition:border-color .25s;width:100%;}
+.fi:focus{border-color:var(--deep-rose);}
+.fi.err{border-color:#e05050;background:#fff9f9;}
+.em{font-size:.68rem;color:#e05050;min-height:13px;}
+.pw{position:relative;}
+.pw .fi{padding-right:42px;}
+.eye{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;opacity:.38;font-size:.95rem;line-height:1;}
+/* STRENGTH */
+.sb{height:4px;background:var(--blush);border-radius:4px;margin-top:5px;overflow:hidden;}
+.sf{height:100%;border-radius:4px;transition:width .4s,background .4s;width:0;}
+.sl{font-size:.66rem;opacity:.48;margin-top:3px;min-height:14px;}
+/* SUBMIT */
+.sbtn{width:100%;padding:13px;background:var(--burgundy);color:#fff;border:none;border-radius:13px;font-family:'Jost',sans-serif;font-size:.79rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;margin-top:4px;}
+.sbtn:hover{background:var(--deep-rose);}
+.sbtn:disabled{opacity:.45;}
+.forgot{font-size:.73rem;color:var(--deep-rose);opacity:.7;cursor:pointer;background:none;border:none;font-family:'Jost',sans-serif;text-align:right;display:block;width:100%;margin-bottom:13px;}
+.forgot:hover{opacity:1;}
+/* MODAL */
+.mbg{position:fixed;inset:0;background:rgba(59,13,26,.52);backdrop-filter:blur(10px);z-index:2000;display:none;align-items:center;justify-content:center;}
+.mbg.open{display:flex;}
+.mbox{background:var(--cream);border-radius:22px;padding:32px;width:100%;max-width:390px;position:relative;text-align:center;}
+.mc{position:absolute;top:13px;right:13px;width:30px;height:30px;background:var(--blush);border:none;border-radius:50%;cursor:pointer;font-size:.85rem;}
+.mt{font-family:'Cormorant Garamond',serif;font-size:1.65rem;margin-bottom:6px;}
+.mt em{font-style:italic;color:var(--deep-rose);}
+.ms{font-size:.8rem;opacity:.52;margin-bottom:20px;line-height:1.65;}
+@media(max-width:760px){.left{display:none;}.right{padding:36px 20px;}}
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div id="toast"></div>
+
+<!-- LEFT -->
+<div class="left">
+  <div class="lb"><span>Aneesa</span> Hampers</div>
+  <div class="lt">Premium Gifting · Kadapa</div>
+  <div class="perks">
+    <div class="perk"><div class="pk">🎁</div><div><div class="pt">Track Your Orders</div><div class="pd">Real-time order status updates</div></div></div>
+    <div class="perk"><div class="pk">⚡</div><div><div class="pt">One-Click Checkout</div><div class="pd">Your details saved — order in seconds</div></div></div>
+    <div class="perk"><div class="pk">🎉</div><div><div class="pt">Exclusive Discounts</div><div class="pd">Members get special promo codes</div></div></div>
+    <div class="perk"><div class="pk">📍</div><div><div class="pt">Save Addresses</div><div class="pd">Quick delivery — no re-entering details</div></div></div>
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div class="right">
+  <div class="box">
+    <!-- SUCCESS -->
+    <div class="success" id="successScreen">
+      <div class="si">🎉</div>
+      <div class="st">Welcome to <span style="color:var(--deep-rose);font-style:italic">Aneesa!</span></div>
+      <div class="ss" id="successMsg">You are now signed in.</div>
+      <a href="cart.html" class="btn-go" id="btnCart" style="display:none;background:var(--deep-rose)">🛒 Continue to Cart</a>
+      <a href="account.html" class="btn-go">👤 My Account</a>
+      <a href="products.html" class="btn-go rose">🎁 Shop Now</a>
+    </div>
+
+    <!-- FORM -->
+    <div id="authForm">
+      <div class="at" id="authTitle">Welcome <em>Back</em></div>
+      <div class="as">Sign in or create your account below</div>
+      <div class="tabs">
+        <button class="tab on" id="tabSI" onclick="switchTab('si')">Sign In</button>
+        <button class="tab" id="tabReg" onclick="switchTab('reg')">Register</button>
+      </div>
+
+      <!-- SIGN IN -->
+      <div class="pane on" id="paneSI">
+        <button class="gbtn" onclick="gLogin()">
+          <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Continue with Google
+        </button>
+        <div class="or"><span>or with email</span></div>
+        <div class="fg"><label class="fl">Email</label><input class="fi" id="siE" type="email" placeholder="yourname@gmail.com" autocomplete="email"/><div class="em" id="siEErr"></div></div>
+        <div class="fg"><label class="fl">Password</label><div class="pw"><input class="fi" id="siP" type="password" placeholder="Password" autocomplete="current-password"/><button class="eye" type="button" onclick="toggleEye('siP',this)">👁</button></div><div class="em" id="siPErr"></div></div>
+        <button class="forgot" type="button" onclick="openForgot()">Forgot password?</button>
+        <button class="sbtn" id="siBtn" onclick="doSignIn()">Sign In →</button>
+      </div>
+
+      <!-- REGISTER -->
+      <div class="pane" id="paneReg">
+        <button class="gbtn" onclick="gLogin()">
+          <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Sign up with Google
+        </button>
+        <div class="or"><span>or with email</span></div>
+        <div class="fg2">
+          <div class="fg"><label class="fl">First Name *</label><input class="fi" id="rgFn" placeholder="First" autocomplete="given-name"/><div class="em" id="rgFnErr"></div></div>
+          <div class="fg"><label class="fl">Last Name</label><input class="fi" id="rgLn" placeholder="Last" autocomplete="family-name"/></div>
+        </div>
+        <div class="fg"><label class="fl">Email *</label><input class="fi" id="rgE" type="email" placeholder="yourname@gmail.com" autocomplete="email"/><div class="em" id="rgEErr"></div></div>
+        <div class="fg"><label class="fl">Password * (min 8 chars)</label>
+          <div class="pw"><input class="fi" id="rgP" type="password" placeholder="Create strong password" autocomplete="new-password" oninput="livePass()"/><button class="eye" type="button" onclick="toggleEye('rgP',this)">👁</button></div>
+          <div class="sb"><div class="sf" id="sfill"></div></div><div class="sl" id="slbl"></div>
+          <div class="em" id="rgPErr"></div>
+        </div>
+        <div class="fg"><label class="fl">Confirm Password *</label>
+          <div class="pw"><input class="fi" id="rgP2" type="password" placeholder="Re-enter password" autocomplete="new-password"/><button class="eye" type="button" onclick="toggleEye('rgP2',this)">👁</button></div>
+          <div class="em" id="rgP2Err"></div>
+        </div>
+        <button class="sbtn" id="rgBtn" onclick="doRegister()">Create Account →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT MODAL -->
+<div class="mbg" id="forgotModal">
+  <div class="mbox">
+    <button class="mc" onclick="closeForgot()">✕</button>
+    <div class="mt">Reset <em>Password</em></div>
+    <div class="ms">Enter your email — we'll send a reset link instantly.</div>
+    <div class="fg" style="text-align:left"><label class="fl">Email Address</label><input class="fi" id="fgE" type="email" placeholder="yourname@gmail.com" autocomplete="email"/><div class="em" id="fgErr"></div></div>
+    <button class="sbtn" onclick="sendReset()">Send Reset Email →</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail,
+  onAuthStateChanged, updateProfile
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const app  = initializeApp({apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",authDomain:"aneesa-hampers.firebaseapp.com",projectId:"aneesa-hampers",storageBucket:"aneesa-hampers.firebasestorage.app",messagingSenderId:"909653560410",appId:"1:909653560410:web:397db4fec2d9f042609c63"});
+const db   = getFirestore(app);
+const auth = getAuth(app);
+const gp   = new GoogleAuthProvider();
+gp.setCustomParameters({prompt:'select_account'});
+
+const C=document.getElementById('cursor'),R=document.getElementById('cursorRing');
+if(C&&matchMedia('(pointer:fine)').matches){document.addEventListener('mousemove',e=>{C.style.left=e.clientX+'px';C.style.top=e.clientY+'px';setTimeout(()=>{R.style.left=e.clientX+'px';R.style.top=e.clientY+'px';},80)});}
+
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2800);}
+
+const params = new URLSearchParams(window.location.search);
+const fromCart    = params.get('from')==='cart';
+const fromAccount = params.get('from')==='account';
+
+// AUTO-LOGIN
+onAuthStateChanged(auth, u => {
+  if(u){
+    saveSession(u);
+    if(fromCart||fromAccount) window.location.href=fromCart?'cart.html':'account.html';
+    else showSuccess(u.displayName||u.email.split('@')[0]);
+  }
+});
+
+function saveSession(u){
+  const d={uid:u.uid,email:u.email,name:u.displayName||u.email.split('@')[0],photoURL:u.photoURL||null,savedAt:Date.now()};
+  localStorage.setItem('ah_user',JSON.stringify(d));
+  return d;
+}
+function showSuccess(name){
+  document.getElementById('authForm').style.display='none';
+  const ss=document.getElementById('successScreen'); ss.classList.add('show');
+  document.getElementById('successMsg').textContent=`Welcome back, ${name}! You are signed in.`;
+  if(fromCart||fromAccount){
+    const gb=document.getElementById('btnCart');
+    gb.style.display='inline-block';
+    gb.href=fromCart?'cart.html':'account.html';
+    gb.textContent=fromCart?'🛒 Continue to Cart':'👤 My Account';
+  }
+}
+
+function showE(id,inputId,msg){document.getElementById(id).textContent=msg;if(inputId)document.getElementById(inputId).classList.add('err');}
+function clearE(id,inputId){document.getElementById(id).textContent='';if(inputId)document.getElementById(inputId).classList.remove('err');}
+function validEmail(e){return/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);}
+
+// SIGN IN
+window.doSignIn = async function(){
+  const email=document.getElementById('siE').value.trim(), pass=document.getElementById('siP').value;
+  const btn=document.getElementById('siBtn');
+  clearE('siEErr','siE'); clearE('siPErr','siP');
+  let ok=true;
+  if(!email||!validEmail(email)){showE('siEErr','siE','Enter a valid email');ok=false;}
+  if(!pass){showE('siPErr','siP','Enter your password');ok=false;}
+  if(!ok) return;
+  btn.textContent='Signing in…'; btn.disabled=true;
+  try{
+    const r=await signInWithEmailAndPassword(auth,email,pass);
+    saveSession(r.user);
+    if(fromCart||fromAccount) window.location.href=fromCart?'cart.html':'account.html';
+    else showSuccess(r.user.displayName||email.split('@')[0]);
+  }catch(e){
+    btn.textContent='Sign In →'; btn.disabled=false;
+    const m={'auth/user-not-found':'No account found.','auth/wrong-password':'Incorrect password.','auth/invalid-credential':'Incorrect email or password.','auth/invalid-email':'Invalid email.','auth/too-many-requests':'Too many attempts. Please wait.'};
+    showE('siEErr','siE',m[e.code]||'Sign in failed. Try again.');
+  }
+};
+
+// REGISTER
+window.doRegister = async function(){
+  const first=document.getElementById('rgFn').value.trim(),last=document.getElementById('rgLn').value.trim();
+  const email=document.getElementById('rgE').value.trim(),pass=document.getElementById('rgP').value,pass2=document.getElementById('rgP2').value;
+  const btn=document.getElementById('rgBtn');
+  ['rgFnErr','rgEErr','rgPErr','rgP2Err'].forEach(id=>document.getElementById(id).textContent='');
+  ['rgFn','rgE','rgP','rgP2'].forEach(id=>document.getElementById(id).classList.remove('err'));
+  let ok=true;
+  if(!first){showE('rgFnErr','rgFn','First name required');ok=false;}
+  if(!email||!validEmail(email)){showE('rgEErr','rgE','Enter a valid email');ok=false;}
+  if(!pass||pass.length<8){showE('rgPErr','rgP','Min 8 characters');ok=false;}
+  if(pass!==pass2){showE('rgP2Err','rgP2','Passwords do not match');ok=false;}
+  if(!ok) return;
+  btn.textContent='Creating account…'; btn.disabled=true;
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,email,pass);
+    const displayName=first+(last?' '+last:'');
+    await updateProfile(cred.user,{displayName});
+    // Save user profile to Firestore
+    await setDoc(doc(db,'users',cred.user.uid),{name:displayName,email,createdAt:serverTimestamp()});
+    saveSession({uid:cred.user.uid,email,displayName,photoURL:null});
+    if(fromCart||fromAccount) window.location.href=fromCart?'cart.html':'account.html';
+    else showSuccess(first);
+  }catch(e){
+    btn.textContent='Create Account →'; btn.disabled=false;
+    const m={'auth/email-already-in-use':'Email already registered.','auth/invalid-email':'Invalid email.','auth/weak-password':'Password too weak.'};
+    showE('rgEErr','rgE',m[e.code]||'Registration failed: '+(e.message||e.code));
+  }
+};
+
+// GOOGLE
+window.gLogin = async function(){
+  try{
+    const r=await signInWithPopup(auth,gp);
+    saveSession(r.user);
+    await setDoc(doc(db,'users',r.user.uid),{name:r.user.displayName,email:r.user.email,updatedAt:serverTimestamp()},{merge:true});
+    if(fromCart||fromAccount) window.location.href=fromCart?'cart.html':'account.html';
+    else showSuccess(r.user.displayName||r.user.email.split('@')[0]);
+  }catch(e){if(e.code!=='auth/popup-closed-by-user') toast('Google sign-in failed.');}
+};
+
+// STRENGTH
+window.livePass=()=>{
+  const v=document.getElementById('rgP').value,f=document.getElementById('sfill'),l=document.getElementById('slbl');
+  if(!v){f.style.width='0';l.textContent='';return;}
+  let s=0; if(v.length>=8)s++; if(/[A-Z]/.test(v))s++; if(/[0-9]/.test(v))s++; if(/[^A-Za-z0-9]/.test(v))s++;
+  f.style.width=(s*25)+'%'; f.style.background=['','#e05050','#f5a623','#2d7a4f','#0066cc'][s];
+  l.textContent=['','Weak','Fair','Good','Strong'][s];
+};
+
+// FORGOT
+window.openForgot=()=>document.getElementById('forgotModal').classList.add('open');
+window.closeForgot=()=>document.getElementById('forgotModal').classList.remove('open');
+window.sendReset=async()=>{
+  const email=document.getElementById('fgE').value.trim(),err=document.getElementById('fgErr');
+  err.textContent='';
+  if(!email||!validEmail(email)){err.textContent='Enter a valid email.';return;}
+  await sendPasswordResetEmail(auth,email);
+  closeForgot(); toast('📧 Reset email sent! Check inbox.');
+};
+
+// EYE
+window.toggleEye=(id,btn)=>{const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';btn.textContent=i.type==='password'?'👁':'🙈';};
+
+// TABS
+window.switchTab=tab=>{
+  const si=tab==='si';
+  document.getElementById('tabSI').classList.toggle('on',si);
+  document.getElementById('tabReg').classList.toggle('on',!si);
+  document.getElementById('paneSI').classList.toggle('on',si);
+  document.getElementById('paneReg').classList.toggle('on',!si);
+  document.getElementById('authTitle').innerHTML=si?'Welcome <em>Back</em>':'Create <em>Account</em>';
+};
+</script>
+<script src="bottomnav.js"></script>
+</body>
+</html>

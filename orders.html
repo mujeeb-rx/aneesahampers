@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>My Orders — Aneesa Hampers</title>
+  <meta name="description" content="View and track all your Aneesa Hampers orders in real-time."/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;--burgundy:#3b0d1a;--cream:#fdf6f0;--gold:#c9a96e;--white:#fff;--green:#25D366;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Jost',sans-serif;background:#f5eeee;color:var(--burgundy);min-height:100vh;overflow-x:hidden;}
+    @media(pointer:fine){body{cursor:none;}.cursor{width:8px;height:8px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}.cursor-ring{width:26px;height:26px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .08s,top .08s;opacity:.4;}}
+    @media(pointer:coarse){.cursor,.cursor-ring{display:none;}body{cursor:auto;}button,a,[onclick]{cursor:pointer;}}
+
+    /* NAV */
+    nav{background:var(--white);padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(59,13,26,.06);position:fixed;top:0;width:100%;z-index:100;}
+    .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-style:italic;color:var(--burgundy);text-decoration:none;}
+    .nav-logo span{color:var(--deep-rose);}
+    .nav-links{display:flex;gap:32px;list-style:none;}
+    .nav-links a{text-decoration:none;font-size:.7rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--burgundy);opacity:.45;transition:all .2s;}
+    .nav-links a:hover,.nav-links a.active{opacity:1;color:var(--deep-rose);}
+    .nav-right{display:flex;align-items:center;gap:10px;}
+    .nav-cart{display:flex;align-items:center;gap:6px;text-decoration:none;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--burgundy);opacity:.6;transition:opacity .2s;}
+    .nav-cart:hover{opacity:1;}
+    .cart-count{background:var(--deep-rose);color:white;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:600;}
+    .logout-btn{padding:7px 14px;background:var(--blush);color:var(--deep-rose);border:1.5px solid rgba(192,100,122,.25);border-radius:20px;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;font-weight:500;display:none;align-items:center;gap:5px;}
+    .logout-btn:hover{background:var(--deep-rose);color:white;}
+    @media(max-width:768px){.nav-links{display:none;}nav{padding:0 18px 0 68px;}}
+
+    /* HERO */
+    .hero{background:linear-gradient(135deg,var(--burgundy) 0%,#5a1528 100%);padding:48px 40px 36px;color:white;position:relative;overflow:hidden;}
+    .hero::after{content:'🎁';position:absolute;right:60px;top:50%;transform:translateY(-50%);font-size:7rem;opacity:.08;}
+    .hero-tag{font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--rose);margin-bottom:10px;}
+    .hero-title{font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:300;margin-bottom:6px;}
+    .hero-title em{font-style:italic;color:var(--rose);}
+    .hero-sub{font-size:.82rem;opacity:.55;margin-bottom:24px;}
+    .hero-stats{display:flex;gap:32px;}
+    .hero-stat{text-align:center;}
+    .hero-stat-num{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--gold);}
+    .hero-stat-lbl{font-size:.62rem;letter-spacing:2px;text-transform:uppercase;opacity:.45;margin-top:2px;}
+    @media(max-width:768px){.hero{padding:80px 18px 24px;padding-top:calc(64px + 18px);}.hero-title{font-size:1.7rem;}.hero-stats{gap:20px;}}
+
+    /* MAIN CONTENT */
+    .container{max-width:900px;margin:0 auto;padding:32px 20px 100px;}
+
+    /* FILTER TABS */
+    .filter-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+    .ftab{padding:7px 16px;border-radius:22px;border:1.5px solid rgba(192,100,122,.2);background:white;font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;color:var(--burgundy);font-weight:500;white-space:nowrap;flex-shrink:0;}
+    .ftab.active,.ftab:hover{background:var(--burgundy);color:white;border-color:var(--burgundy);}
+    .filter-tabs{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;}
+
+    /* ORDER CARD */
+    .orders-list{display:flex;flex-direction:column;gap:16px;}
+    .order-card{background:white;border-radius:18px;overflow:hidden;box-shadow:0 2px 18px rgba(59,13,26,.06);transition:transform .2s;}
+    .order-card:hover{transform:translateY(-2px);}
+    .order-header{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(192,100,122,.08);cursor:pointer;user-select:none;}
+    .order-header-left{display:flex;align-items:center;gap:14px;}
+    .order-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+    .order-id{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;opacity:.4;margin-bottom:3px;}
+    .order-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:400;}
+    .order-header-right{display:flex;align-items:center;gap:12px;flex-shrink:0;}
+    .order-total{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;}
+    .status-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;}
+    .s-pending{background:#fef3e8;color:#c07830;}
+    .s-confirmed{background:#e8f4fd;color:#0066cc;}
+    .s-preparing{background:#f0e8fd;color:#7030c0;}
+    .s-dispatched{background:#fff0e8;color:#c05010;}
+    .s-delivered{background:#e8fdf0;color:#2d7a4f;}
+    .s-cancelled{background:#fde8e8;color:#e05050;}
+    .chevron{font-size:.8rem;opacity:.35;transition:transform .3s;}
+    .order-card.open .chevron{transform:rotate(180deg);}
+
+    /* ORDER BODY */
+    .order-body{display:none;padding:18px 22px;border-top:1px solid rgba(192,100,122,.06);}
+    .order-card.open .order-body{display:block;animation:fadeIn .25s ease;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ITEMS */
+    .items-title{font-size:.63rem;letter-spacing:2.5px;text-transform:uppercase;opacity:.38;margin-bottom:12px;}
+    .item-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(192,100,122,.06);}
+    .item-row:last-of-type{border-bottom:none;}
+    .item-img{width:52px;height:44px;border-radius:9px;object-fit:cover;background:var(--blush);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
+    .item-img img{width:100%;height:100%;object-fit:cover;border-radius:9px;}
+    .item-info{flex:1;}
+    .item-name{font-size:.88rem;font-weight:500;margin-bottom:2px;}
+    .item-qty{font-size:.73rem;opacity:.45;}
+    .item-price{font-size:.9rem;font-weight:600;color:var(--deep-rose);}
+
+    /* ORDER META */
+    .order-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;background:rgba(249,228,233,.25);border-radius:12px;padding:14px 16px;}
+    .meta-row{display:flex;flex-direction:column;gap:2px;}
+    .meta-lbl{font-size:.6rem;letter-spacing:2px;text-transform:uppercase;opacity:.38;}
+    .meta-val{font-size:.82rem;font-weight:500;}
+
+    /* TIMELINE */
+    .timeline{margin-top:18px;}
+    .tl-title{font-size:.63rem;letter-spacing:2.5px;text-transform:uppercase;opacity:.38;margin-bottom:14px;}
+    .tl-steps{display:flex;align-items:center;gap:0;}
+    .tl-step{display:flex;flex-direction:column;align-items:center;flex:1;position:relative;}
+    .tl-dot{width:28px;height:28px;border-radius:50%;background:var(--blush);border:2px solid rgba(192,100,122,.2);display:flex;align-items:center;justify-content:center;font-size:.75rem;z-index:1;transition:all .3s;}
+    .tl-dot.done{background:var(--burgundy);border-color:var(--burgundy);color:white;}
+    .tl-dot.active{background:var(--deep-rose);border-color:var(--deep-rose);color:white;box-shadow:0 0 0 4px rgba(192,100,122,.2);}
+    .tl-lbl{font-size:.58rem;letter-spacing:.5px;text-transform:uppercase;margin-top:6px;opacity:.45;text-align:center;}
+    .tl-lbl.done,.tl-lbl.active{opacity:1;color:var(--burgundy);font-weight:500;}
+    .tl-line{flex:1;height:2px;background:var(--blush);margin-top:-14px;transition:background .3s;}
+    .tl-line.done{background:var(--burgundy);}
+    @media(max-width:500px){.tl-lbl{font-size:.5rem;}.order-meta{grid-template-columns:1fr;}}
+
+    /* ACTIONS */
+    .order-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+    .oa-btn{padding:8px 14px;border-radius:9px;border:none;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:5px;}
+    .oa-wa{background:var(--green);color:white;}
+    .oa-wa:hover{background:#1da856;}
+    .oa-track{background:var(--blush);color:var(--deep-rose);}
+    .oa-track:hover{background:var(--rose);color:white;}
+    .oa-reorder{background:var(--burgundy);color:white;}
+    .oa-reorder:hover{background:var(--deep-rose);}
+
+    /* EMPTY */
+    .empty-state{text-align:center;padding:70px 20px;}
+    .empty-icon{font-size:4rem;margin-bottom:18px;}
+    .empty-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:8px;}
+    .empty-sub{font-size:.83rem;opacity:.45;margin-bottom:28px;line-height:1.7;}
+    .shop-btn{display:inline-block;padding:13px 32px;background:var(--burgundy);color:white;border-radius:30px;text-decoration:none;font-size:.74rem;letter-spacing:2px;text-transform:uppercase;transition:background .2s;}
+    .shop-btn:hover{background:var(--deep-rose);}
+
+    /* LOGIN WALL */
+    .login-wall{text-align:center;padding:80px 20px;}
+    .login-wall-icon{font-size:3.5rem;margin-bottom:16px;}
+    .login-wall-title{font-family:'Cormorant Garamond',serif;font-size:1.9rem;margin-bottom:8px;}
+    .login-wall-sub{font-size:.82rem;opacity:.45;margin-bottom:26px;line-height:1.7;}
+    .login-btn{display:inline-block;padding:13px 32px;background:var(--burgundy);color:white;border-radius:30px;text-decoration:none;font-size:.74rem;letter-spacing:2px;text-transform:uppercase;transition:background .2s;}
+    .login-btn:hover{background:var(--deep-rose);}
+
+    /* LOADING */
+    .loading{text-align:center;padding:60px;opacity:.4;}
+    .spin{width:36px;height:36px;border:3px solid var(--blush);border-top-color:var(--deep-rose);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* TOAST */
+    #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:white;padding:10px 22px;border-radius:30px;font-size:.76rem;z-index:9999;display:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2);pointer-events:none;}
+    @media(min-width:769px){#toast{bottom:24px;}}
+
+    /* FLOAT WA */
+    .float-wa{position:fixed;bottom:24px;right:24px;width:52px;height:52px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,.4);z-index:200;transition:transform .2s;}
+    .float-wa:hover{transform:scale(1.1);}
+    @media(max-width:768px){.float-wa{display:none;}}
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div id="toast"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo"><span>Aneesa</span> Hampers</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html">Collections</a></li>
+    <li><a href="orders.html" class="active">My Orders</a></li>
+    <li><a href="track.html">Track Order</a></li>
+    <li><a href="cart.html">Cart</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="cart.html" class="nav-cart">🛍️ <span class="cart-count">0</span></a>
+    <button class="logout-btn" id="navLogoutBtn" onclick="doLogout()">🔒 Logout</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="heroSection" style="display:none">
+  <div class="hero-tag">Your Account</div>
+  <div class="hero-title">My <em>Orders</em></div>
+  <div class="hero-sub" id="heroSub">All your Aneesa Hampers orders in one place</div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="statTotal">0</div>
+      <div class="hero-stat-lbl">Total Orders</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="statDelivered">0</div>
+      <div class="hero-stat-lbl">Delivered</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="statSpent">₹0</div>
+      <div class="hero-stat-lbl">Total Spent</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="statPending">0</div>
+      <div class="hero-stat-lbl">Active Orders</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+  <!-- LOGIN WALL -->
+  <div id="loginWall" style="display:none">
+    <div class="login-wall">
+      <div class="login-wall-icon">🔐</div>
+      <div class="login-wall-title">Please Log In</div>
+      <div class="login-wall-sub">Sign in to see your orders, track deliveries<br/>and manage your account.</div>
+      <a href="login.html?from=orders" class="login-btn">Sign In / Register →</a>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div id="loadingState">
+    <div class="loading"><div class="spin"></div><p>Loading your orders…</p></div>
+  </div>
+
+  <!-- ORDERS -->
+  <div id="ordersSection" style="display:none">
+    <!-- FILTER TABS -->
+    <div class="filter-tabs" id="filterTabs">
+      <button class="ftab active" data-filter="all" onclick="filterOrders('all')">All Orders</button>
+      <button class="ftab" data-filter="pending" onclick="filterOrders('pending')">⏳ Pending</button>
+      <button class="ftab" data-filter="confirmed" onclick="filterOrders('confirmed')">✅ Confirmed</button>
+      <button class="ftab" data-filter="preparing" onclick="filterOrders('preparing')">🎁 Preparing</button>
+      <button class="ftab" data-filter="dispatched" onclick="filterOrders('dispatched')">🚚 Dispatched</button>
+      <button class="ftab" data-filter="delivered" onclick="filterOrders('delivered')">🎉 Delivered</button>
+    </div>
+    <div class="orders-list" id="ordersList"></div>
+  </div>
+
+  <!-- EMPTY -->
+  <div id="emptyState" style="display:none">
+    <div class="empty-state">
+      <div class="empty-icon">🛍️</div>
+      <div class="empty-title">No Orders Yet</div>
+      <div class="empty-sub">You haven't placed any orders yet.<br/>Browse our beautiful hamper collection!</div>
+      <a href="products.html" class="shop-btn">Shop Now →</a>
+    </div>
+  </div>
+</div>
+
+<!-- FLOAT WA -->
+<a href="https://wa.me/918639066613" class="float-wa" target="_blank">💬</a>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, query, where, orderBy, onSnapshot }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const app = initializeApp({
+  apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",
+  authDomain:"aneesa-hampers.firebaseapp.com",
+  projectId:"aneesa-hampers",
+  storageBucket:"aneesa-hampers.firebasestorage.app",
+  messagingSenderId:"909653560410",
+  appId:"1:909653560410:web:397db4fec2d9f042609c63"
+});
+const db   = getFirestore(app);
+const auth = getAuth(app);
+const WA   = "918639066613";
+
+// CURSOR
+const cur=document.getElementById("cursor"),ring=document.getElementById("cursorRing");
+if(cur&&matchMedia('(pointer:fine)').matches){document.addEventListener("mousemove",e=>{cur.style.left=e.clientX+"px";cur.style.top=e.clientY+"px";setTimeout(()=>{ring.style.left=e.clientX+"px";ring.style.top=e.clientY+"px";},80);});}
+
+// TOAST
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.style.display="block";clearTimeout(t._t);t._t=setTimeout(()=>t.style.display="none",2800);}
+
+// CART BADGE — per-user key
+function cartKey(){const u=JSON.parse(localStorage.getItem("ah_user")||"{}");return u.uid?"ah_cart_"+u.uid:"ah_cart_guest";}
+function cartCount(){try{return JSON.parse(localStorage.getItem(cartKey())||"[]").reduce((s,i)=>s+(i.qty||1),0);}catch{return 0;}}
+document.querySelectorAll(".cart-count").forEach(el=>el.textContent=cartCount());
+
+// LOGOUT
+window.doLogout = async function(){
+  if(!confirm("Log out of your account?")) return;
+  try{ await signOut(auth); }catch(e){}
+  localStorage.removeItem("ah_user");
+  window.location.href="login.html";
+};
+
+// STATUS CONFIG
+const STATUS_CONFIG = {
+  pending:   { emoji:"⏳", label:"Pending",   cls:"s-pending",   color:"#fef3e8" },
+  confirmed: { emoji:"✅", label:"Confirmed", cls:"s-confirmed", color:"#e8f4fd" },
+  preparing: { emoji:"🎁", label:"Preparing", cls:"s-preparing", color:"#f0e8fd" },
+  dispatched:{ emoji:"🚚", label:"Dispatched",cls:"s-dispatched",color:"#fff0e8" },
+  delivered: { emoji:"🎉", label:"Delivered", cls:"s-delivered", color:"#e8fdf0" },
+  cancelled: { emoji:"❌", label:"Cancelled", cls:"s-cancelled", color:"#fde8e8" },
+};
+const STATUS_ORDER = ["pending","confirmed","preparing","dispatched","delivered"];
+
+var _allOrders = [];
+var _currentFilter = "all";
+
+// ====================================================
+// AUTH STATE
+// ====================================================
+onAuthStateChanged(auth, user => {
+  document.getElementById("loadingState").style.display = "none";
+
+  if (!user) {
+    document.getElementById("loginWall").style.display = "block";
+    return;
+  }
+
+  // Show logout button
+  document.getElementById("navLogoutBtn").style.display = "inline-flex";
+
+  // Update hero
+  document.getElementById("heroSection").style.display = "block";
+  document.getElementById("heroSub").textContent =
+    "Welcome back, " + (user.displayName || user.email.split("@")[0]).split(" ")[0] + "! Here are all your orders.";
+
+  // Load this user's orders live
+  loadOrders(user.uid);
+});
+
+// ====================================================
+// LOAD ORDERS — real-time for this user only
+// ====================================================
+// Orders may store uid as 'uid' OR 'customerUID' — try both and merge
+function loadOrders(uid) {
+  let _loaded1 = false, _loaded2 = false;
+  let _orders1 = [], _orders2 = [];
+
+  function merge() {
+    if (!_loaded1 || !_loaded2) return;
+    // Merge, deduplicate by id, sort by date
+    const map = {};
+    [..._orders1, ..._orders2].forEach(o => map[o.id] = o);
+    _allOrders = Object.values(map).sort((a, b) => {
+      const ta = a.createdAt?.toDate?.() || new Date(0);
+      const tb = b.createdAt?.toDate?.() || new Date(0);
+      return tb - ta;
+    });
+    updateStats();
+    renderOrders();
+  }
+
+  // Query 1: uid field (used by cart.html)
+  const q1 = query(collection(db, "orders"), where("uid", "==", uid));
+  onSnapshot(q1, snap => {
+    _orders1 = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    _loaded1 = true;
+    merge();
+  }, () => { _loaded1 = true; merge(); });
+
+  // Query 2: customerUID field (legacy)
+  const q2 = query(collection(db, "orders"), where("customerUID", "==", uid));
+  onSnapshot(q2, snap => {
+    _orders2 = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    _loaded2 = true;
+    merge();
+  }, () => { _loaded2 = true; merge(); });
+}
+
+// ====================================================
+// STATS
+// ====================================================
+function updateStats() {
+  const total     = _allOrders.length;
+  const delivered = _allOrders.filter(o => o.status === "delivered").length;
+  const pending   = _allOrders.filter(o => !["delivered","cancelled"].includes(o.status)).length;
+  const spent     = _allOrders
+    .filter(o => o.status !== "cancelled")
+    .reduce((s,o) => s + (Number(o.total) || 0), 0);
+
+  document.getElementById("statTotal").textContent     = total;
+  document.getElementById("statDelivered").textContent = delivered;
+  document.getElementById("statPending").textContent   = pending;
+  document.getElementById("statSpent").textContent     = "₹" + spent.toLocaleString("en-IN");
+}
+
+// ====================================================
+// FILTER
+// ====================================================
+window.filterOrders = function(f) {
+  _currentFilter = f;
+  document.querySelectorAll(".ftab").forEach(t => t.classList.toggle("active", t.dataset.filter === f));
+  renderOrders();
+};
+
+// ====================================================
+// RENDER ORDERS
+// ====================================================
+function renderOrders() {
+  const list = _currentFilter === "all"
+    ? _allOrders
+    : _allOrders.filter(o => o.status === _currentFilter);
+
+  document.getElementById("loadingState").style.display  = "none";
+  document.getElementById("ordersSection").style.display = list.length || _allOrders.length ? "block" : "none";
+  document.getElementById("emptyState").style.display    = (!_allOrders.length) ? "block" : "none";
+
+  if (!list.length && _allOrders.length) {
+    document.getElementById("ordersList").innerHTML =
+      '<div style="text-align:center;padding:40px;opacity:.4;font-size:.85rem">No ' + _currentFilter + ' orders found.</div>';
+    return;
+  }
+
+  document.getElementById("ordersList").innerHTML = list.map(o => buildOrderCard(o)).join("");
+}
+
+// ====================================================
+// BUILD ORDER CARD
+// ====================================================
+function buildOrderCard(o) {
+  const sc = STATUS_CONFIG[o.status] || STATUS_CONFIG.pending;
+  const date = o.createdAt?.toDate
+    ? o.createdAt.toDate().toLocaleDateString("en-IN", {day:"numeric",month:"short",year:"numeric"})
+    : "—";
+  const items = o.items || [];
+  const firstItem = items[0] || {};
+  const itemCount = items.reduce((s,i) => s+(i.qty||1), 0);
+
+  // Items HTML
+  const itemsHtml = items.map(i => {
+    const img = i.image
+      ? `<div class="item-img"><img src="${i.image}" alt="${i.name}" onerror="this.parentElement.textContent='🎁'"/></div>`
+      : `<div class="item-img">🎁</div>`;
+    return `<div class="item-row">
+      ${img}
+      <div class="item-info">
+        <div class="item-name">${i.name || "Product"}</div>
+        <div class="item-qty">Qty: ${i.qty || 1}</div>
+      </div>
+      <div class="item-price">₹${Number(i.price || 0).toLocaleString("en-IN")}</div>
+    </div>`;
+  }).join("");
+
+  // Timeline
+  const curIdx = STATUS_ORDER.indexOf(o.status);
+  const tlHtml = STATUS_ORDER.map((s, i) => {
+    const cfg = STATUS_CONFIG[s];
+    const done   = i < curIdx;
+    const active = i === curIdx;
+    const cls    = done ? "done" : active ? "active" : "";
+    const line   = i < STATUS_ORDER.length - 1
+      ? `<div class="tl-line ${done || active ? 'done' : ''}"></div>` : "";
+    return `<div class="tl-step">
+      <div class="tl-dot ${cls}">${done ? "✓" : cfg.emoji}</div>
+      <div class="tl-lbl ${cls}">${cfg.label}</div>
+    </div>${line}`;
+  }).join("");
+
+  // Meta
+  const phone = o.customerPhone || o.phone || "—";
+  const addr  = [o.address, o.city, o.state].filter(Boolean).join(", ") || "—";
+  const delivery = o.deliveryType || "—";
+  const payment  = o.paymentMethod || "UPI";
+
+  // WA msg
+  const waMsg = encodeURIComponent(
+    `Hi Aneesa Hampers! 🌸 I have a query about my order #${o.id.slice(-6).toUpperCase()}`
+  );
+
+  return `<div class="order-card" id="card_${o.id}">
+    <div class="order-header" onclick="toggleCard('${o.id}')">
+      <div class="order-header-left">
+        <div class="order-icon" style="background:${sc.color}">${sc.emoji}</div>
+        <div>
+          <div class="order-id">#${o.id.slice(-6).toUpperCase()} · ${date}</div>
+          <div class="order-name">${itemCount} item${itemCount!==1?"s":""} · ${firstItem.name || "Hamper"}</div>
+        </div>
+      </div>
+      <div class="order-header-right">
+        <div class="order-total">₹${Number(o.total || 0).toLocaleString("en-IN")}</div>
+        <span class="status-pill ${sc.cls}">${sc.label}</span>
+        <span class="chevron">▼</span>
+      </div>
+    </div>
+    <div class="order-body">
+      <!-- ITEMS -->
+      <div class="items-title">Items Ordered</div>
+      ${itemsHtml}
+
+      <!-- TIMELINE -->
+      ${o.status !== "cancelled" ? `
+      <div class="timeline">
+        <div class="tl-title">Order Progress</div>
+        <div class="tl-steps">${tlHtml}</div>
+      </div>` : `<div style="text-align:center;padding:14px;color:#e05050;font-size:.82rem">❌ This order was cancelled.</div>`}
+
+      <!-- META -->
+      <div class="order-meta">
+        <div class="meta-row">
+          <div class="meta-lbl">Delivery Address</div>
+          <div class="meta-val">${addr}</div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-lbl">Phone</div>
+          <div class="meta-val">${phone}</div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-lbl">Delivery Type</div>
+          <div class="meta-val">${delivery}</div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-lbl">Payment</div>
+          <div class="meta-val">${payment}</div>
+        </div>
+        ${o.giftMessage ? `<div class="meta-row" style="grid-column:1/-1">
+          <div class="meta-lbl">Gift Message</div>
+          <div class="meta-val">💌 ${o.giftMessage}</div>
+        </div>` : ""}
+        <div class="meta-row">
+          <div class="meta-lbl">Subtotal</div>
+          <div class="meta-val">₹${Number(o.subtotal || 0).toLocaleString("en-IN")}</div>
+        </div>
+        <div class="meta-row">
+          <div class="meta-lbl">Total Paid</div>
+          <div class="meta-val" style="color:var(--deep-rose);font-weight:600">₹${Number(o.total || 0).toLocaleString("en-IN")}</div>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="order-actions">
+        <a href="https://wa.me/${WA}?text=${waMsg}" target="_blank" class="oa-btn oa-wa">💬 WhatsApp Support</a>
+        <a href="track.html?id=${o.id.slice(-6).toUpperCase()}" class="oa-btn oa-track">📍 Track Order</a>
+        <button class="oa-btn oa-reorder" onclick="reorder('${o.id}')">🔁 Reorder</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ====================================================
+// TOGGLE CARD OPEN/CLOSE
+// ====================================================
+window.toggleCard = function(id) {
+  const card = document.getElementById("card_" + id);
+  card.classList.toggle("open");
+};
+
+// ====================================================
+// REORDER — add items back to cart
+// ====================================================
+window.reorder = function(orderId) {
+  const o = _allOrders.find(x => x.id === orderId);
+  if (!o || !o.items) return;
+  const u = JSON.parse(localStorage.getItem("ah_user") || "{}");
+  const key = u.uid ? "ah_cart_" + u.uid : "ah_cart_guest";
+  let cart = [];
+  try { cart = JSON.parse(localStorage.getItem(key) || "[]"); } catch(e) {}
+  o.items.forEach(item => {
+    const ex = cart.find(i => i.id === item.id);
+    if (ex) ex.qty += (item.qty || 1);
+    else cart.push({ id: item.id, name: item.name, price: item.price, image: item.image || "", qty: item.qty || 1 });
+  });
+  localStorage.setItem(key, JSON.stringify(cart));
+  toast("✅ Items added to cart! Redirecting…");
+  setTimeout(() => window.location.href = "cart.html", 1200);
+};
+
+</script>
+
+<script src="mobilenav.js"></script>
+<script src="bottomnav.js"></script>
+</body>
+</html>

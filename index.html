@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Aneesa Hampers — Premium Gift Hampers | Kadapa</title>
+<meta name="description" content="Handcrafted premium gift hampers for every occasion. Birthdays, weddings, anniversaries. Made with love in Kadapa, Andhra Pradesh."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;
+  --burgundy:#3b0d1a;--cream:#fdf6f0;--gold:#c9a96e;
+  --white:#fff;--green:#25D366;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);overflow-x:hidden;}
+img{max-width:100%;display:block;}
+a{text-decoration:none;}
+
+/* CURSOR */
+@media(pointer:fine){body{cursor:none;}.cursor{width:9px;height:9px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}.cursor-ring{width:30px;height:30px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:left .08s,top .08s;opacity:.4;}}
+@media(pointer:coarse){.cursor,.cursor-ring{display:none;}button,a,[onclick]{cursor:pointer;}}
+
+/* PAGE LOADER */
+.loader{position:fixed;inset:0;background:var(--cream);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .6s;}
+.loader.done{opacity:0;pointer-events:none;}
+.ldr-brand{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-style:italic;color:var(--burgundy);}
+.ldr-brand span{color:var(--deep-rose);}
+.spinner{width:26px;height:26px;border:2.5px solid rgba(192,100,122,.2);border-top-color:var(--deep-rose);border-radius:50%;animation:spin .75s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* NAV */
+.topnav{position:fixed;top:40px;width:100%;z-index:800;display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:68px;background:rgba(253,246,240,.96);backdrop-filter:blur(18px);border-bottom:1px solid rgba(192,100,122,.1);box-shadow:0 2px 12px rgba(59,13,26,.04);}
+.topnav .ham-btn{margin-right:12px;display:flex;}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.58rem;font-style:italic;color:var(--burgundy);}
+.nav-logo span{color:var(--deep-rose);}
+.nav-links{display:flex;gap:32px;list-style:none;}
+.nav-links a{font-size:.72rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--burgundy);opacity:.55;transition:all .3s;}
+.nav-links a:hover,.nav-links a.active{opacity:1;color:var(--deep-rose);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-cart-btn{display:flex;align-items:center;gap:6px;color:var(--burgundy);font-size:.72rem;letter-spacing:2px;text-transform:uppercase;padding:8px 13px;border-radius:9px;border:1.5px solid rgba(192,100,122,.2);transition:all .2s;}
+.nav-cart-btn:hover{background:var(--blush);}
+.cart-count{background:var(--deep-rose);color:white;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;padding:0 4px;}
+.nav-wa{background:var(--green);color:white;border-radius:9px;padding:9px 17px;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;transition:opacity .2s;}
+.nav-wa:hover{opacity:.88;}
+.nav-acc{padding:8px 14px;border-radius:9px;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--burgundy);transition:background .2s;}
+.nav-acc:hover{background:var(--blush);}
+.ham-btn{flex-direction:column;gap:5px;width:38px;height:38px;background:var(--burgundy);border:none;border-radius:10px;cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(59,13,26,.2);}
+.ham-btn span{display:block;width:16px;height:2px;background:white;border-radius:2px;}
+
+/* ANNOUNCEMENT */
+#annBar{display:none;background:var(--burgundy);color:white;padding:0 44px;height:38px;align-items:center;justify-content:center;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;}
+#annBar.show{display:flex;}
+#annBar span{flex:1;text-align:center;}
+.ann-close{background:none;border:none;color:rgba(255,255,255,.5);font-size:14px;cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;}
+.ann-close:hover{color:white;}
+
+/* FLASH SALE */
+#flashStrip{display:none;background:linear-gradient(90deg,#f5a623,#e87a23);color:white;padding:11px 28px;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+#flashStrip.show{display:flex;}
+.fs-left{display:flex;align-items:center;gap:10px;}
+.fs-bolt{font-size:1.3rem;}
+.fs-head{font-size:.8rem;font-weight:600;}
+.fs-note{font-size:.67rem;opacity:.75;margin-top:2px;}
+.fs-badge{background:rgba(255,255,255,.25);padding:5px 12px;border-radius:20px;font-size:.78rem;font-weight:700;}
+.fs-timer{font-size:.7rem;opacity:.85;}
+.fs-timer span{font-weight:700;margin-left:4px;}
+
+/* BANNER CAROUSEL */
+#bannerCarousel{display:none;position:relative;overflow:hidden;margin-top:108px;}
+#bannerCarousel.show{display:block;}
+#annBar.show ~ * #bannerCarousel,
+#annBar.show + #flashStrip + #bannerCarousel{margin-top:0;}
+.btrack{display:flex;transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform;}
+.bslide{min-width:100%;height:420px;position:relative;overflow:hidden;display:flex;align-items:center;background:linear-gradient(135deg,var(--burgundy),#5a1528);}
+.bslide-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.bslide-overlay{position:relative;z-index:2;padding:0 60px;max-width:620px;}
+.bslide-tag{display:inline-block;background:rgba(255,255,255,.15);color:white;font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:13px;}
+.bslide-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,3.2rem);color:white;font-weight:300;line-height:1.15;margin-bottom:11px;}
+.bslide-sub{font-size:.88rem;color:rgba(255,255,255,.6);margin-bottom:20px;line-height:1.7;}
+.bslide-cta{display:inline-block;background:white;color:var(--burgundy);padding:10px 26px;border-radius:30px;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;transition:opacity .2s;}
+.bslide-cta:hover{opacity:.88;}
+.barrow{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:40px;height:40px;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);color:white;border:1px solid rgba(255,255,255,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .25s;}
+.barrow:hover{background:rgba(255,255,255,.32);}
+.barrow.prev{left:18px;}
+.barrow.next{right:18px;}
+.bdots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:10;}
+.bdot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35);cursor:pointer;transition:all .3s;border:none;padding:0;}
+.bdot.active{background:white;transform:scale(1.3);}
+.bprog{position:absolute;bottom:0;left:0;height:3px;background:rgba(255,255,255,.18);width:100%;z-index:10;}
+.bprog-bar{height:100%;background:white;width:0;transition:width linear;}
+
+/* HERO */
+.hero{display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:64px 52px;background:linear-gradient(135deg,var(--cream) 50%,#fbeaf0);min-height:calc(100vh - 108px);position:relative;overflow:hidden;}
+.hero-content{max-width:520px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:.66rem;letter-spacing:4px;text-transform:uppercase;color:var(--deep-rose);border:1px solid rgba(192,100,122,.4);padding:7px 18px;border-radius:30px;margin-bottom:28px;animation:slideUp .8s .2s ease both;}
+@keyframes slideUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,4.2vw,5rem);font-weight:300;line-height:1.08;margin-bottom:18px;animation:slideUp .8s .35s ease both;}
+.hero-title em{font-style:italic;color:var(--deep-rose);display:block;}
+.hero-sub{font-size:.92rem;font-weight:300;line-height:1.85;color:rgba(59,13,26,.56);max-width:420px;margin-bottom:38px;animation:slideUp .8s .5s ease both;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;animation:slideUp .8s .65s ease both;}
+.btn-solid{display:inline-flex;align-items:center;gap:8px;padding:13px 32px;background:var(--burgundy);color:var(--cream);border-radius:50px;font-size:.73rem;letter-spacing:2px;text-transform:uppercase;font-weight:500;transition:background .25s,transform .2s;border:none;cursor:pointer;}
+.btn-solid:hover{background:var(--deep-rose);transform:translateY(-2px);}
+.btn-outline{display:inline-flex;align-items:center;gap:8px;padding:13px 32px;background:transparent;color:var(--burgundy);border:1.5px solid rgba(59,13,26,.3);border-radius:50px;font-size:.73rem;letter-spacing:2px;text-transform:uppercase;font-weight:500;transition:all .25s;}
+.btn-outline:hover{border-color:var(--burgundy);background:rgba(59,13,26,.05);transform:translateY(-2px);}
+.hero-visual{display:flex;align-items:center;justify-content:center;animation:slideUp 1s .2s ease both;}
+.hero-circle-wrap{position:relative;width:400px;height:400px;}
+.hero-circle{width:100%;height:100%;border-radius:50%;background:radial-gradient(ellipse at 35% 30%,#fad0da,#e8a0b0 55%,#c0647a);display:flex;align-items:center;justify-content:center;box-shadow:0 40px 90px rgba(192,100,122,.35);animation:pulse 4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.hero-emoji{font-size:7rem;filter:drop-shadow(0 10px 20px rgba(0,0,0,.1));}
+.chip{position:absolute;background:white;border-radius:16px;padding:11px 16px;box-shadow:0 8px 30px rgba(59,13,26,.12);animation:bob ease-in-out infinite;white-space:nowrap;}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.chip-customers{bottom:22px;right:-18px;animation-duration:3.2s;}
+.chip-customers strong{display:block;font-size:1.2rem;color:var(--deep-rose);font-weight:600;}
+.chip-customers span{font-size:.7rem;color:rgba(59,13,26,.55);}
+.chip-craft{top:28px;left:-14px;background:var(--gold);color:white;font-size:.67rem;letter-spacing:1.5px;text-transform:uppercase;animation-duration:3.8s;animation-delay:.4s;}
+
+/* CATEGORIES */
+.sec-wrap{padding:80px 52px;}
+.sec-wrap.alt{background:var(--blush);}
+.sec-head{text-align:center;margin-bottom:48px;}
+.sec-eyebrow{font-size:.64rem;letter-spacing:4px;text-transform:uppercase;color:var(--deep-rose);margin-bottom:10px;}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.9rem,2.8vw,2.8rem);font-weight:300;margin-bottom:12px;line-height:1.2;}
+.sec-title em{font-style:italic;color:var(--deep-rose);}
+.sec-sub{font-size:.86rem;opacity:.55;font-weight:300;line-height:1.8;max-width:500px;margin:0 auto;}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.cat-card{border-radius:20px;overflow:hidden;background:white;display:block;transition:transform .35s,box-shadow .35s;position:relative;}
+.cat-card:hover{transform:translateY(-7px);box-shadow:0 24px 55px rgba(192,100,122,.2);}
+.cat-card.span2{grid-column:span 2;}
+.cat-img{height:190px;display:flex;align-items:center;justify-content:center;font-size:4rem;overflow:hidden;}
+.cat-card.span2 .cat-img{height:230px;font-size:5.5rem;}
+.cat-info{padding:18px 20px 22px;}
+.cat-name{font-family:'Cormorant Garamond',serif;font-size:1.22rem;margin-bottom:4px;color:var(--burgundy);}
+.cat-desc{font-size:.76rem;opacity:.5;line-height:1.6;color:var(--burgundy);}
+.cat-arrow{position:absolute;top:14px;right:14px;width:32px;height:32px;background:rgba(255,255,255,.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;opacity:0;transition:opacity .25s;}
+.cat-card:hover .cat-arrow{opacity:1;}
+
+/* PRODUCTS */
+.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.sec-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;}
+.view-all-lnk{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--deep-rose);display:flex;align-items:center;gap:5px;opacity:.8;transition:opacity .2s;border-bottom:1px solid rgba(192,100,122,.3);padding-bottom:2px;}
+.view-all-lnk:hover{opacity:1;}
+.prod-card{background:white;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s;}
+.prod-card:hover{transform:translateY(-5px);box-shadow:0 16px 44px rgba(192,100,122,.18);}
+.prod-thumb{height:196px;position:relative;overflow:hidden;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:3.5rem;}
+.prod-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;}
+.tag-badge{position:absolute;top:10px;left:10px;background:var(--burgundy);color:white;font-size:.57rem;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;font-weight:600;z-index:1;}
+.disc-badge{position:absolute;top:10px;right:10px;background:var(--deep-rose);color:white;font-size:.57rem;letter-spacing:1px;text-transform:uppercase;padding:4px 9px;border-radius:20px;font-weight:600;z-index:1;}
+.prod-info{padding:14px 16px 16px;}
+.prod-cat{font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--deep-rose);margin-bottom:3px;opacity:.7;}
+.prod-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;margin-bottom:10px;line-height:1.3;color:var(--burgundy);}
+.prod-row{display:flex;align-items:center;justify-content:space-between;}
+.price-now{font-size:.95rem;font-weight:600;color:var(--burgundy);}
+.price-was{font-size:.72rem;text-decoration:line-through;opacity:.38;margin-top:2px;}
+.add-btn{width:35px;height:35px;border-radius:50%;background:var(--burgundy);color:white;border:none;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,transform .15s;flex-shrink:0;line-height:1;}
+.add-btn:hover{background:var(--deep-rose);transform:scale(1.12);}
+
+/* PROMO STRIP */
+.promo-strip{background:var(--burgundy);padding:48px 52px;display:grid;grid-template-columns:repeat(3,1fr);}
+.promo-item{text-align:center;padding:18px;border-right:1px solid rgba(255,255,255,.08);}
+.promo-item:last-child{border-right:none;}
+.promo-icon{font-size:1.9rem;margin-bottom:9px;}
+.promo-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:white;margin-bottom:5px;}
+.promo-text{font-size:.78rem;color:rgba(255,255,255,.45);line-height:1.7;}
+
+/* FOOTER */
+footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:40px;padding-top:48px;}
+.foot-logo{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-style:italic;display:block;margin-bottom:14px;color:white;}
+.foot-logo span{color:var(--rose);}
+.foot-desc{font-size:.81rem;opacity:.4;line-height:1.9;font-weight:300;}
+.foot-col h4{font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--rose);margin-bottom:18px;}
+.foot-col ul{list-style:none;}
+.foot-col ul li{margin-bottom:10px;}
+.foot-col ul li a{color:rgba(255,255,255,.42);font-size:.82rem;font-weight:300;transition:color .3s;}
+.foot-col ul li a:hover{color:white;}
+.foot-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:20px;display:flex;justify-content:space-between;font-size:.72rem;opacity:.28;}
+
+/* TOAST */
+#ah-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e1e1e;color:white;padding:11px 22px;border-radius:30px;font-size:.75rem;z-index:99999;display:none;white-space:nowrap;pointer-events:none;box-shadow:0 8px 28px rgba(0,0,0,.22);}
+@media(min-width:601px){#ah-toast{bottom:28px;}}
+
+/* FLOAT WA */
+#floatWA{position:fixed;bottom:84px;right:22px;z-index:9000;display:flex;align-items:center;gap:8px;background:var(--green);color:white;border-radius:50px;padding:12px 20px;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;box-shadow:0 6px 28px rgba(37,211,102,.4);animation:waFloat 2.8s ease-in-out infinite;}
+@keyframes waFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@media(min-width:601px){#floatWA{bottom:28px;}}
+@media(max-width:600px){#floatWA{display:none;}}
+
+
+/* ═══════════════════════════════════════════════
+   PROMO POPUP
+═══════════════════════════════════════════════ */
+#ah-popup-overlay{
+  position:fixed;inset:0;background:rgba(30,6,16,.55);
+  backdrop-filter:blur(6px);z-index:50000;
+  display:none;align-items:center;justify-content:center;
+  padding:16px;opacity:0;transition:opacity .4s ease;pointer-events:none;
+}
+#ah-popup-overlay.show{opacity:1;pointer-events:all;}
+#ah-popup{
+  background:white;border-radius:24px;
+  width:100%;max-width:480px;
+  box-shadow:0 32px 80px rgba(59,13,26,.28);
+  position:relative;overflow:hidden;
+  transform:translateY(32px) scale(.97);
+  transition:transform .45s cubic-bezier(.34,1.56,.64,1);
+  max-height:92vh;overflow-y:auto;
+}
+#ah-popup-overlay.show #ah-popup{transform:none;}
+.popup-top-ribbon{
+  background:linear-gradient(135deg,#3b0d1a 0%,#7a2040 50%,#c0647a 100%);
+  padding:32px 28px 26px;text-align:center;position:relative;
+}
+.popup-top-ribbon::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 60% 30%,rgba(255,255,255,.08),transparent 70%);
+}
+.popup-gift-icon{font-size:2.6rem;margin-bottom:8px;display:block;position:relative;z-index:1;animation:popupBounce 2s ease-in-out infinite;}
+@keyframes popupBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.popup-badge{
+  display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);
+  color:white;font-size:.56rem;letter-spacing:3px;text-transform:uppercase;
+  padding:5px 14px;border-radius:20px;margin-bottom:10px;position:relative;z-index:1;
+}
+.popup-headline{
+  font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:600;
+  color:white;line-height:1;margin-bottom:6px;position:relative;z-index:1;
+}
+.popup-headline span{color:#fde8ed;}
+.popup-subtext{font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.65;position:relative;z-index:1;max-width:340px;margin:0 auto;}
+.popup-close{
+  position:absolute;top:14px;right:14px;width:32px;height:32px;
+  background:rgba(255,255,255,.15);border:none;color:white;border-radius:50%;
+  cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;
+  transition:background .2s;z-index:2;
+}
+.popup-close:hover{background:rgba(255,255,255,.28);}
+.popup-body{padding:26px 28px 28px;}
+.popup-form{display:flex;flex-direction:column;gap:13px;}
+.popup-field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.popup-field label{display:block;font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;color:rgba(59,13,26,.5);margin-bottom:5px;font-weight:500;}
+.popup-field input,
+.popup-field select{
+  width:100%;padding:12px 15px;border:1.5px solid rgba(192,100,122,.18);
+  border-radius:12px;font-family:'Jost',sans-serif;font-size:.84rem;
+  color:#3b0d1a;background:#fdf6f0;outline:none;transition:border-color .2s,box-shadow .2s;
+  -webkit-appearance:none;appearance:none;
+}
+.popup-field input:focus,
+.popup-field select:focus{border-color:#c0647a;box-shadow:0 0 0 3px rgba(192,100,122,.1);}
+.popup-field input::placeholder{color:rgba(59,13,26,.3);}
+.popup-phone-wrap{display:flex;gap:8px;}
+.popup-flag-sel{
+  width:90px;flex-shrink:0;padding:12px 10px;border:1.5px solid rgba(192,100,122,.18);
+  border-radius:12px;font-family:'Jost',sans-serif;font-size:.82rem;
+  color:#3b0d1a;background:#fdf6f0;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c0647a'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center;padding-right:22px;
+}
+.popup-flag-sel:focus{border-color:#c0647a;}
+.popup-phone-input{flex:1;}
+.popup-dob-row{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px;}
+.popup-submit-btn{
+  width:100%;padding:15px;background:linear-gradient(135deg,#3b0d1a,#7a2040);
+  color:white;border:none;border-radius:50px;font-family:'Jost',sans-serif;
+  font-size:.78rem;letter-spacing:2.5px;text-transform:uppercase;font-weight:600;
+  cursor:pointer;margin-top:4px;transition:transform .2s,box-shadow .2s,opacity .2s;
+  box-shadow:0 8px 28px rgba(59,13,26,.25);
+}
+.popup-submit-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(59,13,26,.32);}
+.popup-submit-btn:active{transform:scale(.98);}
+.popup-submit-btn:disabled{opacity:.6;cursor:not-allowed;}
+.popup-privacy{text-align:center;font-size:.66rem;color:rgba(59,13,26,.35);margin-top:10px;line-height:1.6;}
+/* Success state */
+.popup-success{
+  display:none;text-align:center;padding:10px 0 6px;
+}
+.popup-success-icon{font-size:3rem;margin-bottom:12px;display:block;animation:popupBounce 1.5s ease-in-out infinite;}
+.popup-success-title{font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:#3b0d1a;margin-bottom:8px;}
+.popup-success-code{
+  display:inline-block;background:#fde8ed;border:2px dashed #c0647a;
+  color:#3b0d1a;font-size:1.3rem;font-weight:700;letter-spacing:6px;
+  padding:12px 28px;border-radius:12px;margin:10px 0 14px;cursor:pointer;
+  transition:background .2s;
+}
+.popup-success-code:hover{background:#f9d0d9;}
+.popup-success-sub{font-size:.8rem;color:rgba(59,13,26,.5);line-height:1.7;}
+/* Floating discount bubble */
+#ah-popup-float{
+  position:fixed;bottom:84px;right:78px;z-index:49000;
+  width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,#3b0d1a,#c0647a);
+  color:white;font-size:1.3rem;
+  display:none;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:0 8px 28px rgba(59,13,26,.35);
+  animation:floatBubble 2.5s ease-in-out infinite;
+  border:3px solid white;
+}
+#ah-popup-float.show{display:flex;}
+@keyframes floatBubble{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+#ah-popup-float::after{
+  content:'15%';position:absolute;top:-8px;right:-6px;
+  background:#c0647a;color:white;font-size:.48rem;letter-spacing:.5px;
+  padding:3px 6px;border-radius:10px;font-weight:700;border:2px solid white;
+  white-space:nowrap;
+}
+@media(max-width:500px){
+  #ah-popup{border-radius:20px 20px 0 0;max-width:100%;margin-top:auto;align-self:flex-end;}
+  #ah-popup-overlay{align-items:flex-end;padding:0;}
+  .popup-headline{font-size:2rem;}
+  .popup-field-row{grid-template-columns:1fr;}
+  .popup-body{padding:22px 20px 28px;}
+  .popup-top-ribbon{padding:26px 20px 22px;}
+}
+
+/* ═══════════════════════════════════════════════
+   DELIVERY BAR
+═══════════════════════════════════════════════ */
+#ah-delivery-bar{
+  background:#fff8f0;border-bottom:1px solid rgba(192,100,122,.1);
+  padding:9px 52px;display:flex;align-items:center;justify-content:space-between;
+  gap:12px;flex-wrap:wrap;position:fixed;top:0;left:0;right:0;z-index:801;
+  font-family:'Jost',sans-serif;
+}
+#ah-delivery-bar .dlv-text{font-size:.72rem;color:rgba(59,13,26,.65);display:flex;align-items:center;gap:6px;}
+#ah-delivery-bar .dlv-text strong{color:#3b0d1a;}
+#ah-delivery-bar .dlv-pin{
+  display:flex;align-items:center;gap:5px;font-size:.68rem;color:var(--deep-rose);
+  cursor:pointer;border:1px solid rgba(192,100,122,.25);padding:4px 12px;border-radius:20px;
+  transition:background .2s;white-space:nowrap;
+}
+#ah-delivery-bar .dlv-pin:hover{background:var(--blush);}
+#ah-delivery-bar .dlv-offers{font-size:.67rem;color:rgba(59,13,26,.45);display:flex;align-items:center;gap:6px;}
+.pin-popup{
+  display:none;position:absolute;top:calc(100% + 8px);right:0;background:white;
+  border-radius:14px;padding:16px;box-shadow:0 12px 40px rgba(59,13,26,.18);
+  border:1px solid rgba(192,100,122,.12);width:260px;z-index:9500;
+}
+.pin-popup.show{display:block;}
+.pin-popup.show{display:block;}
+.pin-popup input{
+  width:100%;padding:10px 14px;border:1.5px solid rgba(192,100,122,.2);
+  border-radius:10px;font-family:'Jost',sans-serif;font-size:.84rem;
+  outline:none;margin-bottom:9px;
+}
+.pin-popup input:focus{border-color:#c0647a;}
+.pin-popup button{
+  width:100%;padding:10px;background:#3b0d1a;color:white;border:none;
+  border-radius:10px;font-family:'Jost',sans-serif;font-size:.76rem;
+  letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+}
+.pin-popup button:hover{background:#c0647a;}
+@media(max-width:768px){
+  #ah-delivery-bar{padding:8px 14px;display:none;}
+}
+
+/* ═══════════════════════════════════════════════
+   ENHANCED SIDEBAR (replaces mobilenav.js styles)
+═══════════════════════════════════════════════ */
+#enh-sidebar{
+  position:fixed;top:0;left:0;width:300px;max-width:85vw;height:100%;
+  background:white;z-index:8100;
+  transform:translateX(-100%);
+  transition:transform .38s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:8px 0 40px rgba(59,13,26,.18);
+}
+#enh-sidebar.open{transform:translateX(0);}
+#enh-overlay{
+  position:fixed;inset:0;background:rgba(20,4,10,.5);
+  backdrop-filter:blur(4px);z-index:8050;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+#enh-overlay.show{opacity:1;pointer-events:all;}
+/* Sidebar top user area */
+.esb-user-area{
+  background:linear-gradient(135deg,#3b0d1a 0%,#7a2040 100%);
+  padding:52px 20px 20px;position:relative;flex-shrink:0;
+}
+.esb-close{
+  position:absolute;top:14px;right:14px;width:32px;height:32px;
+  background:rgba(255,255,255,.12);border:none;color:white;
+  border-radius:50%;cursor:pointer;font-size:1rem;
+  display:flex;align-items:center;justify-content:center;transition:background .2s;
+}
+.esb-close:hover{background:rgba(255,255,255,.22);}
+.esb-avatar{
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;margin-bottom:10px;
+}
+.esb-greeting{font-size:.72rem;color:rgba(255,255,255,.55);letter-spacing:.5px;}
+.esb-name{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:white;margin-top:2px;}
+.esb-signin-btn{
+  display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+  background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);
+  color:white;padding:7px 16px;border-radius:30px;font-family:'Jost',sans-serif;
+  font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;
+  text-decoration:none;transition:background .2s;
+}
+.esb-signin-btn:hover{background:rgba(255,255,255,.25);}
+/* Sidebar scroll area */
+.esb-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.esb-scroll::-webkit-scrollbar{width:3px;}
+.esb-scroll::-webkit-scrollbar-thumb{background:rgba(192,100,122,.2);border-radius:2px;}
+/* Sections */
+.esb-section-lbl{
+  font-size:.56rem;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(59,13,26,.3);padding:16px 20px 6px;font-weight:600;
+}
+.esb-link{
+  display:flex;align-items:center;gap:12px;padding:13px 20px;
+  text-decoration:none;color:rgba(59,13,26,.7);font-family:'Jost',sans-serif;
+  font-size:.84rem;font-weight:400;transition:all .18s;position:relative;
+  border-left:3px solid transparent;
+}
+.esb-link:hover{color:#3b0d1a;background:rgba(192,100,122,.06);border-left-color:rgba(192,100,122,.3);}
+.esb-link.active{color:#c0647a;background:rgba(192,100,122,.08);border-left-color:#c0647a;font-weight:500;}
+.esb-link-icon{font-size:1.1rem;width:24px;text-align:center;flex-shrink:0;}
+.esb-link-arrow{margin-left:auto;font-size:.7rem;opacity:.3;transition:transform .2s;}
+.esb-link-badge{margin-left:auto;background:#c0647a;color:white;font-size:.55rem;font-weight:700;padding:2px 8px;border-radius:10px;}
+/* Expandable */
+.esb-expand-btn{
+  display:flex;align-items:center;gap:12px;width:100%;padding:13px 20px;
+  background:none;border:none;color:rgba(59,13,26,.7);font-family:'Jost',sans-serif;
+  font-size:.84rem;cursor:pointer;text-align:left;border-left:3px solid transparent;
+  transition:all .18s;
+}
+.esb-expand-btn:hover{color:#3b0d1a;background:rgba(192,100,122,.06);border-left-color:rgba(192,100,122,.3);}
+.esb-expand-btn.open{color:#c0647a;}
+.esb-expand-btn .esb-link-arrow{transition:transform .25s;}
+.esb-expand-btn.open .esb-link-arrow{transform:rotate(90deg);}
+.esb-sub{max-height:0;overflow:hidden;transition:max-height .35s ease;background:rgba(192,100,122,.03);}
+.esb-sub.open{max-height:400px;}
+.esb-sub-link{
+  display:flex;align-items:center;gap:10px;padding:10px 20px 10px 56px;
+  text-decoration:none;color:rgba(59,13,26,.55);font-size:.8rem;
+  transition:color .18s;border-left:3px solid transparent;
+}
+.esb-sub-link:hover{color:#c0647a;}
+.esb-divider{height:1px;background:rgba(192,100,122,.08);margin:4px 0;}
+/* Sidebar footer */
+.esb-footer{padding:14px 16px 28px;border-top:1px solid rgba(192,100,122,.1);flex-shrink:0;}
+.esb-wa-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px;background:#25D366;color:white;border-radius:12px;
+  text-decoration:none;font-family:'Jost',sans-serif;font-size:.72rem;
+  letter-spacing:1.5px;text-transform:uppercase;font-weight:500;
+  transition:opacity .2s;margin-bottom:8px;
+}
+.esb-wa-btn:hover{opacity:.88;}
+.esb-settings-row{display:flex;gap:8px;}
+.esb-settings-btn{
+  flex:1;padding:10px;background:rgba(59,13,26,.05);border:1px solid rgba(192,100,122,.12);
+  border-radius:10px;font-family:'Jost',sans-serif;font-size:.65rem;letter-spacing:1px;
+  text-transform:uppercase;color:rgba(59,13,26,.55);cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.esb-settings-btn:hover{background:rgba(192,100,122,.08);border-color:rgba(192,100,122,.25);}
+.esb-logout-btn{
+  width:100%;margin-top:8px;padding:10px;background:transparent;
+  border:1px solid rgba(200,60,60,.2);border-radius:10px;
+  color:rgba(200,60,60,.7);font-family:'Jost',sans-serif;font-size:.7rem;
+  letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;
+  display:none;
+}
+.esb-logout-btn:hover{background:rgba(200,60,60,.07);}
+
+/* ═══════════════════════════════════════════════
+   CATEGORY CIRCLES (horizontal scroll)
+═══════════════════════════════════════════════ */
+.cat-circles-wrap{padding:36px 52px 28px;background:white;}
+.cat-circles-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.cat-circles-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:#3b0d1a;}
+.cat-circles-view{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:#c0647a;text-decoration:none;}
+.cat-circles-scroll{
+  display:flex;gap:18px;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;padding-bottom:8px;
+  scrollbar-width:none;
+}
+.cat-circles-scroll::-webkit-scrollbar{display:none;}
+.cat-circle-item{
+  display:flex;flex-direction:column;align-items:center;gap:9px;
+  text-decoration:none;flex-shrink:0;
+}
+.cat-circle-img{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,#f9e4e9,#e8a0b0);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;border:2.5px solid transparent;
+  transition:all .25s;box-shadow:0 4px 14px rgba(192,100,122,.1);
+}
+.cat-circle-item:hover .cat-circle-img,
+.cat-circle-item.active .cat-circle-img{
+  border-color:#c0647a;transform:scale(1.07);
+  box-shadow:0 8px 24px rgba(192,100,122,.22);
+}
+.cat-circle-label{font-size:.62rem;letter-spacing:.5px;color:rgba(59,13,26,.65);white-space:nowrap;font-weight:500;text-align:center;}
+.cat-circle-item.active .cat-circle-label{color:#c0647a;font-weight:600;}
+@media(max-width:600px){.cat-circles-wrap{padding:24px 14px 18px;}}
+
+
+/* ═══════════════════════════════════════════════
+   FULL-WIDTH SEARCH BAR (mobile homepage)
+═══════════════════════════════════════════════ */
+#ah-mobile-search{
+  display:none;
+  padding:10px 14px;
+  background:white;
+  border-bottom:1px solid rgba(192,100,122,.08);
+  position:sticky;top:56px;z-index:500;
+}
+.msb-inner{
+  display:flex;align-items:center;gap:10px;
+  background:#fdf6f0;border:1.5px solid rgba(192,100,122,.18);
+  border-radius:50px;padding:10px 18px;transition:border-color .2s,box-shadow .2s;
+}
+.msb-inner:focus-within{border-color:#c0647a;box-shadow:0 0 0 3px rgba(192,100,122,.1);}
+.msb-icon{color:rgba(59,13,26,.35);font-size:1rem;flex-shrink:0;}
+.msb-input{
+  flex:1;border:none;background:transparent;outline:none;
+  font-family:'Jost',sans-serif;font-size:.88rem;color:#3b0d1a;
+}
+.msb-input::placeholder{color:rgba(59,13,26,.32);}
+.msb-mic{background:none;border:none;cursor:pointer;color:rgba(59,13,26,.3);font-size:1rem;padding:0;}
+@media(max-width:900px){#ah-mobile-search{display:block;}}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* MARQUEE STRIP */
+.marquee-strip{background:var(--deep-rose);overflow:hidden;white-space:nowrap;padding:11px 0;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08);}
+.marquee-inner{display:inline-block;animation:marquee 28s linear infinite;}
+.marquee-inner span{display:inline-block;font-size:.65rem;letter-spacing:3px;text-transform:uppercase;color:white;padding:0 28px;font-weight:500;}
+.marquee-inner span::after{content:'✦';margin-left:28px;opacity:.6;}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* SEARCH BAR */
+.nav-search-wrap{position:relative;display:flex;align-items:center;}
+.nav-search-btn{background:none;border:none;cursor:pointer;padding:8px;color:var(--burgundy);opacity:.55;transition:opacity .2s;font-size:1rem;}
+.nav-search-btn:hover{opacity:1;}
+.nav-search-box{position:absolute;right:0;top:50%;transform:translateY(-50%);width:0;overflow:hidden;transition:width .35s ease;background:white;border-radius:30px;border:1.5px solid rgba(192,100,122,.3);display:flex;align-items:center;}
+.nav-search-box.open{width:220px;}
+.nav-search-box input{border:none;outline:none;padding:8px 14px;font-family:'Jost',sans-serif;font-size:.8rem;color:var(--burgundy);background:transparent;width:100%;}
+.nav-search-box input::placeholder{color:rgba(59,13,26,.35);}
+
+/* STATS BAR */
+.stats-bar{background:white;padding:28px 52px;display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(192,100,122,.08);}
+.stat-item{text-align:center;padding:8px;border-right:1px solid rgba(192,100,122,.1);}
+.stat-item:last-child{border-right:none;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:600;color:var(--burgundy);line-height:1;}
+.stat-num span{font-size:1.2rem;color:var(--deep-rose);}
+.stat-lbl{font-size:.64rem;letter-spacing:2px;text-transform:uppercase;color:rgba(59,13,26,.45);margin-top:5px;}
+
+/* PRODUCT WISHLIST HEART */
+.prod-wish{position:absolute;top:10px;right:10px;width:30px;height:30px;background:white;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;box-shadow:0 2px 8px rgba(0,0,0,.1);opacity:0;transition:opacity .2s,transform .2s;z-index:2;}
+.prod-card:hover .prod-wish{opacity:1;}
+.prod-wish:hover{transform:scale(1.15);}
+.prod-wish.wished{opacity:1;color:#e05050;}
+
+/* PRODUCT QUICK VIEW */
+.prod-thumb .prod-qv{position:absolute;bottom:-40px;left:0;right:0;background:rgba(59,13,26,.88);color:white;text-align:center;padding:9px;font-size:.62rem;letter-spacing:2px;text-transform:uppercase;transition:bottom .25s;cursor:pointer;z-index:2;}
+.prod-card:hover .prod-thumb .prod-qv{bottom:0;}
+
+/* TESTIMONIALS */
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.test-card{background:white;border-radius:18px;padding:28px 26px;position:relative;box-shadow:0 2px 16px rgba(192,100,122,.07);transition:transform .3s,box-shadow .3s;}
+.test-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(192,100,122,.14);}
+.test-stars{color:#f5a623;font-size:.85rem;letter-spacing:2px;margin-bottom:12px;}
+.test-text{font-size:.86rem;line-height:1.85;color:rgba(59,13,26,.68);font-weight:300;margin-bottom:18px;font-style:italic;}
+.test-text::before{content:'"';font-family:'Cormorant Garamond',serif;font-size:3rem;color:var(--rose);line-height:0;vertical-align:-1rem;margin-right:4px;opacity:.6;}
+.test-author{display:flex;align-items:center;gap:10px;}
+.test-avatar{width:38px;height:38px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.test-name{font-size:.8rem;font-weight:600;color:var(--burgundy);}
+.test-loc{font-size:.68rem;opacity:.45;}
+.test-badge{position:absolute;top:18px;right:18px;background:var(--blush);color:var(--deep-rose);font-size:.56rem;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px;font-weight:600;}
+
+/* WHY US */
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+.why-card{text-align:center;padding:36px 22px;background:white;border-radius:18px;border:1px solid rgba(192,100,122,.08);transition:all .3s;}
+.why-card:hover{border-color:rgba(192,100,122,.3);transform:translateY(-4px);box-shadow:0 12px 32px rgba(192,100,122,.1);}
+.why-icon-wrap{width:60px;height:60px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin:0 auto 16px;}
+.why-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--burgundy);margin-bottom:6px;}
+.why-text{font-size:.78rem;opacity:.5;line-height:1.8;font-weight:300;}
+
+/* FAQ */
+.faq-wrap{max-width:760px;margin:0 auto;}
+.faq-item{border-bottom:1px solid rgba(192,100,122,.12);overflow:hidden;}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:20px 0;cursor:pointer;gap:16px;transition:color .2s;}
+.faq-q:hover{color:var(--deep-rose);}
+.faq-q-text{font-size:.91rem;font-weight:500;line-height:1.4;}
+.faq-icon{width:24px;height:24px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0;transition:transform .3s,background .2s;}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--deep-rose);color:white;}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;}
+.faq-item.open .faq-a{max-height:300px;padding-bottom:18px;}
+.faq-a p{font-size:.84rem;line-height:1.85;opacity:.6;font-weight:300;}
+
+/* INSTAGRAM / SOCIAL FEED */
+.insta-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
+.insta-item{aspect-ratio:1;background:var(--blush);border-radius:10px;overflow:hidden;position:relative;cursor:pointer;}
+.insta-item-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.2rem;transition:transform .35s;}
+.insta-item:hover .insta-item-inner{transform:scale(1.08);}
+.insta-overlay{position:absolute;inset:0;background:rgba(59,13,26,.5);opacity:0;transition:opacity .3s;display:flex;align-items:center;justify-content:center;color:white;font-size:.7rem;letter-spacing:2px;text-transform:uppercase;}
+.insta-item:hover .insta-overlay{opacity:1;}
+.insta-handle{text-align:center;margin-top:22px;font-size:.82rem;opacity:.5;}
+.insta-handle a{color:var(--deep-rose);font-weight:600;text-decoration:none;}
+.insta-handle a:hover{text-decoration:underline;}
+
+/* OFFER BANNER */
+.offer-banner{background:linear-gradient(135deg,var(--burgundy) 0%,#5a1528 60%,#8a2040 100%);padding:64px 52px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;position:relative;overflow:hidden;}
+.offer-banner::before{content:'';position:absolute;right:-80px;top:-80px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.04);}
+.offer-banner::after{content:'';position:absolute;left:-40px;bottom:-60px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.03);}
+.offer-left{position:relative;z-index:1;}
+.offer-tag{display:inline-block;background:var(--gold);color:var(--burgundy);font-size:.6rem;letter-spacing:3px;text-transform:uppercase;font-weight:700;padding:5px 14px;border-radius:20px;margin-bottom:14px;}
+.offer-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.8rem,3vw,2.8rem);color:white;font-weight:300;line-height:1.15;margin-bottom:10px;}
+.offer-title em{font-style:italic;color:var(--rose);}
+.offer-sub{font-size:.85rem;color:rgba(255,255,255,.55);line-height:1.75;margin-bottom:24px;}
+.offer-right{position:relative;z-index:1;display:flex;flex-direction:column;gap:14px;}
+.offer-feat{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.08);border-radius:14px;padding:14px 18px;border:1px solid rgba(255,255,255,.08);}
+.offer-feat-icon{font-size:1.4rem;flex-shrink:0;}
+.offer-feat-text{font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.5;}
+.offer-feat-title{font-size:.82rem;color:white;font-weight:500;margin-bottom:2px;}
+
+@media(max-width:900px){
+  .stats-bar{grid-template-columns:repeat(2,1fr);padding:24px 28px;}
+  .test-grid{grid-template-columns:1fr 1fr;}
+  .why-grid{grid-template-columns:repeat(2,1fr);}
+  .insta-grid{grid-template-columns:repeat(3,1fr);}
+  .offer-banner{grid-template-columns:1fr;padding:44px 28px;}
+}
+@media(max-width:600px){
+  .stats-bar{grid-template-columns:repeat(2,1fr);padding:18px 14px;gap:0;}
+  .stat-num{font-size:1.7rem;}
+  .test-grid{grid-template-columns:1fr;}
+  .why-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .why-card{padding:22px 14px;}
+  .insta-grid{grid-template-columns:repeat(3,1fr);gap:5px;}
+  .offer-banner{padding:34px 16px;}
+  .marquee-strip{display:none;}
+}
+
+/* BOTTOM NAV */
+#bottomNav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;background:white;border-top:1px solid rgba(192,100,122,.12);box-shadow:0 -4px 20px rgba(59,13,26,.08);z-index:980;justify-content:space-around;align-items:stretch;}
+.bn-item{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex:1;color:rgba(59,13,26,.4);font-size:.47rem;letter-spacing:.3px;text-transform:uppercase;font-weight:500;position:relative;transition:color .18s;padding:5px 2px;-webkit-tap-highlight-color:transparent;}
+.bn-item.active{color:var(--deep-rose);}
+.bn-icon{font-size:1.22rem;line-height:1;}
+.bn-label{font-size:.47rem;white-space:nowrap;margin-top:1px;}
+.bn-badge{position:absolute;top:4px;margin-left:2px;background:var(--deep-rose);color:white;font-size:.48rem;font-weight:700;min-width:15px;height:15px;border-radius:10px;padding:0 3px;display:none;align-items:center;justify-content:center;border:2px solid white;}
+
+/* RESPONSIVE */
+@media(max-width:1100px){.prod-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:900px){
+  .topnav{padding:0 14px;top:0!important;}
+  .nav-links{display:none;}
+  .nav-wa{display:none;}
+  .ham-btn{display:flex;}
+  #ah-delivery-bar{display:none!important;}
+  .hero{grid-template-columns:1fr;padding:54px 28px;min-height:auto;}
+  .hero-visual{display:none;}
+  .sec-wrap{padding:60px 28px;}
+  .prod-grid{grid-template-columns:repeat(2,1fr);}
+  .cat-grid{grid-template-columns:repeat(2,1fr);}
+  .bslide{height:300px;}
+  .bslide-overlay{padding:0 28px;}
+  footer{padding:46px 28px 26px;}
+  .foot-grid{grid-template-columns:1fr 1fr;}
+  .promo-strip{grid-template-columns:1fr 1fr;padding:36px 28px;}
+  #bannerCarousel{margin-top:68px!important;}
+}
+@media(max-width:600px){
+  body{padding-bottom:calc(68px + env(safe-area-inset-bottom,0px));}
+  .topnav{height:56px;top:0!important;}
+  .hero{padding:32px 16px 40px;text-align:center;}
+  .hero-btns{justify-content:center;}
+  .hero-title{font-size:2.8rem;}
+  .sec-wrap{padding:44px 14px;}
+  .prod-grid{grid-template-columns:1fr 1fr;gap:10px;}
+  .prod-thumb{height:152px;}
+  .prod-info{padding:10px 10px 12px;}
+  .prod-name{font-size:.88rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .cat-grid{grid-template-columns:1fr 1fr;}
+  .cat-card.span2{grid-column:span 2;}
+  .promo-strip{grid-template-columns:1fr;padding:24px 16px;}
+  .promo-item{border-right:none;border-bottom:1px solid rgba(255,255,255,.08);padding:13px 0;}
+  .promo-item:last-child{border-bottom:none;}
+  .foot-grid{grid-template-columns:1fr;gap:22px;}
+  .foot-bottom{flex-direction:column;gap:4px;text-align:center;}
+  footer{padding:36px 16px 70px;}
+  .bslide{height:220px;}
+  .bslide-overlay{padding:0 16px;}
+  .bslide-title{font-size:1.6rem;}
+  .barrow{display:none;}
+  #bannerCarousel{margin-top:56px;}
+  #floatWA{display:none!important;}
+}
+@media(pointer:coarse){
+  body{cursor:auto!important;}
+  .cursor,.cursor-ring{display:none!important;}
+  button,a,[onclick]{cursor:pointer!important;}
+}
+
+/* ═══════════════════════════════════════════════
+   MOBILE NAV POLISH
+═══════════════════════════════════════════════ */
+@media(max-width:900px){
+  .topnav{padding:0 14px!important;}
+  .topnav .nav-logo{
+    position:absolute;left:50%;transform:translateX(-50%);
+    font-size:1.3rem;
+  }
+  .topnav .nav-right .nav-acc{display:none;}
+  .topnav .nav-right .nav-search-wrap .nav-search-box{display:none;}
+  .topnav .nav-right{gap:6px;}
+}
+
+/* ═══════════════════════════════════════════════
+   SIDEBAR SMOOTH SCROLL
+═══════════════════════════════════════════════ */
+#enh-sidebar{scroll-behavior:smooth;}
+
+/* ═══════════════════════════════════════════════
+   POPUP DOB auto-tab cursor style
+═══════════════════════════════════════════════ */
+.popup-dob-row input{text-align:center;}
+
+/* ═══════════════════════════════════════════════
+   CATEGORY CIRCLES extra padding on desktop
+═══════════════════════════════════════════════ */
+@media(min-width:901px){
+  .cat-circles-wrap{padding:32px 52px 24px;}
+  .cat-circle-img{width:80px;height:80px;font-size:2.2rem;}
+}
+
+/* ═══════════════════════════════════════════════
+   ENHANCED SIDEBAR - z-index above mobilenav
+═══════════════════════════════════════════════ */
+#enh-sidebar{z-index:8200!important;}
+#enh-overlay{z-index:8150!important;}
+#mn-sidebar,#mn-overlay,#mn-ham{display:none!important;}
+
+/* ═══════════════════════════════════════════════
+   DELIVERY BAR RESPONSIVE POSITIONING
+═══════════════════════════════════════════════ */
+@media(min-width:901px){
+  #ah-delivery-bar{z-index:810;}
+  .topnav{top:40px;}
+  body > .loader, body > #ah-popup-overlay, body > #ah-popup-float{z-index:60000;}
+}
+
+/* ═══════════════════════════════════════════════
+   FLOATING PROMO BUBBLE TOOLTIP
+═══════════════════════════════════════════════ */
+#ah-popup-float::before{
+  content:'Tap for 15% OFF';
+  position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);
+  background:#3b0d1a;color:white;font-size:.6rem;letter-spacing:.5px;
+  padding:5px 10px;border-radius:8px;white-space:nowrap;
+  opacity:0;transition:opacity .2s;pointer-events:none;
+  font-family:'Jost',sans-serif;
+}
+#ah-popup-float:hover::before{opacity:1;}
+
+/* ═══════════════════════════════════════════════
+   PIN POPUP ARROW
+═══════════════════════════════════════════════ */
+.pin-popup::before{
+  content:'';position:absolute;top:-6px;right:20px;
+  width:12px;height:12px;background:white;
+  border-left:1px solid rgba(192,100,122,.12);
+  border-top:1px solid rgba(192,100,122,.12);
+  transform:rotate(45deg);
+}
+
+/* ═══════════════════════════════════════════════
+   SUCCESS POPUP CONFETTI GLOW
+═══════════════════════════════════════════════ */
+#ah-popup-success .popup-success-code{
+  animation:codeGlow 2s ease-in-out infinite;
+}
+@keyframes codeGlow{
+  0%,100%{box-shadow:0 0 0 0 rgba(192,100,122,0)}
+  50%{box-shadow:0 0 0 8px rgba(192,100,122,.12)}
+}
+
+</style>
+</head>
+<body>
+
+
+<!-- ═══════ PROMO POPUP ═══════ -->
+<div id="ah-popup-overlay" style="display:none;">
+  <div id="ah-popup" role="dialog" aria-modal="true">
+    <div class="popup-top-ribbon">
+      <button class="popup-close" id="ah-popup-close" aria-label="Close">✕</button>
+      <span class="popup-gift-icon">🎁</span>
+      <div class="popup-badge">✦ Exclusive Welcome Reward ✦</div>
+      <div class="popup-headline"><span>15% OFF</span> Awaits</div>
+      <p class="popup-subtext">You just found a hidden reward. Enter your details below to unlock your personal discount code instantly.</p>
+    </div>
+    <div class="popup-body">
+      <div id="ah-popup-form-wrap">
+        <form class="popup-form" id="ah-popup-form" onsubmit="return false;">
+          <div class="popup-field">
+            <label>Your Name</label>
+            <input type="text" id="pp-name" placeholder="e.g. Priya Sharma" autocomplete="name" required/>
+          </div>
+          <div class="popup-field">
+            <label>Email Address</label>
+            <input type="email" id="pp-email" placeholder="yourname@email.com" autocomplete="email" required/>
+          </div>
+          <div class="popup-field">
+            <label>Phone Number</label>
+            <div class="popup-phone-wrap">
+              <select class="popup-flag-sel" id="pp-country">
+                <option value="+91">🇮🇳 +91</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+971">🇦🇪 +971</option>
+                <option value="+61">🇦🇺 +61</option>
+                <option value="+65">🇸🇬 +65</option>
+              </select>
+              <input type="tel" id="pp-phone" class="popup-phone-input" placeholder="98765 43210" autocomplete="tel" required/>
+            </div>
+          </div>
+          <div class="popup-field">
+            <label>Date of Birth</label>
+            <div class="popup-dob-row">
+              <input type="text" id="pp-dob-d" placeholder="DD" maxlength="2" inputmode="numeric" required/>
+              <input type="text" id="pp-dob-m" placeholder="MM" maxlength="2" inputmode="numeric" required/>
+              <input type="text" id="pp-dob-y" placeholder="YYYY" maxlength="4" inputmode="numeric" required/>
+            </div>
+          </div>
+          <div class="popup-field">
+            <label>Gender</label>
+            <select id="pp-gender" required>
+              <option value="" disabled selected>Select your gender</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+              <option value="other">Other / Prefer not to say</option>
+            </select>
+          </div>
+          <button class="popup-submit-btn" id="pp-submit-btn" type="button" onclick="ahPopupSubmit()">🎉 Unlock My Reward</button>
+          <p class="popup-privacy">🔒 We respect your privacy. No spam, ever.</p>
+        </form>
+      </div>
+      <div class="popup-success" id="ah-popup-success">
+        <span class="popup-success-icon">🎊</span>
+        <div class="popup-success-title">Your Reward is Ready!</div>
+        <p style="font-size:.82rem;color:rgba(59,13,26,.55);margin-bottom:8px;">Copy your exclusive discount code:</p>
+        <div class="popup-success-code" id="pp-discount-code" onclick="ahCopyCode(this)" title="Click to copy">WELCOME15</div>
+        <p class="popup-success-sub">Use this code at checkout to get <strong>15% OFF</strong> your first order.<br/>Valid for 30 days. Share the love! 🌸</p>
+        <button onclick="ahPopupClose()" style="margin-top:18px;padding:12px 32px;background:#3b0d1a;color:white;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;">Start Shopping →</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Floating discount bubble -->
+<div id="ah-popup-float" onclick="ahPopupOpen()" title="Claim your 15% OFF">🎁</div>
+
+<!-- ═══════ DELIVERY BAR ═══════ -->
+<div id="ah-delivery-bar">
+  <div class="dlv-text">🚚 <span>Estimated delivery by <strong id="dlv-date">Tomorrow</strong> to pincode <strong id="dlv-pin-display">516001</strong></span></div>
+  <div class="dlv-pin" id="dlv-change-btn" onclick="togglePinPopup()">📍 Change Pincode ▾
+    <div class="pin-popup" id="pin-popup" onclick="event.stopPropagation()">
+      <input type="text" id="pin-input" placeholder="Enter pincode (e.g. 516001)" maxlength="6" inputmode="numeric"/>
+      <button onclick="updatePin()">Check Delivery</button>
+    </div>
+  </div>
+  <div class="dlv-offers">✨ Free delivery above ₹999</div>
+</div>
+
+
+<!-- ═══════ PROMO POPUP ═══════ -->
+<div id="ah-popup-overlay">
+  <div id="ah-popup" role="dialog" aria-modal="true">
+    <div class="popup-top-ribbon">
+      <button class="popup-close" id="ah-popup-close" aria-label="Close">&#x2715;</button>
+      <span class="popup-gift-icon">&#127873;</span>
+      <div class="popup-badge">&#10022; Exclusive Welcome Reward &#10022;</div>
+      <div class="popup-headline"><span>15% OFF</span> Awaits</div>
+      <p class="popup-subtext">You just found a hidden reward. Enter your details below to unlock your personal discount code instantly.</p>
+    </div>
+    <div class="popup-body">
+      <div id="ah-popup-form-wrap">
+        <form class="popup-form" id="ah-popup-form">
+          <div class="popup-field">
+            <label>Your Name</label>
+            <input type="text" id="pp-name" placeholder="e.g. Priya Sharma" autocomplete="name"/>
+          </div>
+          <div class="popup-field">
+            <label>Email Address</label>
+            <input type="email" id="pp-email" placeholder="yourname@email.com" autocomplete="email"/>
+          </div>
+          <div class="popup-field">
+            <label>Phone Number</label>
+            <div class="popup-phone-wrap">
+              <select class="popup-flag-sel" id="pp-country">
+                <option value="+91">&#127470;&#127475; +91</option>
+                <option value="+1">&#127482;&#127480; +1</option>
+                <option value="+44">&#127468;&#127463; +44</option>
+                <option value="+971">&#127462;&#127466; +971</option>
+                <option value="+61">&#127462;&#127482; +61</option>
+                <option value="+65">&#127480;&#127468; +65</option>
+              </select>
+              <input type="tel" id="pp-phone" class="popup-phone-input" placeholder="98765 43210"/>
+            </div>
+          </div>
+          <div class="popup-field">
+            <label>Date of Birth</label>
+            <div class="popup-dob-row">
+              <input type="text" id="pp-dob-d" placeholder="DD" maxlength="2" inputmode="numeric"/>
+              <input type="text" id="pp-dob-m" placeholder="MM" maxlength="2" inputmode="numeric"/>
+              <input type="text" id="pp-dob-y" placeholder="YYYY" maxlength="4" inputmode="numeric"/>
+            </div>
+          </div>
+          <div class="popup-field">
+            <label>Gender</label>
+            <select id="pp-gender">
+              <option value="" disabled selected>Select your gender</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+              <option value="other">Other / Prefer not to say</option>
+            </select>
+          </div>
+          <button class="popup-submit-btn" id="pp-submit-btn" type="button" onclick="ahPopupSubmit()">&#127881; Unlock My Reward</button>
+          <p class="popup-privacy">&#128274; We respect your privacy. No spam, ever.</p>
+        </form>
+      </div>
+      <div class="popup-success" id="ah-popup-success">
+        <span class="popup-success-icon">&#127882;</span>
+        <div class="popup-success-title">Your Reward is Ready!</div>
+        <p style="font-size:.82rem;color:rgba(59,13,26,.55);margin-bottom:8px;">Copy your exclusive discount code:</p>
+        <div class="popup-success-code" id="pp-discount-code" onclick="ahCopyCode(this)" title="Click to copy">WELCOME15</div>
+        <p class="popup-success-sub">Use this code at checkout to get <strong>15% OFF</strong> your first order.<br/>Valid for 30 days. Made with love &#127800;</p>
+        <button onclick="ahPopupClose()" style="margin-top:18px;padding:12px 32px;background:#3b0d1a;color:white;border:none;border-radius:50px;font-family:Jost,sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#c0647a'" onmouseout="this.style.background='#3b0d1a'">Start Shopping &#8594;</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="ah-popup-float" onclick="ahPopupOpen()" title="Claim your 15% OFF">&#127873;</div>
+
+<!-- ═══════ DELIVERY BAR ═══════ -->
+<div id="ah-delivery-bar">
+  <div class="dlv-text">&#128666; <span>Estimated delivery by <strong id="dlv-date">Tomorrow</strong> to <strong id="dlv-pin-display">516001</strong></span></div>
+  <div style="position:relative;">
+    <div class="dlv-pin" id="dlv-change-btn" onclick="togglePinPopup(event)">&#128205; Change Pincode &#9660;</div>
+    <div class="pin-popup" id="pin-popup">
+      <p style="font-size:.7rem;color:rgba(59,13,26,.5);margin-bottom:10px;letter-spacing:.5px;">Enter your pincode to check delivery</p>
+      <input type="text" id="pin-input" placeholder="e.g. 516001" maxlength="6" inputmode="numeric"/>
+      <button onclick="updatePin()">Check Delivery</button>
+    </div>
+  </div>
+  <div class="dlv-offers">&#10024; Free delivery above &#8377;999</div>
+</div>
+
+<div class="loader" id="loader"><div class="ldr-brand"><span>Aneesa</span> Hampers</div><div class="spinner"></div></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div id="ah-toast"></div>
+
+<!-- NAV -->
+<nav class="topnav">
+  <button class="ham-btn" onclick="enhSbOpen()" aria-label="Open menu"><span></span><span></span><span></span></button>
+  <a href="index.html" class="nav-logo"><span>Aneesa</span> Hampers</a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="products.html">Collections</a></li>
+    <li><a href="orders.html">My Orders</a></li>
+    <li><a href="cart.html">Cart</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-search-wrap" id="searchWrap">
+      <button class="nav-search-btn" id="searchToggle" aria-label="Search">🔍</button>
+      <div class="nav-search-box" id="searchBox">
+        <input type="text" id="searchInput" placeholder="Search hampers, cakes…" autocomplete="off"/>
+      </div>
+    </div>
+    <a href="cart.html" class="nav-cart-btn">🛒 <span class="cart-count" id="navCart">0</span></a>
+    <a href="account.html" class="nav-acc" id="navAccBtn">👤 Account</a>
+    <a href="https://wa.me/918639066613?text=Hi!%20I%20want%20to%20order%20a%20hamper" target="_blank" class="nav-wa">💬 Order Now</a>
+  </div>
+</nav>
+
+<!-- MOBILE SEARCH BAR -->
+<div id="ah-mobile-search">
+  <div class="msb-inner">
+    <span class="msb-icon">🔍</span>
+    <input class="msb-input" type="text" id="mobileSearchInput"
+      placeholder="Search hampers, cakes, decors…"
+      onkeydown="if(event.key==='Enter'&&this.value.trim())location.href='products.html?search='+encodeURIComponent(this.value.trim())"
+      autocomplete="off"/>
+    <button class="msb-mic" onclick="mobileSearchGo()" title="Search">→</button>
+  </div>
+</div>
+
+<!-- ANNOUNCEMENT BAR -->
+<div id="annBar">
+  <span id="annText">Free delivery on orders above ₹999 in Kadapa!</span>
+  <button class="ann-close" id="annClose">✕</button>
+</div>
+
+<!-- FLASH SALE -->
+<div id="flashStrip">
+  <div class="fs-left"><div class="fs-bolt">⚡</div><div><div class="fs-head">Flash Sale — <strong id="flashPct">20%</strong> OFF Sitewide!</div><div class="fs-note" id="flashNote">Limited time</div></div></div>
+  <div style="display:flex;align-items:center;gap:12px"><div class="fs-badge" id="flashBadge">20% OFF</div><div class="fs-timer">Ends in<span id="flashTimer">—</span></div></div>
+</div>
+
+
+<!-- STATS BAR (dynamic from siteSettings) -->
+<div class="stats-bar" id="statsBarWrap" style="display:none;">
+  <div class="stat-item" id="statItem0"><div class="stat-num" id="statNum0">—</div><div class="stat-lbl" id="statLbl0">—</div></div>
+  <div class="stat-item" id="statItem1"><div class="stat-num" id="statNum1">—</div><div class="stat-lbl" id="statLbl1">—</div></div>
+  <div class="stat-item" id="statItem2"><div class="stat-num" id="statNum2">—</div><div class="stat-lbl" id="statLbl2">—</div></div>
+  <div class="stat-item" id="statItem3"><div class="stat-num" id="statNum3">—</div><div class="stat-lbl" id="statLbl3">—</div></div>
+</div>
+
+<!-- MARQUEE STRIP -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <span>Free Delivery Above ₹999</span><span>Handcrafted With Love</span><span>Same Day Delivery in Kadapa</span><span>Custom Hampers Available</span><span>Premium Quality Guaranteed</span><span>Weddings · Birthdays · Anniversaries</span><span>Free Delivery Above ₹999</span><span>Handcrafted With Love</span><span>Same Day Delivery in Kadapa</span><span>Custom Hampers Available</span><span>Premium Quality Guaranteed</span><span>Weddings · Birthdays · Anniversaries</span>
+  </div>
+</div>
+<!-- ═══════ CATEGORY CIRCLES ═══════ -->
+<div class="cat-circles-wrap">
+  <div class="cat-circles-head">
+    <div class="cat-circles-title">Shop by Category</div>
+    <a href="products.html" class="cat-circles-view">View All &#8594;</a>
+  </div>
+  <div class="cat-circles-scroll" id="catCirclesScroll">
+    <!-- Filled dynamically from Firestore categories -->
+    <div style="display:flex;gap:18px;align-items:center;padding:8px 0;opacity:.35;font-size:.8rem">Loading categories…</div>
+  </div>
+</div>
+
+<!-- BANNER CAROUSEL -->
+<div id="bannerCarousel">
+  <div class="btrack" id="btrack"></div>
+  <button class="barrow prev" id="bPrev" aria-label="Previous">←</button>
+  <button class="barrow next" id="bNext" aria-label="Next">→</button>
+  <div class="bdots" id="bdots"></div>
+  <div class="bprog"><div class="bprog-bar" id="bprogBar"></div></div>
+</div>
+
+<!-- HERO (shown when no banners) -->
+<section class="hero" id="heroSec">
+  <div class="hero-content">
+    <div class="hero-eyebrow" id="heroEyebrow">🌸 Premium Gifting · Kadapa</div>
+    <h1 class="hero-title" id="heroTitle">Every Gift,<em id="heroTitleEm">A Beautiful Story</em></h1>
+    <p class="hero-sub" id="heroSub">Handcrafted hampers for every occasion — birthdays, weddings, anniversaries. Made with love, wrapped with elegance, delivered with care.</p>
+    <div class="hero-btns">
+      <a href="products.html" class="btn-solid" id="heroBtn1">Shop Now 🎁</a>
+      <a href="#categories" class="btn-outline" id="heroBtn2">View Collections</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-circle-wrap">
+      <div class="hero-circle"><div class="hero-emoji">🎁</div></div>
+      <div class="chip chip-customers"><strong>500+</strong><span>Happy Customers</span></div>
+      <div class="chip chip-craft">✨ Handcrafted</div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES (dynamic from Firestore) -->
+<section class="sec-wrap alt" id="categories">
+  <div class="sec-head reveal">
+    <div class="sec-eyebrow">Our Collections</div>
+    <h2 class="sec-title">Gifts for <em>Every Occasion</em></h2>
+    <p class="sec-sub">From birthdays to weddings, we craft the perfect hamper for every special moment.</p>
+  </div>
+  <div class="cat-grid" id="catGrid">
+    <!-- filled by Firebase -->
+    <a href="products.html?cat=wedding" class="cat-card span2 reveal"><div class="cat-img" style="background:linear-gradient(135deg,#fde8ed,#f5c5d0)">💍</div><div class="cat-arrow">→</div><div class="cat-info"><div class="cat-name">Wedding Hampers</div><p class="cat-desc">Luxurious gifts for the bride and groom</p></div></a>
+    <a href="products.html?cat=birthday" class="cat-card reveal"><div class="cat-img" style="background:linear-gradient(135deg,#fdf0e0,#edd5a5)">🎂</div><div class="cat-arrow">→</div><div class="cat-info"><div class="cat-name">Birthday Hampers</div><p class="cat-desc">Make every birthday truly magical</p></div></a>
+    <a href="products.html?cat=couple" class="cat-card reveal"><div class="cat-img" style="background:linear-gradient(135deg,#fde8ed,#e8a0b0)">❤️</div><div class="cat-arrow">→</div><div class="cat-info"><div class="cat-name">Couple Hampers</div><p class="cat-desc">Perfect romantic gifts for two</p></div></a>
+  </div>
+</section>
+
+<!-- FEATURED PRODUCTS (real-time) -->
+<section class="sec-wrap" id="featured">
+  <div class="sec-top reveal">
+    <div><div class="sec-eyebrow">Handpicked</div><h2 class="sec-title">Featured <em>Products</em></h2></div>
+    <a href="products.html" class="view-all-lnk">View All →</a>
+  </div>
+  <div class="prod-grid" id="featGrid">
+    <div style="grid-column:1/-1;text-align:center;opacity:.4;padding:40px">Loading products…</div>
+  </div>
+</section>
+
+<!-- PROMO -->
+<div class="promo-strip reveal">
+  <div class="promo-item"><div class="promo-icon">🎀</div><div class="promo-title">Handcrafted</div><p class="promo-text">Every hamper assembled by hand with premium materials.</p></div>
+  <div class="promo-item"><div class="promo-icon">🚚</div><div class="promo-title">Same Day Delivery</div><p class="promo-text">Order before 2 PM for same day delivery in Kadapa city.</p></div>
+  <div class="promo-item"><div class="promo-icon">⭐</div><div class="promo-title">Premium Quality</div><p class="promo-text">Only the finest products make it into our curated hampers.</p></div>
+</div>
+
+<!-- WHY US -->
+<section class="sec-wrap">
+  <div class="sec-head reveal">
+    <div class="sec-eyebrow">Our Promise</div>
+    <h2 class="sec-title">Why Choose <em>Aneesa Hampers?</em></h2>
+    <p class="sec-sub">We don't just deliver gifts — we deliver feelings, wrapped with care.</p>
+  </div>
+  <div class="why-grid">
+    <div class="why-card reveal">
+      <div class="why-icon-wrap">🎀</div>
+      <div class="why-title">Handcrafted</div>
+      <p class="why-text">Every hamper is assembled by hand using premium, curated materials selected with love.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon-wrap">🚀</div>
+      <div class="why-title">Same Day Delivery</div>
+      <p class="why-text">Order before 2 PM and we'll deliver the same day within Kadapa city — guaranteed.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon-wrap">💎</div>
+      <div class="why-title">Premium Quality</div>
+      <p class="why-text">Only the finest, most premium products earn a place inside our handpicked hampers.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-icon-wrap">🎨</div>
+      <div class="why-title">Custom Orders</div>
+      <p class="why-text">Want something unique? We create fully custom hampers tailored to your occasion.</p>
+    </div>
+  </div>
+</section>
+
+<!-- OFFER BANNER -->
+<div class="offer-banner reveal">
+  <div class="offer-left">
+    <div class="offer-tag">✨ Special Offer</div>
+    <div class="offer-title">Create Your Own<em>Custom Hamper</em></div>
+    <p class="offer-sub">Tell us the occasion, the budget, and the recipient — we'll handcraft something truly unforgettable. Perfect for weddings, corporate gifts, and more.</p>
+    <a href="https://wa.me/918639066613?text=Hi!%20I%20want%20a%20custom%20hamper" target="_blank" class="btn-solid" style="display:inline-flex;">💬 Get Custom Quote</a>
+  </div>
+  <div class="offer-right">
+    <div class="offer-feat">
+      <div class="offer-feat-icon">💍</div>
+      <div><div class="offer-feat-title">Wedding Hampers</div><div class="offer-feat-text">Bridal hampers, engagement gifts, mehendi trays — fully customisable.</div></div>
+    </div>
+    <div class="offer-feat">
+      <div class="offer-feat-icon">🎂</div>
+      <div><div class="offer-feat-title">Birthday & Celebration</div><div class="offer-feat-text">Cakes, chocolates, flowers — we bundle joy into every box.</div></div>
+    </div>
+    <div class="offer-feat">
+      <div class="offer-feat-icon">🏢</div>
+      <div><div class="offer-feat-title">Corporate Gifting</div><div class="offer-feat-text">Bulk orders for Diwali, New Year, employee appreciation days.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="sec-wrap alt">
+  <div class="sec-head reveal">
+    <div class="sec-eyebrow">Happy Customers</div>
+    <h2 class="sec-title">What People <em>Are Saying</em></h2>
+    <p class="sec-sub">Real reviews from real customers who trusted us with their most special moments.</p>
+  </div>
+  <div class="test-grid">
+    <div class="test-card reveal">
+      <div class="test-badge">Verified ✓</div>
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">Ordered a wedding hamper and I was genuinely blown away. The packaging was stunning, every item was premium quality, and it arrived exactly on time. Will definitely order again!</p>
+      <div class="test-author"><div class="test-avatar">👩</div><div><div class="test-name">Priya Reddy</div><div class="test-loc">Kadapa, AP</div></div></div>
+    </div>
+    <div class="test-card reveal">
+      <div class="test-badge">Verified ✓</div>
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">The birthday hamper for my mom was so beautifully wrapped. She absolutely loved it! Same day delivery in Kadapa really saved me — they came through in just 3 hours.</p>
+      <div class="test-author"><div class="test-avatar">👨</div><div><div class="test-name">Arjun Kumar</div><div class="test-loc">Kadapa, AP</div></div></div>
+    </div>
+    <div class="test-card reveal">
+      <div class="test-badge">Verified ✓</div>
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">Best gifting shop in Kadapa, no question. The resin décor pieces are so unique, and the custom hamper for our anniversary was just magical. Thank you Aneesa Hampers!</p>
+      <div class="test-author"><div class="test-avatar">👩</div><div><div class="test-name">Fatima Begum</div><div class="test-loc">Kadapa, AP</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec-wrap">
+  <div class="sec-head reveal">
+    <div class="sec-eyebrow">Got Questions?</div>
+    <h2 class="sec-title">Frequently Asked <em>Questions</em></h2>
+  </div>
+  <div class="faq-wrap">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">Do you deliver outside Kadapa?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>Yes! We deliver across Andhra Pradesh and can ship pan-India for select hampers. WhatsApp us for delivery details outside Kadapa city limits and we'll confirm availability and timelines for your area.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">Can I customise a hamper?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>Absolutely! Custom hampers are one of our specialties. Simply WhatsApp us with your occasion, budget, and preferences — we'll put together something beautiful and unique just for you.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">What payment methods do you accept?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>We accept UPI (GPay, PhonePe, Paytm), NEFT/IMPS bank transfers, and cash on delivery for orders within Kadapa. Payment details are shared via WhatsApp after order confirmation.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">How soon will my order be delivered?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>For Kadapa city orders placed before 2 PM, we guarantee same day delivery. For custom hampers or bulk orders, we typically need 24–48 hours for preparation. We'll always confirm the timeline via WhatsApp.</p></div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)"><span class="faq-q-text">Do you do bulk or corporate orders?</span><span class="faq-icon">+</span></div>
+      <div class="faq-a"><p>Yes, we love corporate gifting! We offer special pricing for bulk orders (10+). Ideal for Diwali, New Year, employee gifting, and event hampers. Contact us on WhatsApp for a custom quote.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CREATIONS SECTION (dynamic from siteSettings.gallery) -->
+<section class="sec-wrap alt" id="gallerySection" style="padding-bottom:60px;display:none;">
+  <div class="sec-head reveal">
+    <div class="sec-eyebrow" id="galleryEyebrow">Follow Us</div>
+    <h2 class="sec-title" id="galleryTitle">Our Latest <em id="galleryTitleEm">Creations</em></h2>
+    <p class="sec-sub" id="gallerySub">Tag us <strong style="color:var(--deep-rose);">@aneesahampers</strong> and get featured on our page!</p>
+  </div>
+  <div class="insta-grid reveal" id="galleryGrid"></div>
+  <p class="insta-handle" id="galleryHandle"></p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <!-- WhatsApp CTA row -->
+  <div style="background:rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.06);padding:28px 52px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;">
+    <div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:white;margin-bottom:4px;">Have a question or want a custom hamper?</div>
+      <div style="font-size:.78rem;opacity:.45;">We respond within minutes on WhatsApp — reach out anytime!</div>
+    </div>
+    <a href="https://wa.me/918639066613?text=Hi!%20I%20want%20to%20know%20more%20about%20your%20hampers" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#25D366;color:white;padding:12px 26px;border-radius:50px;font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;text-decoration:none;white-space:nowrap;flex-shrink:0;">💬 Chat on WhatsApp</a>
+  </div>
+  <div class="foot-grid">
+    <div>
+      <a href="index.html" class="foot-logo"><span>Aneesa</span> Hampers</a>
+      <p class="foot-desc">Premium handcrafted gift hampers for every occasion — Hampers, Cakes, Decors, Resin &amp; Wedding Essentials. Made with love in Kadapa, Andhra Pradesh.</p>
+      <div style="margin-top:18px;display:flex;gap:10px;">
+        <a href="https://instagram.com/aneesahampers" target="_blank" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.85rem;color:rgba(255,255,255,.6);text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">📸</a>
+        <a href="https://wa.me/918639066613" target="_blank" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.85rem;color:rgba(255,255,255,.6);text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">💬</a>
+        <a href="tel:+918639066613" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.85rem;color:rgba(255,255,255,.6);text-decoration:none;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,.18)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">📞</a>
+      </div>
+    </div>
+    <div class="foot-col">
+      <h4>Navigate</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Collections</a></li>
+<li><a href="orders.html">My Orders</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="account.html">My Account</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Categories</h4>
+      <ul>
+        <li><a href="products.html?cat=hampers">Gift Hampers</a></li>
+        <li><a href="products.html?cat=cakes">Custom Cakes</a></li>
+        <li><a href="products.html?cat=decor">Décor Items</a></li>
+        <li><a href="products.html?cat=resin">Resin Art</a></li>
+        <li><a href="products.html?cat=wedding">Wedding Essentials</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+    <span>© 2025 Aneesa Hampers. All rights reserved.</span>
+    <span style="display:flex;align-items:center;gap:16px;"><a href="https://wa.me/918639066613" target="_blank" style="color:inherit;text-decoration:none;opacity:.6;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;">Contact</a>
+    </span>
+    <span>Made with 🌸 in Kadapa</span>
+  </div>
+</footer>
+
+<!-- BOTTOM NAV (handled by bottomnav.js) -->
+
+<a href="https://wa.me/918639066613?text=Hi!%20I%20want%20to%20order%20a%20hamper" target="_blank" id="floatWA">💬 Order via WhatsApp</a>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore, collection, query, orderBy, onSnapshot, doc,
+  where, limit
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+  getAuth, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const app = initializeApp({apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",authDomain:"aneesa-hampers.firebaseapp.com",projectId:"aneesa-hampers",storageBucket:"aneesa-hampers.firebasestorage.app",messagingSenderId:"909653560410",appId:"1:909653560410:web:397db4fec2d9f042609c63"});
+const db   = getFirestore(app);
+const auth = getAuth(app);
+window._ahFirebase = { db, auth };
+
+// CURSOR
+const C=document.getElementById('cursor'),R=document.getElementById('cursorRing');
+if(C&&matchMedia('(pointer:fine)').matches){document.addEventListener('mousemove',e=>{C.style.left=e.clientX+'px';C.style.top=e.clientY+'px';setTimeout(()=>{R.style.left=e.clientX+'px';R.style.top=e.clientY+'px';},80)});}
+
+function toast(m){const t=document.getElementById('ah-toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2600);}
+
+// CART
+function cartKey(){try{const u=JSON.parse(localStorage.getItem('ah_user')||'null');return u?.uid?`ah_cart_${u.uid}`:'ah_cart_guest';}catch{return'ah_cart_guest';}}
+function cartGet(){try{return JSON.parse(localStorage.getItem(cartKey())||'[]');}catch{return[];}}
+function cartCount(){return cartGet().reduce((s,i)=>s+(i.qty||1),0);}
+function cartBadge(){const n=cartCount();['navCart','bnCart'].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=n;if(id==='bnCart'){el.style.display=n>0?'flex':'none';}}});}
+window.addToCart=function(id,name,price,image){
+  const items=cartGet(),ex=items.find(i=>i.id===id);
+  if(ex)ex.qty=(ex.qty||1)+1;else items.push({id,name,price,image:image||'',qty:1});
+  localStorage.setItem(cartKey(),JSON.stringify(items));
+  cartBadge(); toast('🛍️ Added to cart!');
+};
+cartBadge();
+
+// AUTH STATE
+onAuthStateChanged(auth, user => {
+  if(user){
+    const n=user.displayName||user.email.split('@')[0];
+    const s={uid:user.uid,email:user.email,name:n,savedAt:Date.now()};
+    localStorage.setItem('ah_user',JSON.stringify(s));
+    updateNavForUser(n);
+  } else {
+    const s=JSON.parse(localStorage.getItem('ah_user')||'null');
+    if(s) updateNavForUser(s.name||'Hi');
+  }
+});
+function updateNavForUser(name){
+  const fn=name.split(' ')[0];
+  document.getElementById('navAccBtn').textContent='👤 '+fn;
+  const bl=document.getElementById('bnAccLbl'); if(bl) bl.textContent=fn;
+}
+
+// SITE SETTINGS
+let flashDiscount=0;
+onSnapshot(doc(db,'siteSettings','config'), snap => {
+  if(!snap.exists()) return;
+  const cfg=snap.data();
+
+  // ── Announcement ──
+  if(cfg.announcement?.active&&cfg.announcement?.text){
+    document.getElementById('annText').textContent=cfg.announcement.text;
+    document.getElementById('annBar').classList.add('show');
+    document.getElementById('annClose').onclick=()=>document.getElementById('annBar').classList.remove('show');
+  }
+
+  // ── Flash sale ──
+  const fs=document.getElementById('flashStrip');
+  if(cfg.flashSale?.active){
+    flashDiscount=Number(cfg.flashSale.discount)||0;
+    document.getElementById('flashPct').textContent=flashDiscount+'%';
+    document.getElementById('flashNote').textContent=cfg.flashSale.message||'Limited time';
+    document.getElementById('flashBadge').textContent=flashDiscount+'% OFF';
+    fs.classList.add('show');
+    if(cfg.flashSale.endsAt){
+      let iv;const tick=()=>{
+        const end=cfg.flashSale.endsAt.toMillis?cfg.flashSale.endsAt.toMillis():new Date(cfg.flashSale.endsAt).getTime();
+        const d=end-Date.now();
+        if(d<=0){document.getElementById('flashTimer').textContent='Ended';clearInterval(iv);return;}
+        const h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);
+        document.getElementById('flashTimer').textContent=(h<10?'0'+h:h)+'h '+(m<10?'0'+m:m)+'m '+(s<10?'0'+s:s)+'s';
+      };
+      tick();iv=setInterval(tick,1000);
+    }
+  } else { flashDiscount=0; fs.classList.remove('show'); }
+
+  // ── Banners ──
+  if(cfg.banners?.length) renderBanners(cfg.banners);
+
+  // ── Hero Text (admin-controlled) ──
+  if(cfg.hero){
+    const h=cfg.hero;
+    if(h.eyebrow)  document.getElementById('heroEyebrow').textContent=h.eyebrow;
+    if(h.title){
+      const em=document.getElementById('heroTitleEm');
+      // title format: "Main Text|Italic Part"
+      const parts=h.title.split('|');
+      const titleEl=document.getElementById('heroTitle');
+      titleEl.childNodes[0].textContent=parts[0];
+      if(em&&parts[1]) em.textContent=parts[1];
+    }
+    if(h.subtitle) document.getElementById('heroSub').textContent=h.subtitle;
+    if(h.btn1Text) document.getElementById('heroBtn1').textContent=h.btn1Text;
+    if(h.btn1Link) document.getElementById('heroBtn1').href=h.btn1Link;
+    if(h.btn2Text) document.getElementById('heroBtn2').textContent=h.btn2Text;
+  }
+
+  // ── Stats Bar (admin-controlled) ──
+  const statsWrap=document.getElementById('statsBarWrap');
+  if(cfg.stats && cfg.stats.length){
+    const show=cfg.stats.filter(s=>s.active!==false).slice(0,4);
+    if(show.length){
+      statsWrap.style.display='grid';
+      show.forEach((s,i)=>{
+        const numEl=document.getElementById('statNum'+i);
+        const lblEl=document.getElementById('statLbl'+i);
+        const itemEl=document.getElementById('statItem'+i);
+        if(numEl){ numEl.innerHTML=s.value+(s.suffix?`<span>${s.suffix}</span>`:''); }
+        if(lblEl){ lblEl.textContent=s.label; }
+        if(itemEl){ itemEl.style.display=''; }
+      });
+      // hide unused stat items
+      for(let i=show.length;i<4;i++){
+        const itemEl=document.getElementById('statItem'+i);
+        if(itemEl) itemEl.style.display='none';
+      }
+      // Trigger counter animation
+      if(window._statsAnimDone) return;
+      window._statsAnimDone=true;
+      const statsObs2=new IntersectionObserver(entries=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting){
+            e.target.querySelectorAll('.stat-num').forEach(el=>{
+              const raw=el.textContent.trim();
+              const num=parseFloat(raw.replace(/[^0-9.]/g,''));
+              if(isNaN(num)) return;
+              const suffix=raw.replace(String(num),'').trim();
+              let cur=0,dur=1600,step=16;
+              const inc=num/(dur/step);
+              const t=setInterval(()=>{
+                cur+=inc; if(cur>=num){cur=num;clearInterval(t);}
+                el.innerHTML=(Number.isInteger(num)?Math.floor(cur):cur.toFixed(1))+(suffix?`<span>${suffix}</span>`:'');
+              },step);
+            });
+            statsObs2.unobserve(e.target);
+          }
+        });
+      },{threshold:0.5});
+      statsObs2.observe(statsWrap);
+    }
+  }
+
+  // ── Gallery / Creations Section (admin-controlled) ──
+  const galSec=document.getElementById('gallerySection');
+  if(cfg.gallery && cfg.gallery.items && cfg.gallery.items.length){
+    galSec.style.display='';
+    // Section labels
+    if(cfg.gallery.eyebrow) document.getElementById('galleryEyebrow').textContent=cfg.gallery.eyebrow;
+    if(cfg.gallery.title){
+      const parts=cfg.gallery.title.split('|');
+      document.getElementById('galleryTitle').childNodes[0].textContent=parts[0];
+      if(parts[1]) document.getElementById('galleryTitleEm').textContent=parts[1];
+    }
+    if(cfg.gallery.subtitle) document.getElementById('gallerySub').innerHTML=cfg.gallery.subtitle;
+    if(cfg.gallery.handle){
+      document.getElementById('galleryHandle').innerHTML=
+        `Follow us: <a href="https://instagram.com/${cfg.gallery.handle.replace('@','')}" target="_blank" style="color:var(--deep-rose);font-weight:600;text-decoration:none;">${cfg.gallery.handle}</a>`;
+    }
+    // Render gallery items
+    const grid=document.getElementById('galleryGrid');
+    grid.innerHTML=cfg.gallery.items.slice(0,6).map(item=>{
+      if(item.image){
+        return `<div class="insta-item" onclick="${item.link?`location.href='${item.link}'`:''}">
+          <img src="${item.image}" alt="${item.caption||''}" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:10px;"/>
+          <div class="insta-overlay">${item.caption||'View →'}</div>
+        </div>`;
+      }
+      const bg=item.color||'#f9e4e9';
+      return `<div class="insta-item" style="background:${bg}" onclick="${item.link?`location.href='${item.link}'`:''}">
+        <div class="insta-item-inner">${item.emoji||'🎁'}</div>
+        <div class="insta-overlay">${item.caption||'View →'}</div>
+      </div>`;
+    }).join('');
+  }
+});
+
+// BANNER CAROUSEL
+let _bi=0,_bct=0,_bT=null; const BI=4500;
+function renderBanners(banners){
+  if(!banners?.length) return;
+  const carousel=document.getElementById('bannerCarousel');
+  const track=document.getElementById('btrack');
+  const dots=document.getElementById('bdots');
+  document.getElementById('heroSec').style.display='none';
+  _bct=banners.length; _bi=0;
+  track.innerHTML=banners.map((b,i)=>`<div class="bslide">
+    ${b.image?`<img class="bslide-bg" src="${b.image}" alt="" loading="${i===0?'eager':'lazy'}"/>`:''}
+    <div class="bslide-overlay">
+      ${b.tag?`<div class="bslide-tag">${b.tag}</div>`:''}
+      <div class="bslide-title">${b.title||'Aneesa Hampers'}</div>
+      ${b.subtitle?`<div class="bslide-sub">${b.subtitle}</div>`:''}
+      <a href="${b.link||'products.html'}" class="bslide-cta">${b.btnText||'Shop Now'} →</a>
+    </div>
+  </div>`).join('');
+  dots.innerHTML=banners.map((_,j)=>`<button class="bdot${j===0?' active':''}" onclick="goSlide(${j})"></button>`).join('');
+  document.getElementById('bPrev').style.display=banners.length>1?'flex':'none';
+  document.getElementById('bNext').style.display=banners.length>1?'flex':'none';
+  carousel.classList.add('show');
+  goSlide(0); startAuto();
+}
+window.goSlide=idx=>{_bi=((idx%_bct)+_bct)%_bct;document.getElementById('btrack').style.transform=`translateX(-${_bi*100}%)`;document.querySelectorAll('.bdot').forEach((d,i)=>d.classList.toggle('active',i===_bi));startProg();};
+function startAuto(){if(_bct<=1)return;clearInterval(_bT);_bT=setInterval(()=>goSlide(_bi+1),BI);}
+function startProg(){const b=document.getElementById('bprogBar');b.style.transition='none';b.style.width='0%';setTimeout(()=>{b.style.transition=`width ${BI}ms linear`;b.style.width='100%';},30);}
+document.getElementById('bPrev').addEventListener('click',()=>{clearInterval(_bT);goSlide(_bi-1);startAuto();});
+document.getElementById('bNext').addEventListener('click',()=>{clearInterval(_bT);goSlide(_bi+1);startAuto();});
+let _bx=0;
+document.getElementById('bannerCarousel').addEventListener('touchstart',e=>{_bx=e.changedTouches[0].clientX;},{passive:true});
+document.getElementById('bannerCarousel').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-_bx;if(Math.abs(dx)>40){clearInterval(_bT);goSlide(dx<0?_bi+1:_bi-1);startAuto();}},{passive:true});
+
+// CATEGORIES (from Firestore — with emoji + cover photo)
+onSnapshot(query(collection(db,'categories'),orderBy('order','asc')), snap => {
+  const cats=snap.docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.visible!==false);
+  if(!cats.length) return;
+
+  // ── Category grid (existing card layout) ──
+  const grid=document.getElementById('catGrid');
+  const visible=cats.slice(0,5);
+  grid.innerHTML=visible.map((c,i)=>{
+    const span=i===0||i===4?'span2':'';
+    const bg=c.color||'#f9e4e9';
+    // Support cover photo
+    const imgContent=c.coverImage
+      ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;display:block;"/>`
+      : (c.emoji||'🎁');
+    return `<a href="products.html?cat=${c.slug||c.id}" class="cat-card ${span} reveal">
+      <div class="cat-img" style="background:linear-gradient(135deg,${bg},${bg}dd)">${imgContent}</div>
+      <div class="cat-arrow">→</div>
+      <div class="cat-info"><div class="cat-name">${c.name}</div><p class="cat-desc">${c.desc||''}</p></div>
+    </a>`;
+  }).join('');
+
+  // ── Category circles (horizontal scroll) ──
+  const scroll=document.getElementById('catCirclesScroll');
+  if(scroll){
+    scroll.innerHTML=cats.map(c=>{
+      const bg=c.color||'#f9e4e9';
+      const inner=c.coverImage
+        ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"/>`
+        : `<span>${c.emoji||'🎁'}</span>`;
+      return `<a href="products.html?cat=${c.slug||c.id}" class="cat-circle-item">
+        <div class="cat-circle-img" style="background:linear-gradient(135deg,${bg},${bg}cc)">${inner}</div>
+        <span class="cat-circle-label">${c.name}</span>
+      </a>`;
+    }).join('');
+    // Highlight active
+    const urlCat=new URLSearchParams(location.search).get('cat');
+    if(urlCat) scroll.querySelectorAll('.cat-circle-item').forEach(el=>{
+      if(el.href&&el.href.includes('cat='+urlCat)) el.classList.add('active');
+    });
+  }
+
+  // re-observe reveals
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+});
+
+// PRODUCTS (real-time)
+onSnapshot(query(collection(db,'products'),orderBy('createdAt','desc')), snap => {
+  document.getElementById('loader').classList.add('done');
+  const all=snap.docs.map(d=>({id:d.id,...d.data()}));
+  if(!all.length){document.getElementById('featGrid').innerHTML='<div style="grid-column:1/-1;text-align:center;opacity:.4;padding:40px">Products coming soon! 🎁</div>';return;}
+  const show=all.slice(0,8);
+  document.getElementById('featGrid').innerHTML=show.map(p=>{
+    const disc=Math.max(Number(p.discount)||0,flashDiscount);
+    const price=disc>0?Math.round(Number(p.price)*(1-disc/100)):Number(p.price);
+    const imgH=(p.images&&p.images[0])?`<img src="${p.images[0]}" alt="${(p.name||'').replace(/"/g,'')}" loading="lazy" decoding="async"/>`:(`<span>${p.emoji||'🎁'}</span>`);
+    const sname=(p.name||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const simg=(p.images?.[0]||'').replace(/'/g,"\\'");
+    return `<div class="prod-card" onclick="location.href='product.html?id=${p.id}'">
+      <div class="prod-thumb">
+        ${p.badge?`<div class="tag-badge">${p.badge}</div>`:''}
+        ${disc>0?`<div class="disc-badge">${disc}% OFF</div>`:''}
+        <button class="prod-wish" onclick="event.stopPropagation();toggleWish('${p.id}',this)" title="Wishlist">♡</button>
+        ${imgH}
+        <div class="prod-qv" onclick="event.stopPropagation();location.href='product.html?id=${p.id}'">Quick View</div>
+      </div>
+      <div class="prod-info">
+        <div class="prod-cat">${p.category||''}</div>
+        <div class="prod-name">${p.name||''}</div>
+        <div class="prod-row">
+          <div>
+            <div class="price-now">₹${price.toLocaleString('en-IN')}</div>
+            ${disc>0?`<div class="price-was">₹${Number(p.price).toLocaleString('en-IN')}</div>`:''}
+          </div>
+          <button class="add-btn" onclick="event.stopPropagation();addToCart('${p.id}','${sname}',${price},'${simg}')" aria-label="Add to cart">+</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+});
+
+// REVEAL
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// LOADER
+window.addEventListener('load',()=>setTimeout(()=>document.getElementById('loader').classList.add('done'),800));
+setTimeout(()=>document.getElementById('loader').classList.add('done'),4000);
+
+// ═══════════════════════════════════════════════
+// PROMO POPUP
+// ═══════════════════════════════════════════════
+(function(){
+  var STORAGE_KEY = 'ah_popup_seen_v2';
+  var shown = false;
+
+  window.ahPopupOpen = function(){
+    var overlay = document.getElementById('ah-popup-overlay');
+    if(!overlay) return;
+    overlay.style.display = 'flex';
+    overlay.style.pointerEvents = 'all';
+    setTimeout(function(){ overlay.classList.add('show'); }, 10);
+    shown = true;
+    document.getElementById('ah-popup-float').classList.remove('show');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.ahPopupClose = function(){
+    var overlay = document.getElementById('ah-popup-overlay');
+    if(!overlay) return;
+    overlay.classList.remove('show');
+    overlay.style.pointerEvents = 'none';
+    setTimeout(function(){ overlay.style.display = 'none'; }, 400);
+    document.body.style.overflow = '';
+    // Show floating bubble if not submitted
+    var submitted = localStorage.getItem('ah_popup_submitted');
+    if(!submitted){
+      setTimeout(function(){
+        document.getElementById('ah-popup-float').classList.add('show');
+      }, 1200);
+    }
+  };
+
+  document.getElementById('ah-popup-close').onclick = ahPopupClose;
+  document.getElementById('ah-popup-overlay').addEventListener('click', function(e){
+    if(e.target === this) ahPopupClose();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') ahPopupClose();
+  });
+
+  // Generate unique discount code
+  function genCode(){
+    var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    var code = 'AH15-';
+    for(var i=0;i<5;i++) code += chars[Math.floor(Math.random()*chars.length)];
+    return code;
+  }
+
+  window.ahPopupSubmit = function(){
+    var name = document.getElementById('pp-name').value.trim();
+    var email = document.getElementById('pp-email').value.trim();
+    var phone = document.getElementById('pp-phone').value.trim();
+    var dob = (document.getElementById('pp-dob-d').value||'').trim() + '/' +
+              (document.getElementById('pp-dob-m').value||'').trim() + '/' +
+              (document.getElementById('pp-dob-y').value||'').trim();
+    var gender = document.getElementById('pp-gender').value;
+    var country = document.getElementById('pp-country').value;
+
+    if(!name){ alert('Please enter your name'); return; }
+    if(!email || !email.includes('@')){ alert('Please enter a valid email'); return; }
+    if(!phone){ alert('Please enter your phone number'); return; }
+
+    var btn = document.getElementById('pp-submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Unlocking...';
+
+    // Save to localStorage
+    var code = genCode();
+    var lead = { name:name, email:email, phone:country+phone, dob:dob, gender:gender, code:code, ts: new Date().toISOString() };
+    localStorage.setItem('ah_lead', JSON.stringify(lead));
+    localStorage.setItem('ah_popup_submitted', '1');
+    localStorage.setItem(STORAGE_KEY, '1');
+
+    // Save to Firestore leads collection
+    try {
+      var { db } = window._ahFirebase || {};
+      if(db){
+        import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(function(m){
+          m.addDoc(m.collection(db,'leads'), {...lead, createdAt: m.serverTimestamp()}).catch(function(){});
+        });
+      }
+    } catch(e){}
+
+    setTimeout(function(){
+      document.getElementById('ah-popup-form-wrap').style.display = 'none';
+      document.getElementById('pp-discount-code').textContent = code;
+      document.getElementById('ah-popup-success').style.display = 'block';
+      btn.disabled = false;
+    }, 900);
+  };
+
+  window.ahCopyCode = function(el){
+    var code = el.textContent.trim();
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(code).then(function(){
+        var orig = el.textContent;
+        el.textContent = 'Copied!';
+        setTimeout(function(){ el.textContent = orig; }, 1500);
+      });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = code; document.body.appendChild(ta);
+      ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+      var orig = el.textContent;
+      el.textContent = 'Copied!';
+      setTimeout(function(){ el.textContent = orig; }, 1500);
+    }
+  };
+
+  // Auto-show after 3 seconds — only once per session
+  var seen = localStorage.getItem(STORAGE_KEY);
+  var submitted = localStorage.getItem('ah_popup_submitted');
+  if(!seen && !submitted){
+    setTimeout(function(){
+      ahPopupOpen();
+      localStorage.setItem(STORAGE_KEY, '1');
+    }, 3000);
+  } else if(!submitted){
+    // Show float bubble if seen but not submitted
+    setTimeout(function(){
+      document.getElementById('ah-popup-float').classList.add('show');
+    }, 5000);
+  }
+})();
+
+// ═══════════════════════════════════════════════
+// DELIVERY BAR
+// ═══════════════════════════════════════════════
+(function(){
+  function getDeliveryDate(){
+    var d = new Date(); d.setDate(d.getDate()+1);
+    return d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+  }
+  var dlvDate = document.getElementById('dlv-date');
+  if(dlvDate) dlvDate.textContent = getDeliveryDate();
+
+  var savedPin = localStorage.getItem('ah_pincode') || '516001';
+  var pinDisp = document.getElementById('dlv-pin-display');
+  var esbPin = document.getElementById('esb-pin-lbl');
+  if(pinDisp) pinDisp.textContent = savedPin;
+  if(esbPin) esbPin.textContent = savedPin;
+
+  window.togglePinPopup = function(e){
+    if(e) e.stopPropagation();
+    var pp = document.getElementById('pin-popup');
+    if(pp){ pp.classList.toggle('show'); }
+  };
+  document.addEventListener('click', function(){
+    var pp = document.getElementById('pin-popup');
+    if(pp) pp.classList.remove('show');
+  });
+
+  window.updatePin = function(){
+    var val = (document.getElementById('pin-input').value||'').trim();
+    if(!val || val.length < 5){ alert('Please enter a valid pincode'); return; }
+    localStorage.setItem('ah_pincode', val);
+    if(pinDisp) pinDisp.textContent = val;
+    if(esbPin) esbPin.textContent = val;
+    var pp = document.getElementById('pin-popup');
+    if(pp) pp.classList.remove('show');
+    toast('📍 Pincode updated to ' + val);
+  };
+})();
+
+// ═══════════════════════════════════════════════
+// ENHANCED SIDEBAR
+// ═══════════════════════════════════════════════
+(function(){
+  // Highlight current page
+  var path = location.pathname.split('/').pop() || 'index.html';
+  var homeLink = document.getElementById('esb-home');
+  if(homeLink && path === 'index.html') homeLink.classList.add('active');
+  // Also mark orders link
+  var ordLink = document.getElementById('esb-orders');
+  if(ordLink && path === 'orders.html') ordLink.classList.add('active');
+
+  // User state
+  var user = null;
+  try { user = JSON.parse(localStorage.getItem('ah_user') || 'null'); } catch(e){}
+  if(user && user.name){
+    var nm = document.getElementById('esb-nm');
+    var av = document.getElementById('esb-av');
+    var si = document.getElementById('esb-signin');
+    var lo = document.getElementById('esb-logout');
+    if(nm) nm.textContent = user.name;
+    if(av) av.textContent = user.name.charAt(0).toUpperCase();
+    if(si){ si.textContent = '✓ Signed In'; si.style.background='rgba(255,255,255,.08)'; si.href='account.html'; }
+    if(lo) lo.style.display = 'block';
+  }
+
+  window.enhSbOpen = function(){
+    document.getElementById('enh-sidebar').classList.add('open');
+    var ov = document.getElementById('enh-overlay');
+    ov.style.display='block';
+    setTimeout(function(){ ov.classList.add('show'); },10);
+    document.body.style.overflow='hidden';
+  };
+  window.enhSbClose = function(){
+    document.getElementById('enh-sidebar').classList.remove('open');
+    var ov = document.getElementById('enh-overlay');
+    ov.classList.remove('show');
+    setTimeout(function(){ ov.style.display='none'; },300);
+    document.body.style.overflow='';
+  };
+  window.enhToggle = function(id, btn){
+    var sub = document.getElementById(id);
+    if(!sub) return;
+    sub.classList.toggle('open');
+    if(btn) btn.classList.toggle('open');
+  };
+  window.enhLogout = function(){
+    if(!confirm('Log out?')) return;
+    localStorage.removeItem('ah_user');
+    window.location.href = 'login.html';
+  };
+
+  // Wire hamburger button (from mobilenav.js #mn-ham) — also open enhSb
+  // Override mnToggle to open enhanced sidebar instead
+  window.mnToggle = function(){ enhSbOpen(); };
+
+  // Swipe to open from left edge
+  var _tx = null;
+  document.addEventListener('touchstart', function(e){
+    _tx = e.touches[0].clientX;
+  }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if(_tx===null) return;
+    var dx = e.changedTouches[0].clientX - _tx;
+    _tx = null;
+    var isOpen = document.getElementById('enh-sidebar').classList.contains('open');
+    if(!isOpen && dx > 60 && e.changedTouches[0].clientX < 44) enhSbOpen();
+    if(isOpen && dx < -60) enhSbClose();
+  }, {passive:true});
+
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape') enhSbClose();
+  });
+})();
+
+// ═══════════════════════════════════════════════
+// CATEGORY CIRCLES — highlight active from URL
+// ═══════════════════════════════════════════════
+(function(){
+  var urlCat = new URLSearchParams(location.search).get('cat');
+  if(urlCat){
+    document.querySelectorAll('.cat-circle-item').forEach(function(el){
+      if(el.href && el.href.includes('cat='+urlCat)) el.classList.add('active');
+    });
+  }
+})();
+
+// ═══════════════════════════════════════════════
+// NAV TOPBAR SPACING — push down for delivery bar
+// ═══════════════════════════════════════════════
+(function(){
+  var dlvBar = document.getElementById('ah-delivery-bar');
+  var topNav = document.querySelector('.topnav');
+  if(dlvBar && topNav && window.innerWidth > 768){
+    var h = dlvBar.offsetHeight || 40;
+    topNav.style.top = h + 'px';
+  }
+})();
+
+
+// SEARCH TOGGLE
+const searchToggle=document.getElementById('searchToggle');
+const searchBox=document.getElementById('searchBox');
+const searchInput=document.getElementById('searchInput');
+if(searchToggle){
+  searchToggle.addEventListener('click',e=>{
+    e.stopPropagation();
+    searchBox.classList.toggle('open');
+    if(searchBox.classList.contains('open')) searchInput.focus();
+  });
+  document.addEventListener('click',e=>{
+    if(!document.getElementById('searchWrap').contains(e.target)) searchBox.classList.remove('open');
+  });
+  searchInput.addEventListener('keydown',e=>{
+    if(e.key==='Enter'&&searchInput.value.trim()){
+      window.location.href='products.html?search='+encodeURIComponent(searchInput.value.trim());
+    }
+  });
+}
+
+// WISHLIST TOGGLE
+window.toggleWish=function(id,btn){
+  let w=JSON.parse(localStorage.getItem('ah_wish')||'[]');
+  if(w.includes(id)){w=w.filter(x=>x!==id);btn.textContent='♡';btn.classList.remove('wished');}
+  else{w.push(id);btn.textContent='♥';btn.classList.add('wished');}
+  localStorage.setItem('ah_wish',JSON.stringify(w));
+};
+// Restore wishlist state
+(function(){
+  const w=JSON.parse(localStorage.getItem('ah_wish')||'[]');
+  document.querySelectorAll('.prod-wish').forEach(btn=>{
+    const id=btn.getAttribute('onclick').match(/'([^']+)'/)?.[1];
+    if(id&&w.includes(id)){btn.textContent='♥';btn.classList.add('wished');}
+  });
+})();
+
+// FAQ ACCORDION
+window.toggleFaq=function(el){
+  const item=el.closest('.faq-item');
+  const wasOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen) item.classList.add('open');
+};
+
+
+// ═══════════════════════════════════════════════
+// DOB AUTO-TAB
+// ═══════════════════════════════════════════════
+(function(){
+  function autoTab(el, maxLen, nextId){
+    el.addEventListener('input', function(){
+      this.value = this.value.replace(/[^0-9]/g,'');
+      if(this.value.length >= maxLen && nextId){
+        var n = document.getElementById(nextId);
+        if(n) n.focus();
+      }
+    });
+  }
+  var dd = document.getElementById('pp-dob-d');
+  var mm = document.getElementById('pp-dob-m');
+  var yy = document.getElementById('pp-dob-y');
+  if(dd){ autoTab(dd, 2, 'pp-dob-m'); }
+  if(mm){ autoTab(mm, 2, 'pp-dob-y'); }
+  if(yy){ autoTab(yy, 4, null); }
+})();
+
+// ═══════════════════════════════════════════════
+// MOBILE SEARCH GO
+// ═══════════════════════════════════════════════
+window.mobileSearchGo = function(){
+  var v = (document.getElementById('mobileSearchInput').value||'').trim();
+  if(v) location.href = 'products.html?search=' + encodeURIComponent(v);
+};
+
+// NAV SCROLL SHADOW
+window.addEventListener('scroll',()=>{
+  const nav=document.querySelector('.topnav');
+  if(nav) nav.style.boxShadow=window.scrollY>40?'0 4px 24px rgba(59,13,26,.1)':'0 2px 12px rgba(59,13,26,.04)';
+},{passive:true});
+
+// Stats animation handled inside siteSettings listener
+</script>
+<script src="mobilenav.js"></script>
+<script src="bottomnav.js"></script>
+
+<!-- ═══════ ENHANCED SIDEBAR ═══════ -->
+<div id="enh-overlay" onclick="enhSbClose()"></div>
+<nav id="enh-sidebar" aria-label="Site navigation">
+  <div class="esb-user-area">
+    <button class="esb-close" onclick="enhSbClose()" aria-label="Close menu">&#x2715;</button>
+    <div class="esb-avatar" id="esb-av">&#128100;</div>
+    <div class="esb-greeting">Hello,</div>
+    <div class="esb-name" id="esb-nm">Guest Visitor</div>
+    <a href="login.html" class="esb-signin-btn" id="esb-signin">&#128273; Sign In / Create Account</a>
+  </div>
+  <div class="esb-scroll">
+    <!-- MAIN MENU -->
+    <div class="esb-section-lbl">Menu</div>
+    <a href="index.html" class="esb-link" id="esb-home"><span class="esb-link-icon">&#127968;</span>Home</a>
+
+    <button class="esb-expand-btn" onclick="enhToggle('esb-cat-sub',this)">
+      <span class="esb-link-icon">&#127873;</span>Categories<span class="esb-link-arrow">&#9654;</span>
+    </button>
+    <div class="esb-sub" id="esb-cat-sub">
+      <a href="products.html?cat=hampers" class="esb-sub-link">&#127873; Gift Hampers</a>
+      <a href="products.html?cat=cakes" class="esb-sub-link">&#127874; Custom Cakes</a>
+      <a href="products.html?cat=decor" class="esb-sub-link">&#127816; Decor Items</a>
+      <a href="products.html?cat=resin" class="esb-sub-link">&#128142; Resin Art</a>
+      <a href="products.html?cat=wedding" class="esb-sub-link">&#128141; Wedding Essentials</a>
+      <a href="products.html?cat=chocolate" class="esb-sub-link">&#127839; Chocolates</a>
+    </div>
+
+    <a href="products.html?sort=new" class="esb-link"><span class="esb-link-icon">&#10024;</span>New Arrivals<span class="esb-link-badge">New</span></a>
+    <a href="products.html?sort=best" class="esb-link"><span class="esb-link-icon">&#11088;</span>Best Sellers</a>
+    <a href="products.html?offer=1" class="esb-link"><span class="esb-link-icon">&#9889;</span>Offers &amp; Deals</a>
+
+    <div class="esb-divider"></div>
+
+    <!-- CUSTOMER SERVICES -->
+    <div class="esb-section-lbl">My Account</div>
+    <a href="orders.html" class="esb-link" id="esb-orders"><span class="esb-link-icon">&#128230;</span>My Orders</a>
+    <a href="#wishlist" class="esb-link"><span class="esb-link-icon">&#10084;&#65039;</span>Wishlist</a>
+<a href="account.html" class="esb-link"><span class="esb-link-icon">&#128100;</span>My Profile</a>
+
+    <div class="esb-divider"></div>
+
+    <!-- SUPPORT -->
+    <div class="esb-section-lbl">Support</div>
+    <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128172;</span>Help &amp; Support</a>
+    <a href="https://wa.me/918639066613" target="_blank" class="esb-link"><span class="esb-link-icon">&#128222;</span>Contact Us</a>
+
+    <button class="esb-expand-btn" onclick="enhToggle('esb-faq-sub',this)">
+      <span class="esb-link-icon">&#10067;</span>FAQs<span class="esb-link-arrow">&#9654;</span>
+    </button>
+    <div class="esb-sub" id="esb-faq-sub">
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Delivery FAQs</a>
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Return &amp; Refund</a>
+      <a href="#faq" class="esb-sub-link" onclick="enhSbClose()">Custom Orders</a>
+    </div>
+
+    <div class="esb-divider"></div>
+
+    <!-- SETTINGS -->
+    <div class="esb-section-lbl">Settings</div>
+    <div class="esb-link" style="cursor:default;justify-content:space-between;">
+      <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#127988;</span>Language</span>
+      <span style="font-size:.72rem;color:#c0647a;font-weight:500;">English</span>
+    </div>
+    <div class="esb-link" style="cursor:default;justify-content:space-between;">
+      <span style="display:flex;align-items:center;gap:12px;"><span class="esb-link-icon">&#128176;</span>Currency</span>
+      <span style="font-size:.72rem;color:#c0647a;font-weight:500;">INR &#8377;</span>
+    </div>
+    <div class="esb-link" style="cursor:pointer;" onclick="togglePinPopup(event)">
+      <span class="esb-link-icon">&#128205;</span>Delivery Location
+      <span style="margin-left:auto;font-size:.72rem;color:#c0647a;" id="esb-pin-lbl">516001</span>
+    </div>
+    <div class="esb-divider"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="esb-footer">
+    <a href="https://wa.me/918639066613?text=Hi%20Aneesa%20Hampers!%20I%20want%20to%20order%20a%20hamper" target="_blank" class="esb-wa-btn">&#128172; Order on WhatsApp</a>
+    <div class="esb-settings-row">
+      <button class="esb-settings-btn" onclick="document.getElementById('enh-sidebar').scrollTop=0">&#8593; Top</button>
+      <button class="esb-settings-btn" onclick="ahPopupOpen();enhSbClose()">&#127873; 15% OFF</button>
+    </div>
+    <button class="esb-logout-btn" id="esb-logout" onclick="enhLogout()">&#128274; Logout</button>
+  </div>
+</nav>
+
+</body>
+</html>

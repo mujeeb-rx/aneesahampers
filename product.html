@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product – Aneesa Hampers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;
+      --burgundy:#3b0d1a;--cream:#fdf6f0;--gold:#c9a96e;
+      --white:#fff;--green:#25D366;
+      --shadow-sm:0 2px 8px rgba(59,13,26,.07);
+      --shadow-md:0 6px 24px rgba(59,13,26,.11);
+      --shadow-lg:0 16px 48px rgba(59,13,26,.15);
+      --radius-sm:10px;--radius-md:16px;--radius-lg:22px;
+      --transition:.25s cubic-bezier(.4,0,.2,1);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);overflow-x:hidden;}
+    img{max-width:100%;display:block;}
+    a{text-decoration:none;}
+
+    /* CURSOR */
+    @media(pointer:fine){body{cursor:none;}.cursor{width:10px;height:10px;background:var(--deep-rose);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}.cursor-ring{width:32px;height:32px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .12s,top .12s;opacity:.4;}}
+    @media(pointer:coarse){.cursor,.cursor-ring{display:none;}body{cursor:auto;}button,a,[onclick],select,input,textarea{cursor:pointer;}}
+
+    #ah-toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:white;padding:12px 28px;border-radius:30px;font-size:.78rem;z-index:99999;display:none;white-space:nowrap;font-family:'Jost',sans-serif;box-shadow:0 8px 28px rgba(0,0,0,.22);pointer-events:none;}
+    @media(min-width:769px){#ah-toast{bottom:32px;}}
+
+    /* NAV */
+    nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:16px 60px;background:rgba(253,246,240,.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(192,100,122,.1);box-shadow:0 2px 12px rgba(59,13,26,.04);}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .nav-logo img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--rose);}
+    .nav-logo-text{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-style:italic;color:var(--burgundy);}
+    .nav-logo-text span{color:var(--deep-rose);}
+    .nav-links{display:flex;gap:34px;list-style:none;}
+    .nav-links a{text-decoration:none;font-size:.73rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--burgundy);opacity:.55;transition:all .3s;}
+    .nav-links a:hover{opacity:1;color:var(--deep-rose);}
+    .nav-right{display:flex;align-items:center;gap:12px;}
+    .nav-cart{display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--burgundy);font-size:.75rem;letter-spacing:2px;text-transform:uppercase;}
+    .cart-count{background:var(--deep-rose);color:white;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;}
+    .nav-user{font-size:.75rem;opacity:.6;letter-spacing:1px;}
+
+    /* BREADCRUMB */
+    .breadcrumb{padding:90px 60px 16px;font-size:.75rem;opacity:.5;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+    .breadcrumb a{text-decoration:none;color:var(--burgundy);}
+    .breadcrumb a:hover{color:var(--deep-rose);opacity:1;}
+
+    /* ══════════════════════════
+       PRODUCT LAYOUT
+    ══════════════════════════ */
+    .product-wrap{display:grid;grid-template-columns:1fr 1fr 320px;gap:24px;padding:0 60px 60px;align-items:start;}
+
+    /* ── IMAGE GALLERY ── */
+    .img-col{background:var(--white);border-radius:var(--radius-lg);overflow:hidden;position:sticky;top:88px;box-shadow:var(--shadow-sm);}
+    .slider-wrap{position:relative;height:430px;overflow:hidden;background:linear-gradient(135deg,var(--blush),#f0d4dc);}
+    .slider-track{display:flex;height:100%;transition:transform .45s cubic-bezier(.4,0,.2,1);}
+    .slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:6rem;flex-shrink:0;position:relative;}
+    .slide img{width:100%;height:100%;object-fit:cover;}
+    .slide-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;background:rgba(255,255,255,.9);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;z-index:10;box-shadow:var(--shadow-sm);transition:all .2s;opacity:0;}
+    .slider-wrap:hover .slide-arrow{opacity:1;}
+    .slide-arrow:hover{background:var(--burgundy);color:white;transform:translateY(-50%) scale(1.08);}
+    .slide-prev{left:12px;}
+    .slide-next{right:12px;}
+    .slide-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10;}
+    .slide-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);cursor:pointer;transition:all .3s;border:none;}
+    .slide-dot.active{background:white;width:22px;border-radius:4px;}
+    .img-badge-wrap{position:absolute;top:14px;left:14px;display:flex;flex-direction:column;gap:6px;z-index:5;}
+    .img-badge{background:linear-gradient(135deg,#e84393,#c0647a);color:white;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:5px 12px;border-radius:20px;box-shadow:0 3px 10px rgba(192,100,122,.4);}
+    .img-badge.secondary{background:var(--burgundy);}
+    .img-wishlist-btn{position:absolute;top:14px;right:14px;width:42px;height:42px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.15rem;cursor:pointer;z-index:10;box-shadow:var(--shadow-sm);transition:transform .2s,background .2s;}
+    .img-wishlist-btn:hover{transform:scale(1.12);background:white;}
+    .img-wishlist-btn.wished{background:var(--blush);}
+    .thumb-row{display:flex;gap:8px;padding:14px;overflow-x:auto;border-top:1px solid rgba(192,100,122,.08);}
+    .thumb-row::-webkit-scrollbar{height:3px;}
+    .thumb-row::-webkit-scrollbar-thumb{background:var(--rose);border-radius:3px;}
+    .thumb{width:66px;height:66px;border-radius:var(--radius-sm);object-fit:cover;cursor:pointer;border:2px solid transparent;transition:border-color .2s,transform .2s;flex-shrink:0;background:var(--blush);}
+    .thumb:hover{transform:scale(1.05);}
+    .thumb.active{border-color:var(--deep-rose);}
+
+    /* LIGHTBOX */
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:3000;display:none;align-items:center;justify-content:center;}
+    .lightbox.open{display:flex;}
+    .lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:12px;}
+    .lightbox-close{position:absolute;top:20px;right:20px;width:42px;height:42px;background:rgba(255,255,255,.15);border:none;border-radius:50%;color:white;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    .lightbox-prev,.lightbox-next{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;background:rgba(255,255,255,.15);border:none;border-radius:50%;color:white;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+    .lightbox-prev:hover,.lightbox-next:hover{background:rgba(255,255,255,.3);}
+    .lightbox-prev{left:20px;}
+    .lightbox-next{right:20px;}
+
+    /* ── DETAIL COLUMN ── */
+    .detail-col{background:var(--white);border-radius:var(--radius-lg);padding:30px;box-shadow:var(--shadow-sm);}
+    .prod-cat-tag{font-size:.62rem;letter-spacing:3.5px;text-transform:uppercase;color:var(--deep-rose);margin-bottom:10px;font-weight:600;}
+    .prod-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;line-height:1.2;margin-bottom:16px;}
+    .rating-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid rgba(192,100,122,.1);}
+    .stars{display:flex;gap:2px;}
+    .rating-num{font-size:.92rem;font-weight:700;}
+    .rating-count{font-size:.78rem;opacity:.4;}
+
+    /* PRICE */
+    .price-section{margin-bottom:20px;padding:16px;background:linear-gradient(135deg,#fdf0f3,#fff);border-radius:var(--radius-md);border:1px solid rgba(192,100,122,.1);}
+    .price-row{display:flex;align-items:center;gap:12px;margin-bottom:6px;flex-wrap:wrap;}
+    .price-main{font-size:2.2rem;font-weight:700;color:var(--burgundy);}
+    .price-original{font-size:.9rem;text-decoration:line-through;opacity:.38;}
+    .price-off{font-size:.72rem;background:#e8fdf0;color:#2d7a4f;padding:4px 12px;border-radius:16px;font-weight:700;letter-spacing:.5px;}
+    .price-savings{font-size:.75rem;color:#2d7a4f;margin-top:2px;}
+
+    /* OFFERS */
+    .offers-section{margin-bottom:20px;}
+    .offers-title{font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;opacity:.5;margin-bottom:10px;font-weight:600;}
+    .offer-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--cream);border-radius:var(--radius-sm);margin-bottom:8px;border:1px solid rgba(192,100,122,.08);}
+    .offer-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px;}
+    .offer-text{font-size:.78rem;line-height:1.5;}
+    .offer-text strong{color:var(--deep-rose);}
+    .coupon-toggle{display:inline-flex;align-items:center;gap:6px;font-size:.73rem;color:var(--deep-rose);font-weight:600;cursor:pointer;border:none;background:none;letter-spacing:.5px;text-transform:uppercase;padding:6px 12px;border:1.5px solid rgba(192,100,122,.3);border-radius:20px;margin-top:4px;transition:all .2s;}
+    .coupon-toggle:hover{background:var(--blush);}
+    .coupon-box{display:none;margin-top:10px;background:var(--blush);border-radius:var(--radius-sm);padding:14px;border:1px dashed rgba(192,100,122,.35);}
+    .coupon-box.open{display:block;}
+    .coupon-code{display:flex;align-items:center;justify-content:space-between;background:white;border-radius:8px;padding:10px 14px;border:1px solid rgba(192,100,122,.2);}
+    .coupon-code span{font-size:.8rem;font-weight:700;letter-spacing:2px;color:var(--burgundy);}
+    .coupon-copy{padding:5px 14px;background:var(--burgundy);color:white;border:none;border-radius:20px;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;}
+    .coupon-copy:hover{background:var(--deep-rose);}
+
+    /* DESCRIPTION */
+    .desc-text{font-size:.87rem;line-height:1.9;opacity:.65;margin-bottom:20px;font-weight:300;}
+
+    /* WHAT'S INSIDE */
+    .items-box{background:var(--blush);border-radius:var(--radius-md);padding:18px;margin-bottom:20px;}
+    .items-title{font-size:.64rem;letter-spacing:2.5px;text-transform:uppercase;opacity:.55;margin-bottom:12px;font-weight:600;}
+    .items-list{display:flex;flex-wrap:wrap;gap:7px;}
+    .item-chip{background:white;border-radius:20px;padding:5px 13px;font-size:.76rem;border:1px solid rgba(192,100,122,.15);}
+
+    /* QUANTITY */
+    .qty-row{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+    .qty-label{font-size:.64rem;letter-spacing:2.5px;text-transform:uppercase;opacity:.45;font-weight:600;}
+    .qty-ctrl{display:flex;align-items:center;gap:10px;background:var(--blush);border-radius:30px;padding:7px 18px;}
+    .qty-btn{width:30px;height:30px;border-radius:50%;border:1.5px solid rgba(192,100,122,.3);background:white;color:var(--burgundy);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-weight:300;}
+    .qty-btn:hover{background:var(--burgundy);color:white;border-color:var(--burgundy);}
+    .qty-num{font-size:1rem;font-weight:600;min-width:24px;text-align:center;}
+
+    /* GIFT */
+    .gift-box{border:1.5px solid rgba(192,100,122,.2);border-radius:var(--radius-md);padding:16px;margin-bottom:20px;transition:border-color .2s;}
+    .gift-box:hover{border-color:rgba(192,100,122,.4);}
+    .gift-toggle{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.84rem;font-weight:500;}
+    .gift-toggle input{accent-color:var(--deep-rose);width:16px;height:16px;cursor:pointer;}
+    .gift-input{width:100%;margin-top:12px;border:1.5px solid rgba(192,100,122,.2);border-radius:10px;padding:11px 14px;font-family:'Jost',sans-serif;font-size:.84rem;color:var(--burgundy);background:var(--cream);outline:none;resize:none;display:none;transition:border-color .3s;}
+    .gift-input:focus{border-color:var(--deep-rose);}
+
+    /* DELIVERY */
+    .delivery-pin-section{margin-bottom:20px;}
+    .delivery-pin-label{font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;opacity:.5;margin-bottom:10px;font-weight:600;}
+    .pin-input-row{display:flex;gap:8px;}
+    .pin-input{flex:1;border:1.5px solid rgba(192,100,122,.2);border-radius:10px;padding:10px 14px;font-family:'Jost',sans-serif;font-size:.84rem;color:var(--burgundy);background:white;outline:none;transition:border-color .3s;}
+    .pin-input:focus{border-color:var(--deep-rose);}
+    .pin-check-btn{padding:10px 18px;background:var(--burgundy);color:white;border:none;border-radius:10px;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap;}
+    .pin-check-btn:hover{background:var(--deep-rose);}
+    .pin-result{margin-top:8px;font-size:.78rem;padding:8px 12px;border-radius:8px;display:none;}
+    .pin-result.ok{background:#e8fdf0;color:#2d7a4f;display:block;}
+    .pin-result.err{background:#fde8e8;color:#e05050;display:block;}
+
+    /* ACTION BUTTONS */
+    .action-btns{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+    .btn-cart{padding:16px;background:var(--burgundy);color:white;border:none;border-radius:var(--radius-md);font-family:'Jost',sans-serif;font-size:.8rem;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;}
+    .btn-cart:hover{background:#5a1528;transform:translateY(-2px);box-shadow:0 8px 24px rgba(59,13,26,.25);}
+    .btn-buynow{padding:16px;background:var(--deep-rose);color:white;border:none;border-radius:var(--radius-md);font-family:'Jost',sans-serif;font-size:.8rem;letter-spacing:2.5px;text-transform:uppercase;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:600;}
+    .btn-buynow:hover{background:#a0485e;transform:translateY(-2px);box-shadow:0 8px 24px rgba(192,100,122,.35);}
+    .btn-wishlist{padding:14px;background:transparent;color:var(--burgundy);border:1.5px solid rgba(59,13,26,.2);border-radius:var(--radius-md);font-family:'Jost',sans-serif;font-size:.78rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:8px;}
+    .btn-wishlist:hover{background:var(--blush);border-color:var(--rose);}
+    .btn-wishlist.wished{background:var(--blush);border-color:var(--rose);color:var(--deep-rose);}
+
+    /* TRUST BADGES */
+    .trust-badges{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
+    .trust-item{display:flex;align-items:center;gap:8px;font-size:.72rem;opacity:.6;background:var(--cream);padding:8px 10px;border-radius:8px;}
+    .trust-item span:first-child{font-size:1rem;}
+
+    /* ── ORDER COLUMN ── */
+    .order-col{display:flex;flex-direction:column;gap:16px;position:sticky;top:88px;}
+    .order-box{background:var(--white);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow-sm);}
+    .order-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;margin-bottom:16px;font-weight:400;}
+    .order-row{display:flex;justify-content:space-between;font-size:.83rem;margin-bottom:11px;opacity:.65;}
+    .order-row.total{opacity:1;font-weight:700;font-size:.98rem;border-top:1px solid rgba(192,100,122,.12);padding-top:13px;margin-top:5px;}
+
+    /* UPSELL */
+    .upsell-box{background:linear-gradient(135deg,var(--blush),#fbeef3);border-radius:var(--radius-lg);padding:22px;box-shadow:var(--shadow-sm);border:1px solid rgba(192,100,122,.12);}
+    .upsell-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;margin-bottom:14px;color:var(--burgundy);}
+    .upsell-item{display:flex;align-items:center;gap:10px;padding:9px 11px;background:white;border-radius:10px;margin-bottom:8px;cursor:pointer;transition:transform .2s,box-shadow .2s;border:1px solid rgba(192,100,122,.08);}
+    .upsell-item:hover{transform:translateX(3px);box-shadow:var(--shadow-sm);}
+    .upsell-icon{font-size:1.4rem;flex-shrink:0;}
+    .upsell-info{flex:1;}
+    .upsell-name{font-size:.78rem;font-weight:500;}
+    .upsell-price{font-size:.7rem;opacity:.55;}
+    .upsell-add{font-size:.65rem;color:var(--deep-rose);letter-spacing:1px;text-transform:uppercase;font-weight:600;flex-shrink:0;}
+
+    /* DELIVERY INFO */
+    .delivery-info div{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:.8rem;}
+    .delivery-info div:last-child{margin-bottom:0;}
+    .delivery-info span:first-child{font-size:1rem;}
+    .delivery-info span:last-child{opacity:.62;}
+
+    /* RELATED PRODUCTS */
+    .related-section{padding:0 60px 80px;}
+    .related-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+    .related-title{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;}
+    .related-title em{font-style:italic;color:var(--deep-rose);}
+    .related-see-all{font-size:.73rem;letter-spacing:2px;text-transform:uppercase;color:var(--deep-rose);opacity:.8;transition:opacity .2s;}
+    .related-see-all:hover{opacity:1;}
+    .related-scroll{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+
+    /* MINI CARD */
+    .mini-card{background:var(--white);border-radius:var(--radius-lg);overflow:hidden;cursor:pointer;transition:transform var(--transition),box-shadow var(--transition);box-shadow:var(--shadow-sm);}
+    .mini-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+    .mini-img{height:190px;overflow:hidden;background:var(--blush);position:relative;}
+    .mini-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+    .mini-card:hover .mini-img img{transform:scale(1.07);}
+    .mini-img-emoji{display:flex;align-items:center;justify-content:center;height:100%;font-size:3rem;}
+    .mini-disc{position:absolute;top:9px;left:9px;background:linear-gradient(135deg,#e84393,#c0647a);color:white;font-size:.55rem;font-weight:700;padding:3px 9px;border-radius:14px;}
+    .mini-body{padding:12px 14px 14px;}
+    .mini-name{font-family:'Cormorant Garamond',serif;font-size:.98rem;margin-bottom:5px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+    .mini-price-row{display:flex;align-items:center;gap:7px;}
+    .mini-price{font-size:.9rem;font-weight:700;}
+    .mini-orig{font-size:.73rem;text-decoration:line-through;opacity:.38;}
+
+    /* REVIEWS */
+    .reviews-section{padding:0 60px 80px;}
+    .reviews-wrap{background:var(--white);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-sm);}
+    .reviews-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:16px;}
+    .reviews-title{font-family:'Cormorant Garamond',serif;font-size:1.7rem;}
+    .reviews-title em{font-style:italic;color:var(--deep-rose);}
+    .big-rating{font-family:'Cormorant Garamond',serif;font-size:3.6rem;font-weight:300;line-height:1;text-align:center;}
+    .rating-summary{display:flex;align-items:center;gap:22px;}
+    .rating-bars{min-width:190px;}
+    .rating-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+    .rating-bar-label{font-size:.7rem;opacity:.5;width:28px;}
+    .rating-bar-track{flex:1;height:6px;background:var(--blush);border-radius:6px;overflow:hidden;}
+    .rating-bar-fill{height:100%;background:var(--gold);border-radius:6px;transition:width .8s;}
+    .rating-bar-count{font-size:.7rem;opacity:.4;width:18px;text-align:right;}
+    .reviews-list{display:flex;flex-direction:column;gap:16px;margin-bottom:28px;}
+    .review-card{padding:20px;border:1px solid rgba(192,100,122,.1);border-radius:var(--radius-md);transition:box-shadow .2s;}
+    .review-card:hover{box-shadow:var(--shadow-sm);}
+    .review-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    .reviewer{display:flex;align-items:center;gap:10px;}
+    .reviewer-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--deep-rose));display:flex;align-items:center;justify-content:center;color:white;font-size:.84rem;font-weight:600;flex-shrink:0;}
+    .reviewer-name{font-size:.88rem;font-weight:600;}
+    .reviewer-date{font-size:.7rem;opacity:.4;margin-top:1px;}
+    .review-text{font-size:.85rem;line-height:1.8;opacity:.68;font-weight:300;}
+    .review-verified{display:inline-flex;align-items:center;gap:4px;font-size:.64rem;color:#2d7a4f;background:#e8fdf0;padding:2px 9px;border-radius:10px;margin-top:9px;}
+    .write-review{background:var(--blush);border-radius:var(--radius-md);padding:24px;}
+    .write-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:4px;}
+    .write-sub{font-size:.78rem;opacity:.5;margin-bottom:18px;}
+    .star-select{display:flex;gap:7px;margin-bottom:10px;}
+    .star-btn{font-size:1.6rem;cursor:pointer;background:none;border:none;transition:transform .15s;}
+    .star-btn:hover{transform:scale(1.2);}
+    .form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+    .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+    .form-label{font-size:.62rem;letter-spacing:2.5px;text-transform:uppercase;opacity:.45;font-weight:600;}
+    .form-input{border:1.5px solid rgba(192,100,122,.18);border-radius:11px;padding:12px 14px;font-family:'Jost',sans-serif;font-size:.84rem;color:var(--burgundy);background:white;outline:none;transition:border-color .3s;}
+    .form-input:focus{border-color:var(--deep-rose);}
+    textarea.form-input{resize:vertical;min-height:80px;}
+    .submit-review-btn{padding:12px 30px;background:var(--burgundy);color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.76rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .3s;font-weight:600;}
+    .submit-review-btn:hover{background:var(--deep-rose);transform:translateY(-2px);}
+
+    /* LOADING */
+    .loading{text-align:center;padding:80px;opacity:.4;}
+    .spin{width:28px;height:28px;border:2px solid rgba(192,100,122,.3);border-top-color:var(--deep-rose);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px;}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* FLOAT WA */
+    #floatWA{position:fixed;bottom:28px;right:28px;z-index:500;display:flex;align-items:center;gap:9px;background:var(--green);color:white;border-radius:50px;padding:13px 22px;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;text-decoration:none;box-shadow:0 8px 32px rgba(37,211,102,.42);animation:floatA 2.5s ease-in-out infinite;}
+    @keyframes floatA{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+    /* STICKY ADD TO CART (mobile) */
+    .sticky-atc{display:none;position:fixed;bottom:68px;left:0;right:0;z-index:800;background:var(--white);border-top:1px solid rgba(192,100,122,.12);padding:12px 16px;box-shadow:0 -4px 20px rgba(59,13,26,.08);}
+    .sticky-atc-inner{display:flex;gap:10px;}
+    .sticky-atc .btn-cart,.sticky-atc .btn-buynow{flex:1;padding:13px;font-size:.72rem;}
+
+    /* RESPONSIVE */
+    @media(max-width:1100px){.product-wrap{grid-template-columns:1fr 1fr;}.order-col{display:none;}.related-scroll{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:768px){
+      nav{padding:10px 18px 10px 68px;}.nav-links{display:none;}.nav-right{display:none;}
+      .breadcrumb{padding:76px 18px 12px;}
+      .product-wrap{grid-template-columns:1fr;padding:0 16px 36px;}
+      .related-section{padding:0 16px 80px;}
+      .reviews-section{padding:0 16px 90px;}
+      .img-col{position:static;}
+      .slider-wrap{height:320px;}
+      .related-scroll{grid-template-columns:1fr 1fr;gap:12px;}
+      #floatWA{display:none!important;}
+      .sticky-atc{display:block;}
+      .form-grid-2{grid-template-columns:1fr;}
+    }
+    @media(max-width:480px){
+      .related-scroll{grid-template-columns:1fr 1fr;gap:10px;}
+      .mini-img{height:150px;}
+    }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div id="ah-toast"></div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-prev" onclick="lightboxNav(-1)">‹</button>
+  <img id="lightboxImg" src="" alt=""/>
+  <button class="lightbox-next" onclick="lightboxNav(1)">›</button>
+</div>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoH" alt="Aneesa Hampers" id="navLogoImg" onerror="this.style.display='none'"/>
+    <div class="nav-logo-text"><span>Aneesa</span> Hampers</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html">Collections</a></li>
+    <li><a href="orders.html">My Orders</a></li>
+    <li><a href="track.html">Track Order</a></li>
+    <li><a href="cart.html">Cart</a></li>
+    <li><a href="login.html" id="navAccountLink">Account</a></li>
+  </ul>
+  <div class="nav-right">
+    <span class="nav-user" id="navUserGreet"></span>
+    <a href="cart.html" class="nav-cart">🛍️ <span class="cart-count">0</span></a>
+    <button id="navLogoutBtn" onclick="doLogout()" style="display:none;align-items:center;gap:5px;padding:7px 14px;background:var(--blush);color:var(--deep-rose);border:1.5px solid rgba(192,100,122,.25);border-radius:20px;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;font-weight:500">🔒 Logout</button>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <a href="index.html">Home</a> ›
+  <a href="products.html">Collections</a> ›
+  <span id="bcName">Loading…</span>
+</div>
+
+<div class="loading" id="loadingState"><div class="spin"></div><p>Loading product…</p></div>
+
+<div class="product-wrap" id="productWrap" style="display:none">
+  <!-- LEFT: IMAGE GALLERY -->
+  <div class="img-col">
+    <div class="slider-wrap" id="sliderWrap">
+      <div class="slider-track" id="sliderTrack"></div>
+      <button class="slide-arrow slide-prev" onclick="slideNav(-1)">‹</button>
+      <button class="slide-arrow slide-next" onclick="slideNav(1)">›</button>
+      <div class="slide-dots" id="slideDots"></div>
+      <div class="img-badge-wrap" id="imgBadgeWrap"></div>
+      <button class="img-wishlist-btn" id="detWishBtn" onclick="toggleDetailWish()" title="Add to Wishlist">🤍</button>
+    </div>
+    <div class="thumb-row" id="thumbRow"></div>
+  </div>
+
+  <!-- RIGHT: PRODUCT DETAILS -->
+  <div class="detail-col">
+    <div class="prod-cat-tag" id="detCat"></div>
+    <div class="prod-title" id="detName"></div>
+
+    <!-- RATING -->
+    <div class="rating-row">
+      <div class="stars" id="detStars"></div>
+      <div class="rating-num" id="detRatingNum">0.0</div>
+      <div class="rating-count" id="detRatingCount">(0 reviews)</div>
+    </div>
+
+    <!-- PRICE -->
+    <div class="price-section">
+      <div class="price-row">
+        <div class="price-main" id="detPrice"></div>
+        <div class="price-original" id="detOrigPrice" style="display:none"></div>
+        <div class="price-off" id="detOff" style="display:none"></div>
+      </div>
+      <div class="price-savings" id="detSavings" style="display:none"></div>
+    </div>
+
+    <!-- OFFERS & COUPON -->
+    <div class="offers-section">
+      <div class="offers-title">Available Offers</div>
+      <div class="offer-item">
+        <span class="offer-icon">🎁</span>
+        <div class="offer-text"><strong>Free Gift Wrap</strong> on all orders — no minimum purchase.</div>
+      </div>
+      <div class="offer-item">
+        <span class="offer-icon">🚚</span>
+        <div class="offer-text"><strong>Free Delivery</strong> in Kadapa. Same-day if ordered before 2 PM.</div>
+      </div>
+      <div class="offer-item">
+        <span class="offer-icon">💬</span>
+        <div class="offer-text">Order on WhatsApp and get <strong>₹50 OFF</strong> on your next purchase.</div>
+      </div>
+      <button class="coupon-toggle" onclick="toggleCoupon()">🏷️ Show Coupon Code</button>
+      <div class="coupon-box" id="couponBox">
+        <p style="font-size:.75rem;margin-bottom:10px;opacity:.7;">Apply at checkout for extra savings:</p>
+        <div class="coupon-code">
+          <span id="couponCodeText">ANEESA10</span>
+          <button class="coupon-copy" onclick="copyCoupon()">Copy</button>
+        </div>
+        <p style="font-size:.7rem;margin-top:8px;opacity:.55;">Valid on orders above ₹499. One-time use.</p>
+      </div>
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="desc-text" id="detDesc"></div>
+
+    <!-- WHAT'S INSIDE -->
+    <div class="items-box" id="detItemsBox" style="display:none">
+      <div class="items-title">What's Inside 🎁</div>
+      <div class="items-list" id="detItems"></div>
+    </div>
+
+    <!-- QUANTITY -->
+    <div class="qty-row">
+      <div class="qty-label">Quantity</div>
+      <div class="qty-ctrl">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="qty-num" id="qtyNum">1</span>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+
+    <!-- GIFT MESSAGE -->
+    <div class="gift-box">
+      <label class="gift-toggle">
+        <input type="checkbox" id="giftCheck" onchange="toggleGift(this)"/>
+        💌 Send this as a gift — add a personal message
+      </label>
+      <textarea class="gift-input" id="giftMsg" rows="2" placeholder="Write your heartfelt message… (e.g. Happy Birthday! Wishing you all the joy 🎉)"></textarea>
+    </div>
+
+    <!-- DELIVERY PIN -->
+    <div class="delivery-pin-section">
+      <div class="delivery-pin-label">Check Delivery</div>
+      <div class="pin-input-row">
+        <input class="pin-input" id="pinInput" type="text" maxlength="6" placeholder="Enter PIN code"/>
+        <button class="pin-check-btn" onclick="checkDelivery()">Check</button>
+      </div>
+      <div class="pin-result" id="pinResult"></div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="action-btns">
+      <button class="btn-cart" id="addCartBtn">🛍️ Add to Cart</button>
+      <button class="btn-buynow" id="buyNowBtn">⚡ Buy Now — Instant Checkout</button>
+      <button class="btn-wishlist" id="detWishlistBtn" onclick="toggleDetailWish()">🤍 Add to Wishlist</button>
+    </div>
+
+    <!-- TRUST BADGES -->
+    <div class="trust-badges">
+      <div class="trust-item"><span>🔒</span><span>100% Secure Checkout</span></div>
+      <div class="trust-item"><span>✨</span><span>Handcrafted Premium</span></div>
+      <div class="trust-item"><span>🔄</span><span>Easy Returns & Refunds</span></div>
+      <div class="trust-item"><span>📞</span><span>WhatsApp Support</span></div>
+    </div>
+  </div>
+
+  <!-- ORDER SUMMARY (desktop right panel) -->
+  <div class="order-col">
+    <div class="order-box">
+      <div class="order-title">Order Summary</div>
+      <div class="order-row"><span>Price</span><span id="sumPrice">₹0</span></div>
+      <div class="order-row"><span>Quantity</span><span id="sumQty">×1</span></div>
+      <div class="order-row"><span>Delivery</span><span style="color:#2d7a4f;font-weight:600;">Free</span></div>
+      <div class="order-row total"><span>Total</span><span id="sumTotal">₹0</span></div>
+      <button class="btn-cart" style="width:100%;margin-top:14px" id="addCartBtn2">🛍️ Add to Cart</button>
+      <button class="btn-buynow" style="width:100%;margin-top:10px" id="buyNowBtn2">⚡ Buy Now</button>
+    </div>
+
+    <!-- MAKE IT SPECIAL UPSELL -->
+    <div class="upsell-box">
+      <div class="upsell-title">✨ Make It Extra Special</div>
+      <div class="upsell-item" onclick="upsellAdd('Greeting Card','49')">
+        <span class="upsell-icon">💌</span>
+        <div class="upsell-info">
+          <div class="upsell-name">Greeting Card</div>
+          <div class="upsell-price">₹49</div>
+        </div>
+        <span class="upsell-add">+ Add</span>
+      </div>
+      <div class="upsell-item" onclick="upsellAdd('Premium Box Wrap','79')">
+        <span class="upsell-icon">🎀</span>
+        <div class="upsell-info">
+          <div class="upsell-name">Premium Box Wrap</div>
+          <div class="upsell-price">₹79</div>
+        </div>
+        <span class="upsell-add">+ Add</span>
+      </div>
+      <div class="upsell-item" onclick="upsellAdd('Scented Candle','149')">
+        <span class="upsell-icon">🕯️</span>
+        <div class="upsell-info">
+          <div class="upsell-name">Scented Candle</div>
+          <div class="upsell-price">₹149</div>
+        </div>
+        <span class="upsell-add">+ Add</span>
+      </div>
+    </div>
+
+    <div class="order-box">
+      <div class="delivery-info">
+        <div><span>🚚</span><span>Free delivery in Kadapa</span></div>
+        <div><span>⚡</span><span>Same day before 2 PM</span></div>
+        <div><span>🎀</span><span>Premium handcrafted quality</span></div>
+        <div><span>💌</span><span>Gift message included free</span></div>
+        <div><span>📞</span><span>WhatsApp order support</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BEST PAIRED WITH (below product wrap) -->
+<div class="related-section" id="pairedSection" style="display:none">
+  <div class="related-header">
+    <div class="related-title">Best <em>Paired With</em></div>
+    <a href="products.html" class="related-see-all">View All →</a>
+  </div>
+  <div class="related-scroll" id="pairedGrid"></div>
+</div>
+
+<!-- REVIEWS -->
+<div class="reviews-section" id="reviewsSection" style="display:none">
+  <div class="reviews-wrap">
+    <div class="reviews-header">
+      <div>
+        <div class="reviews-title">Customer <em>Reviews</em></div>
+        <div style="font-size:.74rem;opacity:.4;margin-top:4px">Real reviews from verified customers</div>
+      </div>
+      <div class="rating-summary">
+        <div>
+          <div class="big-rating" id="bigRating">0.0</div>
+          <div class="stars" id="summaryStars" style="justify-content:center;margin:4px 0"></div>
+          <div style="font-size:.7rem;opacity:.4;text-align:center" id="totalReviews">0 reviews</div>
+        </div>
+        <div class="rating-bars" id="ratingBars"></div>
+      </div>
+    </div>
+    <div class="reviews-list" id="reviewsList">
+      <div style="text-align:center;padding:28px;opacity:.4">No reviews yet — be the first! 🌸</div>
+    </div>
+    <div class="write-review">
+      <div class="write-title">Write a Review</div>
+      <div class="write-sub">Share your experience with this product</div>
+      <div class="star-select" id="starSelect">
+        <button class="star-btn" onclick="selectStar(1)">☆</button>
+        <button class="star-btn" onclick="selectStar(2)">☆</button>
+        <button class="star-btn" onclick="selectStar(3)">☆</button>
+        <button class="star-btn" onclick="selectStar(4)">☆</button>
+        <button class="star-btn" onclick="selectStar(5)">☆</button>
+      </div>
+      <div id="starLabel" style="font-size:.74rem;opacity:.45;margin-bottom:12px;min-height:15px"></div>
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label class="form-label">Your Name *</label>
+          <input class="form-input" id="rvName" placeholder="Your name"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone (optional)</label>
+          <input class="form-input" id="rvPhone" placeholder="For verification"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Review *</label>
+        <textarea class="form-input" id="rvText" placeholder="Tell others about your experience…"></textarea>
+      </div>
+      <button class="submit-review-btn" onclick="submitReview()">Submit Review ✨</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIMILAR FINDS -->
+<div class="related-section" id="similarSection" style="display:none">
+  <div class="related-header">
+    <div class="related-title">Similar <em>Finds</em></div>
+    <a href="products.html" class="related-see-all">View All →</a>
+  </div>
+  <div class="related-scroll" id="similarGrid"></div>
+</div>
+
+<a href="#" id="floatWA">💬 Order via WhatsApp</a>
+
+<!-- STICKY ATC (mobile) -->
+<div class="sticky-atc" id="stickyAtc">
+  <div class="sticky-atc-inner">
+    <button class="btn-cart" id="stickyCartBtn">🛍️ Add to Cart</button>
+    <button class="btn-buynow" id="stickyBuyBtn">⚡ Buy Now</button>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp, limit }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig={apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",authDomain:"aneesa-hampers.firebaseapp.com",projectId:"aneesa-hampers",storageBucket:"aneesa-hampers.firebasestorage.app",messagingSenderId:"909653560410",appId:"1:909653560410:web:397db4fec2d9f042609c63"};
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const auth=getAuth(app);
+const WA_NUM='918639066613';
+
+// CURSOR
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';},80);});
+
+// CART
+function cartKey(){const u=JSON.parse(localStorage.getItem('ah_user')||'{}');return u.uid?'ah_cart_'+u.uid:'ah_cart_guest';}
+const Cart={
+  get(){try{return JSON.parse(localStorage.getItem(cartKey())||'[]')}catch{return[]}},
+  save(i){localStorage.setItem(cartKey(),JSON.stringify(i));badge();},
+  add(p){const it=Cart.get(),ex=it.find(i=>i.id===p.id);if(ex){ex.qty=(ex.qty||1)+1;}else{it.push({...p,qty:1});}Cart.save(it);toast(`✅ "${p.name}" added to cart!`);},
+  count(){return Cart.get().reduce((s,i)=>s+(i.qty||1),0);}
+};
+function badge(){document.querySelectorAll('.cart-count,.cart-badge,[data-cart-count]').forEach(el=>el.textContent=Cart.count());}
+function toast(msg){const t=document.getElementById('ah-toast');t.textContent=msg;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2600);}
+
+badge();
+
+// AUTH
+const _savedU=JSON.parse(localStorage.getItem('ah_user')||'null');
+if(_savedU&&_savedU.uid){
+  const greet=document.getElementById('navUserGreet');if(greet)greet.textContent='Hi, '+_savedU.name.split(' ')[0]+'!';
+  const logBtn=document.getElementById('navLogoutBtn');if(logBtn)logBtn.style.display='inline-flex';
+}
+window.doLogout=async function(){
+  if(!confirm('Log out?'))return;
+  try{await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js").then(m=>m.signOut(auth));}catch(e){}
+  localStorage.removeItem('ah_user');window.location.href='index.html';
+};
+
+// PRODUCT
+const productId = new URLSearchParams(location.search).get('id');
+if(!productId){document.getElementById('loadingState').innerHTML='<p>Product not found.</p>';throw new Error('No product ID');}
+
+let currentProduct = null;
+let allImages = [];
+let currentSlide = 0;
+let currentQty = 1;
+let lightboxIdx = 0;
+let selectedStarRating = 0;
+let isWishedState = false;
+
+// Wishlist helpers
+function getWishlist(){try{return JSON.parse(localStorage.getItem('ah_wish')||'[]')}catch{return[];}}
+function saveWishlist(w){localStorage.setItem('ah_wish',JSON.stringify(w));}
+
+window.toggleDetailWish = function(){
+  let w=getWishlist();
+  if(isWishedState){
+    w=w.filter(x=>x!==productId);
+    isWishedState=false;
+    toast('Removed from wishlist');
+  }else{
+    w.push(productId);
+    isWishedState=true;
+    toast('❤️ Saved to wishlist!');
+  }
+  saveWishlist(w);
+  updateWishBtns();
+};
+function updateWishBtns(){
+  const floatBtn=document.getElementById('detWishBtn');
+  const listBtn=document.getElementById('detWishlistBtn');
+  if(floatBtn){floatBtn.textContent=isWishedState?'❤️':'🤍';floatBtn.classList.toggle('wished',isWishedState);}
+  if(listBtn){listBtn.textContent=isWishedState?'❤️ Wishlisted':'🤍 Add to Wishlist';listBtn.classList.toggle('wished',isWishedState);}
+}
+
+// Load product
+getDoc(doc(db,'products',productId)).then(snap=>{
+  if(!snap.exists()){document.getElementById('loadingState').innerHTML='<p>Product not found.</p>';return;}
+  currentProduct={id:snap.id,...snap.data()};
+  renderProduct(currentProduct);
+  isWishedState=getWishlist().includes(productId);
+  updateWishBtns();
+  loadRelated(currentProduct.category,currentProduct.id);
+}).catch(e=>{console.error(e);document.getElementById('loadingState').innerHTML='<p>Error loading product.</p>';});
+
+function renderProduct(p){
+  document.title=`${p.name} – Aneesa Hampers`;
+  document.getElementById('bcName').textContent=p.name;
+  document.getElementById('detCat').textContent=(p.category||'Premium Gift').toUpperCase();
+  document.getElementById('detName').textContent=p.name;
+
+  // Price
+  const price=Number(p.price);
+  const disc=Number(p.discount)||0;
+  const effPrice=disc>0?Math.round(price*(1-disc/100)):price;
+  document.getElementById('detPrice').textContent=`₹${effPrice.toLocaleString()}`;
+
+  if(disc>0){
+    document.getElementById('detOrigPrice').textContent=`₹${price.toLocaleString()}`;
+    document.getElementById('detOrigPrice').style.display='inline';
+    document.getElementById('detOff').textContent=`${disc}% OFF`;
+    document.getElementById('detOff').style.display='inline-flex';
+    const saved=price-effPrice;
+    document.getElementById('detSavings').textContent=`You save ₹${saved.toLocaleString()} on this purchase!`;
+    document.getElementById('detSavings').style.display='block';
+  }
+
+  document.getElementById('detDesc').textContent=p.description||'';
+
+  // Items
+  if(p.items&&p.items.length){
+    const box=document.getElementById('detItemsBox');
+    box.style.display='block';
+    document.getElementById('detItems').innerHTML=p.items.map(it=>`<span class="item-chip">${it}</span>`).join('');
+  }
+
+  // Images
+  allImages=p.images&&p.images.length?p.images:[];
+  const track=document.getElementById('sliderTrack');
+  const dots=document.getElementById('slideDots');
+  const thumbRow=document.getElementById('thumbRow');
+
+  if(allImages.length){
+    track.innerHTML=allImages.map((src,i)=>`<div class="slide" onclick="openLightbox(${i})"><img src="${src}" alt="${p.name} ${i+1}" loading="${i===0?'eager':'lazy'}" decoding="async"/></div>`).join('');
+    dots.innerHTML=allImages.map((_,i)=>`<button class="slide-dot ${i===0?'active':''}" onclick="goSlide(${i})"></button>`).join('');
+    thumbRow.innerHTML=allImages.map((src,i)=>`<img class="thumb ${i===0?'active':''}" src="${src}" alt="${p.name}" loading="lazy" onclick="goSlide(${i})"/>`).join('');
+  }else{
+    track.innerHTML=`<div class="slide"><div style="font-size:6rem">${p.emoji||'🎁'}</div></div>`;
+  }
+
+  // Badges
+  const bw=document.getElementById('imgBadgeWrap');
+  if(disc>0) bw.innerHTML+=`<div class="img-badge">${disc}% OFF</div>`;
+  if(p.badge) bw.innerHTML+=`<div class="img-badge secondary">${p.badge}</div>`;
+
+  // Order summary
+  updateSummary(effPrice);
+
+  document.getElementById('loadingState').style.display='none';
+  document.getElementById('productWrap').style.display='grid';
+  document.getElementById('reviewsSection').style.display='block';
+}
+
+// Slider
+window.goSlide = function(idx){
+  currentSlide=idx;
+  const track=document.getElementById('sliderTrack');
+  if(track) track.style.transform=`translateX(-${idx*100}%)`;
+  document.querySelectorAll('.slide-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+  document.querySelectorAll('.thumb').forEach((t,i)=>t.classList.toggle('active',i===idx));
+};
+window.slideNav = function(dir){
+  const max=allImages.length||1;
+  goSlide((currentSlide+dir+max)%max);
+};
+
+// Lightbox
+window.openLightbox = function(idx){
+  lightboxIdx=idx;
+  document.getElementById('lightboxImg').src=allImages[idx]||'';
+  document.getElementById('lightbox').classList.add('open');
+};
+window.closeLightbox = function(){document.getElementById('lightbox').classList.remove('open');};
+window.lightboxNav = function(dir){
+  lightboxIdx=(lightboxIdx+dir+allImages.length)%allImages.length;
+  document.getElementById('lightboxImg').src=allImages[lightboxIdx]||'';
+};
+document.getElementById('lightbox').addEventListener('click',e=>{if(e.target===document.getElementById('lightbox'))closeLightbox();});
+
+// Quantity
+window.changeQty = function(d){
+  currentQty=Math.max(1,currentQty+d);
+  document.getElementById('qtyNum').textContent=currentQty;
+  if(currentProduct){
+    const price=Number(currentProduct.price);
+    const disc=Number(currentProduct.discount)||0;
+    const effPrice=disc>0?Math.round(price*(1-disc/100)):price;
+    updateSummary(effPrice);
+  }
+};
+function updateSummary(effPrice){
+  document.getElementById('sumPrice').textContent=`₹${effPrice.toLocaleString()}`;
+  document.getElementById('sumQty').textContent=`×${currentQty}`;
+  document.getElementById('sumTotal').textContent=`₹${(effPrice*currentQty).toLocaleString()}`;
+}
+
+// Gift
+window.toggleGift = function(cb){
+  const input=document.getElementById('giftMsg');
+  input.style.display=cb.checked?'block':'none';
+  if(cb.checked) input.focus();
+};
+
+// Delivery check
+window.checkDelivery = function(){
+  const pin=(document.getElementById('pinInput').value||'').trim();
+  const result=document.getElementById('pinResult');
+  if(!/^\d{6}$/.test(pin)){result.className='pin-result err';result.textContent='Please enter a valid 6-digit PIN code.';return;}
+  // Kadapa PIN codes: 516001-516004, 516004 etc.
+  const kadapaPins=['516001','516002','516003','516004','516360'];
+  if(kadapaPins.includes(pin)){
+    result.className='pin-result ok';
+    result.textContent='✅ Free delivery! Expected by Tomorrow, same-day if ordered before 2 PM.';
+  }else{
+    result.className='pin-result ok';
+    result.textContent=`✅ Delivery available to ${pin}. Expected in 2-4 business days.`;
+  }
+};
+
+// Coupon
+window.toggleCoupon = function(){
+  const box=document.getElementById('couponBox');
+  box.classList.toggle('open');
+  document.querySelector('.coupon-toggle').textContent=box.classList.contains('open')?'🏷️ Hide Coupon':'🏷️ Show Coupon Code';
+};
+window.copyCoupon = function(){
+  navigator.clipboard.writeText('ANEESA10').then(()=>toast('✅ Coupon code copied!')).catch(()=>{
+    const el=document.createElement('input');el.value='ANEESA10';document.body.appendChild(el);el.select();document.execCommand('copy');el.remove();toast('✅ Coupon code copied!');
+  });
+};
+
+// Upsell
+window.upsellAdd = function(name, price){
+  Cart.add({id:'upsell_'+name.replace(' ','_'),name,price:Number(price),image:'',qty:1});
+};
+
+// Add to Cart
+function addToCart(){
+  if(!currentProduct)return;
+  const price=Number(currentProduct.price);
+  const disc=Number(currentProduct.discount)||0;
+  const effPrice=disc>0?Math.round(price*(1-disc/100)):price;
+  const giftMsg=document.getElementById('giftCheck').checked?document.getElementById('giftMsg').value:'';
+  Cart.add({id:currentProduct.id,name:currentProduct.name,price:effPrice,image:allImages[0]||'',qty:currentQty,giftMsg});
+}
+function buyNow(){
+  if(!currentProduct)return;
+  const price=Number(currentProduct.price);
+  const disc=Number(currentProduct.discount)||0;
+  const effPrice=disc>0?Math.round(price*(1-disc/100)):price;
+  const item={id:currentProduct.id,name:currentProduct.name,price:effPrice,image:allImages[0]||'',qty:currentQty};
+  localStorage.setItem('ah_pending_buynow',JSON.stringify(item));
+  Cart.add(item);
+  window.location.href='cart.html';
+}
+
+document.getElementById('addCartBtn').onclick=addToCart;
+document.getElementById('addCartBtn2').onclick=addToCart;
+document.getElementById('buyNowBtn').onclick=buyNow;
+document.getElementById('buyNowBtn2').onclick=buyNow;
+document.getElementById('stickyCartBtn').onclick=addToCart;
+document.getElementById('stickyBuyBtn').onclick=buyNow;
+
+// WhatsApp
+document.getElementById('floatWA').onclick=e=>{
+  e.preventDefault();
+  if(currentProduct){window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(`Hi! I want to order *${currentProduct.name}* (₹${Number(currentProduct.price)*currentQty}) from Aneesa Hampers 🎁`)},'_blank');}
+};
+
+// Stars helper
+function starsHtml(r,size='1rem'){
+  let h='';for(let i=1;i<=5;i++)h+=`<span style="font-size:${size};opacity:${i<=Math.round(r)?1:.2}">⭐</span>`;
+  return h;
+}
+
+// Reviews real-time
+const rvQ=query(collection(db,'reviews'),where('productId','==',productId),orderBy('createdAt','desc'));
+onSnapshot(rvQ,snap=>{
+  const reviews=snap.docs.map(d=>({id:d.id,...d.data()}));
+  renderReviews(reviews);renderRatingSummary(reviews);updateRatingDisplay(reviews);
+});
+
+function renderReviews(reviews){
+  const list=document.getElementById('reviewsList');
+  if(!reviews.length){list.innerHTML=`<div style="text-align:center;padding:28px;opacity:.4">No reviews yet — be the first! 🌸</div>`;return;}
+  list.innerHTML=reviews.map(r=>{
+    const initials=(r.name||'AN').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+    const date=r.createdAt?.toDate?r.createdAt.toDate().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'Recently';
+    return `<div class="review-card">
+      <div class="review-top">
+        <div class="reviewer"><div class="reviewer-av">${initials}</div><div><div class="reviewer-name">${r.name}</div><div class="reviewer-date">${date}</div></div></div>
+        <div>${starsHtml(r.rating,'.85rem')}</div>
+      </div>
+      <div class="review-text">${r.text}</div>
+      <div class="review-verified">✓ Verified Purchase</div>
+    </div>`;
+  }).join('');
+}
+function renderRatingSummary(reviews){
+  if(!reviews.length)return;
+  const avg=reviews.reduce((s,r)=>s+r.rating,0)/reviews.length;
+  document.getElementById('bigRating').textContent=(Math.round(avg*10)/10).toFixed(1);
+  document.getElementById('summaryStars').innerHTML=starsHtml(avg,'1rem');
+  document.getElementById('totalReviews').textContent=`${reviews.length} review${reviews.length!==1?'s':''}`;
+  const counts=[5,4,3,2,1].map(s=>reviews.filter(r=>r.rating===s).length);
+  document.getElementById('ratingBars').innerHTML=[5,4,3,2,1].map((s,i)=>`
+    <div class="rating-bar-row">
+      <div class="rating-bar-label">${s}⭐</div>
+      <div class="rating-bar-track"><div class="rating-bar-fill" style="width:${reviews.length?counts[i]/reviews.length*100:0}%"></div></div>
+      <div class="rating-bar-count">${counts[i]}</div>
+    </div>`).join('');
+}
+function updateRatingDisplay(reviews){
+  if(!reviews.length){document.getElementById('detStars').innerHTML=starsHtml(0);document.getElementById('detRatingNum').textContent='0.0';document.getElementById('detRatingCount').textContent='(0 reviews)';return;}
+  const avg=reviews.reduce((s,r)=>s+r.rating,0)/reviews.length;
+  document.getElementById('detStars').innerHTML=starsHtml(avg);
+  document.getElementById('detRatingNum').textContent=(Math.round(avg*10)/10).toFixed(1);
+  document.getElementById('detRatingCount').textContent=`(${reviews.length} review${reviews.length!==1?'s':''})`;
+}
+
+// Star selector
+const starLabels=['','Terrible 😞','Poor 😕','Okay 😐','Good 😊','Excellent! 🤩'];
+window.selectStar=rating=>{
+  selectedStarRating=rating;
+  document.querySelectorAll('.star-btn').forEach((btn,i)=>btn.textContent=i<rating?'⭐':'☆');
+  document.getElementById('starLabel').textContent=starLabels[rating]||'';
+};
+
+// Submit review
+window.submitReview=async()=>{
+  const name=document.getElementById('rvName').value.trim();
+  const text=document.getElementById('rvText').value.trim();
+  if(!selectedStarRating){toast('⚠️ Please select a star rating');return;}
+  if(!name){toast('⚠️ Please enter your name');return;}
+  if(!text){toast('⚠️ Please write your review');return;}
+  const btn=document.querySelector('.submit-review-btn');
+  btn.textContent='Submitting…';btn.disabled=true;
+  try{
+    await addDoc(collection(db,'reviews'),{productId,name,phone:document.getElementById('rvPhone').value.trim(),rating:selectedStarRating,text,createdAt:serverTimestamp()});
+    toast('✅ Thank you for your review! 🌸');
+    document.getElementById('rvText').value='';selectedStarRating=0;
+    document.querySelectorAll('.star-btn').forEach(b=>b.textContent='☆');
+    document.getElementById('starLabel').textContent='';
+  }catch(e){toast('❌ Error. Please try again!');}
+  btn.textContent='Submit Review ✨';btn.disabled=false;
+};
+
+// Related products
+async function loadRelated(category, excludeId){
+  try{
+    const q=query(collection(db,'products'),where('category','==',category||''),limit(8));
+    const snap=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m=>m.getDocs(q));
+    let products=snap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.id!==excludeId);
+    if(products.length<2){
+      const allQ=query(collection(db,'products'),orderBy('createdAt','desc'),limit(8));
+      const allSnap=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m=>m.getDocs(allQ));
+      products=allSnap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.id!==excludeId).slice(0,4);
+    }
+    if(products.length){
+      renderRelated('pairedGrid','pairedSection',products.slice(0,4));
+      renderRelated('similarGrid','similarSection',products.slice(0,4));
+    }
+  }catch(e){console.error('Related products error:',e);}
+}
+
+function renderRelated(gridId, sectionId, products){
+  const section=document.getElementById(sectionId);
+  const grid=document.getElementById(gridId);
+  if(!section||!grid||!products.length)return;
+  grid.innerHTML=products.map(p=>{
+    const imgs=p.images&&p.images.length?p.images:[];
+    const disc=Number(p.discount)||0;
+    const effPrice=disc>0?Math.round(Number(p.price)*(1-disc/100)):Number(p.price);
+    const imgHtml=imgs.length?`<img src="${imgs[0]}" alt="${p.name}" loading="lazy"/>`:`<div class="mini-img-emoji">${p.emoji||'🎁'}</div>`;
+    return `<div class="mini-card" onclick="window.location='product.html?id=${p.id}'">
+      <div class="mini-img">
+        ${disc>0?`<div class="mini-disc">${disc}% OFF</div>`:''}
+        ${imgHtml}
+      </div>
+      <div class="mini-body">
+        <div class="mini-name">${p.name}</div>
+        <div class="mini-price-row">
+          <span class="mini-price">₹${effPrice.toLocaleString()}</span>
+          ${disc>0?`<span class="mini-orig">₹${Number(p.price).toLocaleString()}</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  section.style.display='block';
+}
+</script>
+<script src="mobilenav.js"></script>
+</body>
+</html>

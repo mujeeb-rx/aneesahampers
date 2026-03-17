@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cart &amp; Checkout &ndash; Aneesa Hampers</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;--burgundy:#3b0d1a;--cream:#fdf6f0;--gold:#c9a96e;--white:#fff;--green:#25D366;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);cursor:none;}
+.cursor{width:8px;height:8px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}
+.cursor-ring{width:28px;height:28px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:left .08s,top .08s;opacity:.4;}
+#ah-toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:white;padding:11px 24px;border-radius:30px;font-size:.76rem;z-index:9999;display:none;white-space:nowrap;box-shadow:0 6px 24px rgba(59,13,26,.3);}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:72px;background:rgba(253,246,240,.96);backdrop-filter:blur(20px);border-bottom:1px solid rgba(192,100,122,.1);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-style:italic;color:var(--burgundy);text-decoration:none;}
+.nav-logo span{color:var(--deep-rose);}
+.nav-links{display:flex;gap:34px;list-style:none;}
+.nav-links a{text-decoration:none;font-size:.7rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--burgundy);opacity:.5;transition:opacity .2s,color .2s;}
+.nav-links a:hover,.nav-links a.active{opacity:1;color:var(--deep-rose);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.nav-cart{display:flex;align-items:center;gap:7px;text-decoration:none;color:var(--burgundy);font-size:.7rem;letter-spacing:2px;text-transform:uppercase;cursor:none;padding:8px 12px;border-radius:8px;}
+@media(max-width:900px){nav{padding:0 16px 0 68px;}.nav-links{display:none;}.nav-right{display:none;}}
+.nav-cart:hover{background:var(--blush);}
+.cart-count{background:var(--deep-rose);color:white;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.6rem;padding:0 5px;font-weight:600;}
+.nav-wa{background:var(--green);color:white;border-radius:8px;padding:9px 18px;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;text-decoration:none;cursor:none;}
+
+/* LOGIN GATE */
+#loginGate{display:none;position:fixed;inset:0;z-index:5000;background:var(--cream);overflow-y:auto;}
+.gate-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+.gate-box{background:var(--white);border-radius:24px;padding:44px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(59,13,26,.12);}
+.gate-icon{font-size:2.8rem;text-align:center;margin-bottom:10px;}
+.gate-title{font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;margin-bottom:6px;}
+.gate-title em{font-style:italic;color:var(--deep-rose);}
+.gate-sub{font-size:.82rem;text-align:center;opacity:.5;margin-bottom:28px;line-height:1.6;}
+.gate-tabs{display:flex;background:var(--blush);border-radius:30px;padding:4px;margin-bottom:24px;}
+.gate-tab{flex:1;padding:10px;border:none;background:none;font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--burgundy);opacity:.5;cursor:pointer;border-radius:26px;transition:all .3s;}
+.gate-tab.on{background:white;opacity:1;box-shadow:0 2px 10px rgba(59,13,26,.08);}
+.gate-pane{display:none;}
+.gate-pane.on{display:block;}
+.gate-google{width:100%;padding:13px;background:white;border:1.5px solid rgba(192,100,122,.25);border-radius:12px;font-family:'Jost',sans-serif;font-size:.82rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;transition:border-color .2s,box-shadow .2s;}
+.gate-google:hover{border-color:var(--deep-rose);box-shadow:0 4px 16px rgba(192,100,122,.15);}
+.divider{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(192,100,122,.15);}
+.divider span{font-size:.66rem;letter-spacing:2px;text-transform:uppercase;opacity:.4;}
+.f-group{display:flex;flex-direction:column;gap:5px;margin-bottom:13px;}
+.f-label{font-size:.64rem;letter-spacing:2px;text-transform:uppercase;opacity:.45;}
+.f-input{border:1.5px solid rgba(192,100,122,.2);border-radius:10px;padding:11px 14px;font-family:'Jost',sans-serif;font-size:.85rem;color:var(--burgundy);background:var(--cream);outline:none;transition:border-color .25s;width:100%;}
+.f-input:focus{border-color:var(--deep-rose);}
+.f-input.err{border-color:#e05050;}
+.f-err{font-size:.7rem;color:#e05050;min-height:14px;}
+.f-btn{width:100%;padding:13px;background:var(--burgundy);color:white;border:none;border-radius:12px;font-family:'Jost',sans-serif;font-size:.78rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-top:4px;transition:background .25s;}
+.f-btn:hover{background:var(--deep-rose);}
+.gate-skip{text-align:center;margin-top:16px;font-size:.74rem;opacity:.45;}
+.gate-skip a{color:var(--deep-rose);cursor:pointer;text-decoration:none;}
+.gate-skip a:hover{text-decoration:underline;}
+
+/* STEPS */
+.steps-bar{padding:0 60px 28px;background:var(--white);border-bottom:1px solid rgba(192,100,122,.09);}
+.steps-inner{padding-top:90px;}
+.steps{display:flex;align-items:center;justify-content:center;max-width:520px;margin:0 auto;}
+.step{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:600;border:2px solid rgba(192,100,122,.25);color:rgba(192,100,122,.45);transition:all .4s;}
+.step.done .step-num,.step.active .step-num{background:var(--burgundy);color:white;border-color:var(--burgundy);}
+.step-label{font-size:.63rem;letter-spacing:2px;text-transform:uppercase;opacity:.4;transition:opacity .3s;}
+.step.active .step-label{opacity:1;color:var(--deep-rose);}
+.step-line{flex:1;height:2px;background:rgba(192,100,122,.12);margin:0 -2px;position:relative;top:-15px;}
+.step-line.done{background:var(--burgundy);}
+
+/* CART LAYOUT */
+.cart-main{padding:36px 60px 80px;display:grid;grid-template-columns:1fr 360px;gap:26px;align-items:start;}
+.cart-section{background:var(--white);border-radius:18px;padding:26px;}
+.cart-title{font-family:'Cormorant Garamond',serif;font-size:1.55rem;margin-bottom:20px;}
+.cart-title em{font-style:italic;color:var(--deep-rose);}
+.cart-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid rgba(192,100,122,.08);}
+.cart-item:last-child{border-bottom:none;}
+.item-img{width:76px;height:76px;border-radius:11px;object-fit:cover;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:1.9rem;flex-shrink:0;overflow:hidden;}
+.item-img img{width:100%;height:100%;object-fit:cover;}
+.item-info{flex:1;}
+.item-name{font-family:'Cormorant Garamond',serif;font-size:1.02rem;margin-bottom:4px;}
+.item-price{font-size:.82rem;color:var(--deep-rose);font-weight:500;margin-bottom:9px;}
+.item-qty{display:flex;align-items:center;gap:9px;}
+.qty-btn{width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(192,100,122,.28);background:none;color:var(--burgundy);font-size:.95rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.qty-btn:hover{background:var(--burgundy);color:white;border-color:var(--burgundy);}
+.qty-num{font-size:.88rem;font-weight:500;min-width:18px;text-align:center;}
+.item-total{font-size:.88rem;font-weight:600;margin-left:auto;align-self:center;}
+.remove-btn{background:none;border:none;color:rgba(192,100,122,.45);font-size:1rem;cursor:pointer;transition:color .2s;align-self:flex-start;margin-left:6px;padding:4px;}
+.remove-btn:hover{color:#e05050;}
+.cart-empty{text-align:center;padding:50px 20px;opacity:.5;}
+.cart-empty .icon{font-size:3.2rem;margin-bottom:14px;}
+
+/* DELIVERY FORM */
+.form-title{font-family:'Cormorant Garamond',serif;font-size:1.45rem;margin-bottom:20px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.full{grid-column:1/-1;}
+.form-label{font-size:.64rem;letter-spacing:2.5px;text-transform:uppercase;opacity:.48;}
+.form-input{border:1.5px solid rgba(192,100,122,.2);border-radius:11px;padding:11px 13px;font-family:'Jost',sans-serif;font-size:.85rem;color:var(--burgundy);background:var(--white);outline:none;transition:border-color .25s;width:100%;}
+.form-input:focus{border-color:var(--deep-rose);}
+.form-input.error{border-color:#e05050;}
+.field-note{font-size:.7rem;color:#e05050;min-height:15px;margin-top:2px;}
+
+/* PHONE WITH COUNTRY CODE */
+.phone-row{display:flex;gap:8px;}
+.country-code-wrap{position:relative;flex-shrink:0;}
+.cc-btn{display:flex;align-items:center;gap:6px;padding:11px 12px;border:1.5px solid rgba(192,100,122,.2);border-radius:11px;background:var(--white);cursor:pointer;font-family:'Jost',sans-serif;font-size:.83rem;color:var(--burgundy);white-space:nowrap;min-width:100px;transition:border-color .25s;}
+.cc-btn:hover,.cc-btn.open{border-color:var(--deep-rose);}
+.cc-flag{font-size:1.1rem;}
+.cc-code{font-weight:600;font-size:.82rem;}
+.cc-caret{font-size:.6rem;opacity:.5;margin-left:2px;}
+.cc-dropdown{position:absolute;top:calc(100% + 4px);left:0;background:white;border:1.5px solid rgba(192,100,122,.15);border-radius:13px;box-shadow:0 10px 40px rgba(59,13,26,.14);z-index:500;width:280px;display:none;overflow:hidden;}
+.cc-dropdown.open{display:block;}
+.cc-search{width:100%;padding:10px 14px;border:none;border-bottom:1px solid rgba(192,100,122,.1);font-family:'Jost',sans-serif;font-size:.82rem;outline:none;color:var(--burgundy);}
+.cc-list{max-height:220px;overflow-y:auto;}
+.cc-item{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;font-size:.82rem;transition:background .15s;}
+.cc-item:hover,.cc-item.active{background:var(--blush);}
+.cc-item .flag{font-size:1.1rem;flex-shrink:0;}
+.cc-item .name{flex:1;font-size:.8rem;}
+.cc-item .dial{font-size:.75rem;opacity:.5;font-weight:600;}
+.phone-input-wrap{flex:1;}
+
+/* ZIP AUTO-DETECT */
+.zip-row{position:relative;}
+.zip-detecting{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.7rem;color:var(--deep-rose);display:none;}
+.zip-result{margin-top:4px;font-size:.74rem;display:flex;align-items:center;gap:6px;min-height:16px;}
+.zip-result .loc-badge{background:var(--blush);color:var(--burgundy);border-radius:20px;padding:3px 10px;font-size:.7rem;font-weight:500;}
+.zip-result .loc-flag{font-size:1rem;}
+
+/* DELIVERY OPTIONS */
+.delivery-opts{display:flex;flex-direction:column;gap:9px;margin-bottom:18px;}
+.delivery-opt{display:flex;align-items:center;gap:12px;padding:13px 15px;border:1.5px solid rgba(192,100,122,.18);border-radius:11px;cursor:pointer;transition:all .25s;}
+.delivery-opt.selected{border-color:var(--burgundy);background:rgba(59,13,26,.03);}
+.delivery-opt input{accent-color:var(--burgundy);cursor:pointer;}
+.delivery-opt-info{flex:1;}
+.delivery-opt-name{font-size:.82rem;font-weight:500;}
+.delivery-opt-desc{font-size:.73rem;opacity:.47;margin-top:1px;}
+.delivery-opt-price{font-size:.82rem;font-weight:600;color:var(--deep-rose);}
+
+/* SUMMARY BOX */
+.summary-box{background:var(--white);border-radius:18px;padding:24px;position:sticky;top:90px;box-shadow:0 4px 24px rgba(59,13,26,.07);}
+.summary-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--blush);}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed rgba(192,100,122,.12);}
+.sum-row:last-of-type{border-bottom:none;}
+.sum-label{font-size:.78rem;letter-spacing:.5px;opacity:.55;font-weight:400;}
+.sum-value{font-size:.88rem;font-weight:600;color:var(--burgundy);}
+.sum-value.free{color:#2d7a4f;font-weight:600;}
+.sum-value.discount{color:#2d7a4f;}
+.sum-divider{height:1px;background:rgba(192,100,122,.15);margin:10px 0;}
+.sum-total-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--burgundy);border-radius:12px;margin-top:12px;}
+.sum-total-label{font-size:.78rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.7);}
+.sum-total-value{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:600;color:white;}
+.sum-savings{display:none;background:#e8fdf0;border-radius:10px;padding:9px 13px;margin-top:10px;font-size:.76rem;color:#2d7a4f;font-weight:500;text-align:center;}
+.sum-savings.show{display:block;}
+.promo-wrap{display:flex;gap:7px;margin:14px 0 6px;}
+.promo-input{flex:1;border:1.5px solid rgba(192,100,122,.18);border-radius:9px;padding:10px 12px;font-family:'Jost',sans-serif;font-size:.81rem;color:var(--burgundy);background:var(--cream);outline:none;transition:border-color .25s;}
+.promo-input:focus{border-color:var(--deep-rose);}
+.promo-btn{padding:10px 16px;background:var(--burgundy);color:white;border:none;border-radius:9px;font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:1px;cursor:pointer;transition:background .25s;white-space:nowrap;}
+.promo-btn:hover{background:var(--deep-rose);}
+
+/* CHECKOUT BUTTONS */
+.checkout-btn{width:100%;padding:14px;background:var(--burgundy);color:white;border:none;border-radius:13px;font-family:'Jost',sans-serif;font-size:.78rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .25s;margin-top:14px;}
+.checkout-btn:hover{background:var(--deep-rose);transform:translateY(-1px);}
+
+/* PAYMENT MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(59,13,26,.6);backdrop-filter:blur(10px);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--cream);border-radius:22px;padding:34px;width:100%;max-width:400px;position:relative;text-align:center;animation:mIn .35s ease;}
+@keyframes mIn{from{opacity:0;transform:scale(.94) translateY(14px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-close{position:absolute;top:14px;right:14px;width:32px;height:32px;background:var(--blush);border:none;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.7rem;margin-bottom:6px;}
+.modal-title em{font-style:italic;color:var(--deep-rose);}
+.upi-amount{font-size:1.45rem;font-weight:600;color:var(--deep-rose);margin-bottom:5px;}
+.upi-sub{font-size:.76rem;opacity:.48;margin-bottom:18px;}
+.qr-img{width:188px;height:188px;border-radius:14px;border:3px solid var(--blush);margin:0 auto 14px;display:block;}
+.upi-id-box{background:var(--blush);border-radius:11px;padding:11px 16px;font-size:.82rem;margin-bottom:14px;}
+.upi-id-box strong{display:block;font-size:.96rem;color:var(--deep-rose);margin-top:2px;}
+.pay-phonepe{display:block;width:100%;padding:13px;background:#5f259f;color:white;border:none;border-radius:11px;font-family:'Jost',sans-serif;font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;margin-bottom:9px;text-decoration:none;transition:opacity .25s;}
+.pay-phonepe:hover{opacity:.88;}
+.paid-btn{width:100%;padding:13px;background:var(--green);color:white;border:none;border-radius:11px;font-family:'Jost',sans-serif;font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:opacity .25s;}
+.paid-btn:hover{opacity:.88;}
+
+/* SUCCESS */
+.success-screen{display:none;text-align:center;padding:60px 30px;}
+.success-screen.show{display:block;}
+.success-icon{font-size:3.8rem;margin-bottom:18px;animation:bounce .6s ease;}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.success-title{font-family:'Cormorant Garamond',serif;font-size:2.1rem;margin-bottom:8px;}
+.success-id{font-size:.88rem;color:var(--deep-rose);font-weight:600;margin-bottom:5px;}
+.success-sub{font-size:.82rem;opacity:.55;line-height:1.7;margin-bottom:28px;}
+.success-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-p{padding:11px 24px;background:var(--burgundy);color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;}
+.btn-g{padding:11px 24px;background:var(--green);color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;}
+.btn-rose{padding:11px 24px;background:var(--deep-rose);color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;}
+
+/* FLOAT WA */
+#floatWA{position:fixed;bottom:24px;right:24px;z-index:500;display:flex;align-items:center;gap:8px;background:var(--green);color:white;border-radius:50px;padding:12px 18px;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:1px;text-transform:uppercase;font-weight:500;text-decoration:none;box-shadow:0 6px 26px rgba(37,211,102,.4);cursor:none;animation:fa 2.5s ease-in-out infinite;}
+@keyframes fa{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+@media(max-width:900px){nav{padding:0 18px 0 68px;}
+  nav{padding:0 18px;height:62px;}
+  .nav-links{display:none;}
+  .nav-right{display:none;}
+  .steps-bar{padding:0 18px 22px;}
+  .steps-inner{padding-top:74px;}
+  .cart-main{grid-template-columns:1fr;padding:20px 18px 84px;}
+  .summary-box{position:static;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-group.full{grid-column:1;}
+  #floatWA{display:none!important;}
+}
+@media(pointer:coarse){
+  body{cursor:auto!important;}
+  .cursor,.cursor-ring{display:none!important;}
+  button,a,input,select{cursor:pointer!important;}
+}
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div id="ah-toast"></div>
+
+<!-- ============================================================ -->
+<!-- LOGIN GATE — shown when user is NOT logged in -->
+<!-- ============================================================ -->
+<div id="loginGate">
+  <div class="gate-wrap">
+    <div class="gate-box">
+      <div class="gate-icon">&#127873;</div>
+      <div class="gate-title">Sign in to <em>Checkout</em></div>
+      <div class="gate-sub">Create an account or sign in to place your order.<br/>Your cart is saved &mdash; it won&rsquo;t be lost!</div>
+
+      <div class="gate-tabs">
+        <button class="gate-tab on" onclick="gateTab('signin')">Sign In</button>
+        <button class="gate-tab" onclick="gateTab('register')">Create Account</button>
+      </div>
+
+      <!-- GOOGLE -->
+      <button class="gate-google" onclick="gateGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.5 33.1 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.9z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19.1 13 24 13c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.8-1.9 13.3-5.1l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.2 0-9.5-2.9-11.3-7l-6.5 5C9.6 39.5 16.3 44 24 44z"/><path fill="#1565C0" d="M43.6 20.1H42V20H24v8h11.3c-.9 2.4-2.5 4.5-4.5 5.9l.1-.1 6.2 5.2C36.9 38.3 44 33 44 24c0-1.3-.1-2.7-.4-3.9z"/></svg>
+        Continue with Google
+      </button>
+      <div class="divider"><span>or</span></div>
+
+      <!-- SIGN IN PANE -->
+      <div class="gate-pane on" id="gateSignin">
+        <div class="f-group">
+          <label class="f-label">Email</label>
+          <input class="f-input" id="gEmail" type="email" placeholder="your@email.com" autocomplete="email"/>
+          <div class="f-err" id="gEmailErr"></div>
+        </div>
+        <div class="f-group">
+          <label class="f-label">Password</label>
+          <input class="f-input" id="gPass" type="password" placeholder="Your password" autocomplete="current-password"/>
+          <div class="f-err" id="gPassErr"></div>
+        </div>
+        <button class="f-btn" onclick="gateSignIn()">Sign In &amp; Continue to Checkout</button>
+        <div style="text-align:center;margin-top:12px"><a onclick="gateForgot()" style="font-size:.74rem;color:var(--deep-rose);cursor:pointer">Forgot password?</a></div>
+      </div>
+
+      <!-- REGISTER PANE -->
+      <div class="gate-pane" id="gateRegister">
+        <div class="f-group">
+          <label class="f-label">Full Name</label>
+          <input class="f-input" id="gName" type="text" placeholder="Your full name" autocomplete="name"/>
+          <div class="f-err" id="gNameErr"></div>
+        </div>
+        <div class="f-group">
+          <label class="f-label">Email</label>
+          <input class="f-input" id="gREmail" type="email" placeholder="your@email.com" autocomplete="email"/>
+          <div class="f-err" id="gREmailErr"></div>
+        </div>
+        <div class="f-group">
+          <label class="f-label">Password</label>
+          <input class="f-input" id="gRPass" type="password" placeholder="Min 6 characters" autocomplete="new-password"/>
+          <div class="f-err" id="gRPassErr"></div>
+        </div>
+        <button class="f-btn" onclick="gateRegister()">Create Account &amp; Checkout</button>
+      </div>
+
+      <div class="gate-skip" style="opacity:.35;font-size:.72rem;margin-top:14px;text-align:center">&#128274; Login required to place orders &mdash; your cart is saved</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- MAIN CART PAGE -->
+<!-- ============================================================ -->
+<nav>
+  <a href="index.html" class="nav-logo"><span>Aneesa</span> Hampers</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="products.html">Collections</a></li>
+    <li><a href="orders.html">My Orders</a></li>
+    <li><a href="track.html">Track Order</a></li>
+    <li><a href="cart.html" class="active">Cart</a></li>
+    <li><a href="login.html" id="navAccountLink">Account</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="cart.html" class="nav-cart">&#128717; <span class="cart-count" id="cartBadgeNav">0</span></a>
+    <button id="navLogoutBtn" onclick="doLogout()" style="display:none;align-items:center;gap:5px;padding:7px 14px;background:var(--blush);color:var(--deep-rose);border:1.5px solid rgba(192,100,122,.25);border-radius:20px;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;font-weight:500">&#128274; Logout</button>
+    <a class="nav-wa" href="#" id="navWA">&#128172; Order Now</a>
+  </div>
+</nav>
+
+<!-- STEPS BAR -->
+<div class="steps-bar">
+  <div class="steps-inner">
+    <div class="steps">
+      <div class="step active" id="step1"><div class="step-num">1</div><div class="step-label">Cart</div></div>
+      <div class="step-line" id="line1"></div>
+      <div class="step" id="step2"><div class="step-num">2</div><div class="step-label">Details</div></div>
+      <div class="step-line" id="line2"></div>
+      <div class="step" id="step3"><div class="step-num">3</div><div class="step-label">Payment</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CART MAIN GRID -->
+<div class="cart-main" id="cartMain">
+  <div>
+    <!-- STEP 1: CART ITEMS -->
+    <div class="cart-section" id="cartStep">
+      <div class="cart-title">Your <em>Cart</em></div>
+      <div id="cartItemsWrap"></div>
+      <button class="checkout-btn" style="margin-top:18px" onclick="goToDetails()">Continue to Details &#8594;</button>
+    </div>
+
+    <!-- STEP 2: DETAILS FORM -->
+    <div class="cart-section" id="detailsStep" style="display:none">
+      <div class="form-title">Delivery <span style="font-style:italic;color:var(--deep-rose)">Details</span></div>
+      <div class="form-grid">
+
+        <!-- Full Name -->
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input class="form-input" id="fName" placeholder="Your full name" autocomplete="name"/>
+        </div>
+
+        <!-- Phone with Country Code -->
+        <div class="form-group">
+          <label class="form-label">Phone *</label>
+          <div class="phone-row">
+            <div class="country-code-wrap">
+              <button class="cc-btn" id="ccBtn" onclick="toggleCC(event)" type="button">
+                <span class="cc-flag" id="ccFlag">&#127470;&#127475;</span>
+                <span class="cc-code" id="ccCode">+91</span>
+                <span class="cc-caret">&#9660;</span>
+              </button>
+              <div class="cc-dropdown" id="ccDropdown">
+                <input class="cc-search" id="ccSearch" placeholder="&#128269; Search country..." oninput="filterCC(this.value)" autocomplete="off"/>
+                <div class="cc-list" id="ccList"></div>
+              </div>
+            </div>
+            <div class="phone-input-wrap">
+              <input class="form-input" id="fPhone" placeholder="Phone number" type="tel" autocomplete="tel"/>
+            </div>
+          </div>
+          <div class="field-note" id="phoneNote"></div>
+        </div>
+
+        <!-- Address -->
+        <div class="form-group full">
+          <label class="form-label">Street Address *</label>
+          <input class="form-input" id="fAddr" placeholder="House no, Street, Area"/>
+        </div>
+
+        <!-- ZIP CODE with auto-detect -->
+        <div class="form-group">
+          <label class="form-label">ZIP / Postal Code *</label>
+          <div class="zip-row">
+            <input class="form-input" id="fPin" placeholder="e.g. 516001, 10001, SW1A" oninput="detectZip(this.value)"/>
+            <span class="zip-detecting" id="zipSpinner">&#128269; Detecting&hellip;</span>
+          </div>
+          <div class="zip-result" id="zipResult"></div>
+          <div class="field-note" id="pinNote"></div>
+        </div>
+
+        <!-- City (auto-filled by zip) -->
+        <div class="form-group">
+          <label class="form-label">City / District *</label>
+          <input class="form-input" id="fCity" placeholder="Auto-detected or enter manually"/>
+        </div>
+
+        <!-- State -->
+        <div class="form-group">
+          <label class="form-label">State / Province</label>
+          <input class="form-input" id="fState" placeholder="Auto-detected or enter manually"/>
+        </div>
+
+        <!-- Country (auto-filled by zip) -->
+        <div class="form-group">
+          <label class="form-label">Country *</label>
+          <input class="form-input" id="fCountry" placeholder="Auto-detected from ZIP"/>
+        </div>
+
+        <!-- Gift Message -->
+        <div class="form-group full">
+          <label class="form-label">Gift Message (optional)</label>
+          <textarea class="form-input" id="fMsg" rows="2" placeholder="Write a personal message for the recipient&hellip;"></textarea>
+        </div>
+
+      </div>
+
+      <!-- DELIVERY OPTIONS -->
+      <div style="margin-bottom:14px">
+        <div class="form-label" style="margin-bottom:10px;display:block">Delivery Option</div>
+        <div class="delivery-opts">
+          <label class="delivery-opt selected" id="opt_standard">
+            <input type="radio" name="delivery" value="standard" checked onchange="updateDelivery(this)"/>
+            <div class="delivery-opt-info"><div class="delivery-opt-name">Standard Delivery</div><div class="delivery-opt-desc">2&ndash;5 days</div></div>
+            <div class="delivery-opt-price">FREE</div>
+          </label>
+          <label class="delivery-opt" id="opt_express">
+            <input type="radio" name="delivery" value="express" onchange="updateDelivery(this)"/>
+            <div class="delivery-opt-info"><div class="delivery-opt-name">Express Delivery</div><div class="delivery-opt-desc">1&ndash;2 days</div></div>
+            <div class="delivery-opt-price">&#8377;99</div>
+          </label>
+          <label class="delivery-opt" id="opt_pickup">
+            <input type="radio" name="delivery" value="pickup" onchange="updateDelivery(this)"/>
+            <div class="delivery-opt-info"><div class="delivery-opt-name">Self Pickup</div><div class="delivery-opt-desc">Pick from Kadapa</div></div>
+            <div class="delivery-opt-price">FREE</div>
+          </label>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:11px">
+        <button class="checkout-btn" style="background:var(--blush);color:var(--burgundy);flex:0 0 auto;width:120px;margin-top:0" onclick="goBack()">&#8592; Back</button>
+        <button class="checkout-btn" style="flex:1;margin-top:0" onclick="goToPayment()">Pay Now &#8594;</button>
+      </div>
+    </div>
+
+    <!-- SUCCESS SCREEN -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">&#127872;</div>
+      <div class="success-title">Order Placed!</div>
+      <div class="success-id" id="successOrderId"></div>
+      <div class="success-sub">Thank you! Your order has been received.<br/>We&rsquo;ll confirm via WhatsApp shortly. &#127873;</div>
+      <div class="success-btns">
+        <a href="products.html" class="btn-p">Continue Shopping</a>
+        <a href="#" class="btn-rose" id="trackOrderLink">&#128230; Track My Order</a>
+        <a href="#" class="btn-g" id="confirmWA">&#128172; Confirm on WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER SUMMARY -->
+  <div class="summary-box" id="summaryBox">
+    <div class="summary-title">🛍️ Order Summary</div>
+
+    <div class="sum-row">
+      <span class="sum-label">Subtotal</span>
+      <span class="sum-value" id="sumSub">₹0</span>
+    </div>
+
+    <div class="sum-row" id="sumDiscountRow">
+      <span class="sum-label">🎟️ Discount</span>
+      <span class="sum-value discount" id="sumDiscount">-₹0</span>
+    </div>
+
+    <div class="sum-row">
+      <span class="sum-label">🚚 Delivery</span>
+      <span class="sum-value free" id="sumDelivery">FREE</span>
+    </div>
+
+    <!-- TOTAL — prominent dark block -->
+    <div class="sum-total-row">
+      <span class="sum-total-label">Total Payable</span>
+      <span class="sum-total-value" id="sumTotal">₹0</span>
+    </div>
+
+    <!-- SAVINGS BADGE (shows when promo applied) -->
+    <div class="sum-savings" id="sumSavings">🎉 You save <span id="sumSaveAmt">₹0</span> on this order!</div>
+
+    <!-- PROMO CODE -->
+    <div class="promo-wrap">
+      <input class="promo-input" id="promoInput" placeholder="🎟️ Enter promo code"/>
+      <button class="promo-btn" onclick="applyPromo()">Apply</button>
+    </div>
+    <div id="promoMsg" style="font-size:.73rem;min-height:16px;margin-bottom:4px"></div>
+
+    <!-- Logged-in user info strip -->
+    <div id="userStrip" style="display:none;margin-top:12px;padding:11px 14px;background:var(--blush);border-radius:11px;font-size:.78rem;align-items:center;gap:8px">
+      <span>👤</span>
+      <div>
+        <div id="userStripName" style="font-weight:600"></div>
+        <div id="userStripEmail" style="opacity:.5;font-size:.7rem"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UPI PAYMENT MODAL -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closePayModal()">&#10005;</button>
+    <div class="modal-title">Pay to <em>Aneesa</em></div>
+    <div class="upi-amount" id="payAmount"></div>
+    <div class="upi-sub">Pay via PhonePe / any UPI app below</div>
+    
+    <div class="upi-id-box">UPI ID<strong>8639066613@ybl</strong></div>
+    <a class="pay-phonepe" id="phonePeLink" href="#">&#128242; Open PhonePe &amp; Pay</a>
+    <button class="paid-btn" onclick="confirmPaid()">&#9989; I have paid &mdash; Confirm Order</button>
+  </div>
+</div>
+
+<a href="#" id="floatWA">&#128172; WhatsApp</a>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, serverTimestamp, getDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const app = initializeApp({apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",authDomain:"aneesa-hampers.firebaseapp.com",projectId:"aneesa-hampers",storageBucket:"aneesa-hampers.firebasestorage.app",messagingSenderId:"909653560410",appId:"1:909653560410:web:397db4fec2d9f042609c63"});
+const db = getFirestore(app);
+const auth = getAuth(app);
+window._firebaseAuth = auth;
+const gp = new GoogleAuthProvider();
+gp.setCustomParameters({ prompt: "select_account" });
+
+const WA_NUM = "918639066613";
+const UPI_ID = "8639066613@ybl";
+const UPI_NAME = "Aneesa";
+
+// ================================================================
+// CURSOR
+// ================================================================
+var cur = document.getElementById("cursor"), ring = document.getElementById("cursorRing");
+document.addEventListener("mousemove", function(e) {
+  cur.style.left = e.clientX + "px"; cur.style.top = e.clientY + "px";
+  setTimeout(function(){ ring.style.left = e.clientX + "px"; ring.style.top = e.clientY + "px"; }, 80);
+});
+
+// ================================================================
+// TOAST
+// ================================================================
+function toast(msg) {
+  var t = document.getElementById("ah-toast");
+  t.textContent = msg; t.style.display = "block";
+  clearTimeout(t._t); t._t = setTimeout(function(){ t.style.display = "none"; }, 2600);
+}
+
+// ================================================================
+// CART — PER USER (key = ah_cart_UID so each user has own cart)
+// ================================================================
+function cartKey() {
+  var u = JSON.parse(localStorage.getItem("ah_user") || "{}");
+  return u.uid ? "ah_cart_" + u.uid : "ah_cart_guest";
+}
+var Cart = {
+  get: function(){ try{ return JSON.parse(localStorage.getItem(cartKey()) || "[]"); } catch(e){ return []; } },
+  save: function(items){ localStorage.setItem(cartKey(), JSON.stringify(items)); updateSummary(); badge(); },
+  remove: function(id){ Cart.save(Cart.get().filter(function(i){ return i.id !== id; })); renderCart(); },
+  updateQty: function(id, d){ var it = Cart.get(), i = it.find(function(x){ return x.id === id; }); if(i){ i.qty = Math.max(1, (i.qty||1) + d); Cart.save(it); renderCart(); } },
+  count: function(){ return Cart.get().reduce(function(s,i){ return s + (i.qty||1); }, 0); },
+  subtotal: function(){ return Cart.get().reduce(function(s,i){ return s + i.price * (i.qty||1); }, 0); }
+};
+window.Cart = Cart;
+
+function badge() { document.querySelectorAll(".cart-count").forEach(function(el){ el.textContent = Cart.count(); }); }
+badge();
+
+var discount = 0, deliveryFee = 0, currentOrderId = "", appliedPromoCode = "";
+var currentUser = null;
+var selectedCCData = { code: "+91", country: "India", flag: "\uD83C\uDDEE\uD83C\uDDF3" };
+var zipDebounce = null;
+
+// ================================================================
+// AUTH STATE — show/hide login gate
+// ================================================================
+onAuthStateChanged(auth, async function(user) {
+  currentUser = user;
+  var gate = document.getElementById("loginGate");
+  if (user) {
+    gate.style.display = "none";
+    var displayName = user.displayName || user.email.split("@")[0];
+    var savedUser = { uid: user.uid, name: displayName, email: user.email, phone: user.phoneNumber || "" };
+    localStorage.setItem("ah_user", JSON.stringify(savedUser));
+
+    // Save / update customer record in Firestore
+    try {
+      await setDoc(doc(db, "customers", user.uid), {
+        uid: user.uid,
+        name: displayName,
+        email: user.email,
+        photoURL: user.photoURL || "",
+        lastLogin: serverTimestamp()
+      }, { merge: true });
+    } catch(e2) { console.warn("Customer save:", e2); }
+
+    // Update nav — show name + logout
+    document.getElementById("navAccountLink").textContent = "Hi, " + displayName.split(" ")[0] + "!";
+    document.getElementById("navLogoutBtn").style.display = "inline-flex";
+
+    // Show logged-in user strip in summary box
+    document.getElementById("userStripName").textContent = displayName;
+    document.getElementById("userStripEmail").textContent = user.email;
+    document.getElementById("userStrip").style.display = "flex";
+
+    // ── MERGE GUEST CART + PENDING BUY NOW INTO USER CART ──────────────
+    // After login the cart key changes from ah_cart_guest → ah_cart_<uid>.
+    // We collect items from three sources and merge them all in so nothing
+    // the user added before login gets lost.
+
+    var userCartKey  = "ah_cart_" + user.uid;
+    var guestCartKey = "ah_cart_guest";
+
+    // 1. Start with whatever the user's keyed cart already has (could be
+    //    items from a previous session when they were already logged in).
+    var mergedMap = {};
+    var existing = [];
+    try { existing = JSON.parse(localStorage.getItem(userCartKey) || "[]"); } catch(e) {}
+    existing.forEach(function(i){ mergedMap[i.id] = Object.assign({}, i); });
+
+    // 2. Merge in the guest cart (items added before login on this visit)
+    var guestItems = [];
+    try { guestItems = JSON.parse(localStorage.getItem(guestCartKey) || "[]"); } catch(e) {}
+    guestItems.forEach(function(i){
+      if (mergedMap[i.id]) { mergedMap[i.id].qty = (mergedMap[i.id].qty||1) + (i.qty||1); }
+      else                  { mergedMap[i.id] = Object.assign({}, i); }
+    });
+
+    // 3. Merge in the pending Buy Now item (saved by buyNow() in product.html)
+    var pendingRaw = localStorage.getItem("ah_pending_buynow");
+    if (pendingRaw) {
+      try {
+        var pending = JSON.parse(pendingRaw);
+        if (pending && pending.id) {
+          if (mergedMap[pending.id]) { mergedMap[pending.id].qty = (mergedMap[pending.id].qty||1) + (pending.qty||1); }
+          else                        { mergedMap[pending.id] = Object.assign({}, pending); }
+        }
+      } catch(e) { console.warn("Could not restore pending buy-now item:", e); }
+      // Clear it now that it has been merged in
+      localStorage.removeItem("ah_pending_buynow");
+    }
+
+    // 4. Write the merged result back to the user's cart key and clean up
+    var mergedItems = Object.values(mergedMap);
+    localStorage.setItem(userCartKey, JSON.stringify(mergedItems));
+    localStorage.removeItem(guestCartKey);  // guest cart no longer needed
+    // ────────────────────────────────────────────────────────────────────
+
+    // Reload cart for this user (per-user key now active)
+    renderCart();
+    badge();
+
+    // Auto-fill form fields
+    document.getElementById("fName").value = displayName;
+    try {
+      var stored = JSON.parse(localStorage.getItem("ah_user") || "{}");
+      if (stored.phone) document.getElementById("fPhone").value = stored.phone;
+    } catch(e3) {}
+  } else {
+    gate.style.display = "block";
+    document.getElementById("userStrip").style.display = "none";
+    document.getElementById("navLogoutBtn").style.display = "none";
+    currentUser = null;
+    document.getElementById("navAccountLink").textContent = "Account";
+    badge();
+  }
+});
+
+// ================================================================
+// LOGOUT
+window.doLogout = async function() {
+  if (!confirm("Log out of your account?")) return;
+  try { await auth.signOut(); } catch(e) {}
+  localStorage.removeItem("ah_user");
+  localStorage.removeItem("ah_cart_guest");
+  localStorage.removeItem("ah_pending_buynow");
+  window.location.href = "index.html";
+};
+
+// LOGIN GATE LOGIC
+// ================================================================
+window.gateTab = function(tab) {
+  document.querySelectorAll(".gate-tab").forEach(function(t){ t.classList.remove("on"); });
+  document.querySelectorAll(".gate-pane").forEach(function(p){ p.classList.remove("on"); });
+  if (tab === "signin") {
+    document.querySelectorAll(".gate-tab")[0].classList.add("on");
+    document.getElementById("gateSignin").classList.add("on");
+  } else {
+    document.querySelectorAll(".gate-tab")[1].classList.add("on");
+    document.getElementById("gateRegister").classList.add("on");
+  }
+};
+
+window.gateGoogle = async function() {
+  try {
+    var r = await signInWithPopup(auth, gp);
+    toast("\u2705 Signed in with Google! Loading your cart\u2026");
+  } catch(e) {
+    if (e.code === "auth/popup-blocked") toast("Please allow popups!");
+    else if (e.code !== "auth/popup-closed-by-user") toast("Error: " + e.message);
+  }
+};
+
+window.gateSignIn = async function() {
+  var email = document.getElementById("gEmail").value.trim();
+  var pass  = document.getElementById("gPass").value;
+  document.getElementById("gEmailErr").textContent = "";
+  document.getElementById("gPassErr").textContent = "";
+  if (!email) { document.getElementById("gEmailErr").textContent = "Email required"; return; }
+  if (!pass)  { document.getElementById("gPassErr").textContent  = "Password required"; return; }
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    toast("\u2705 Welcome back!");
+  } catch(e) {
+    var msg = e.code === "auth/wrong-password" || e.code === "auth/user-not-found" || e.code === "auth/invalid-credential"
+      ? "Incorrect email or password." : e.message;
+    document.getElementById("gPassErr").textContent = msg;
+  }
+};
+
+window.gateRegister = async function() {
+  var name  = document.getElementById("gName").value.trim();
+  var email = document.getElementById("gREmail").value.trim();
+  var pass  = document.getElementById("gRPass").value;
+  document.getElementById("gNameErr").textContent = "";
+  document.getElementById("gREmailErr").textContent = "";
+  document.getElementById("gRPassErr").textContent = "";
+  if (!name)           { document.getElementById("gNameErr").textContent  = "Name required"; return; }
+  if (!email)          { document.getElementById("gREmailErr").textContent = "Email required"; return; }
+  if (pass.length < 6) { document.getElementById("gRPassErr").textContent  = "Min 6 characters"; return; }
+  try {
+    var r = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(r.user, { displayName: name });
+    await r.user.reload();
+    toast("\u2705 Account created! Welcome, " + name + "!");
+  } catch(e) {
+    var msg2 = e.code === "auth/email-already-in-use" ? "This email is already registered." : e.message;
+    document.getElementById("gREmailErr").textContent = msg2;
+  }
+};
+
+window.gateForgot = async function() {
+  var email = document.getElementById("gEmail").value.trim();
+  if (!email) { toast("\u26a0\ufe0f Enter your email first"); return; }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    toast("\u2705 Reset email sent to " + email);
+  } catch(e) { toast("\u274c " + e.message); }
+};
+
+// No guest access — login is required
+
+// ================================================================
+// COUNTRY CODES DATA (all except Pakistan +92)
+// ================================================================
+var CC_LIST = [
+  {code:"+1",country:"United States",flag:"\uD83C\uDDFA\uD83C\uDDF8"},
+  {code:"+1",country:"Canada",flag:"\uD83C\uDDE8\uD83C\uDDE6"},
+  {code:"+44",country:"United Kingdom",flag:"\uD83C\uDDEC\uD83C\uDDE7"},
+  {code:"+91",country:"India",flag:"\uD83C\uDDEE\uD83C\uDDF3"},
+  {code:"+61",country:"Australia",flag:"\uD83C\uDDE6\uD83C\uDDFA"},
+  {code:"+971",country:"UAE",flag:"\uD83C\uDDE6\uD83C\uDDEA"},
+  {code:"+966",country:"Saudi Arabia",flag:"\uD83C\uDDF8\uD83C\uDDE6"},
+  {code:"+974",country:"Qatar",flag:"\uD83C\uDDF6\uD83C\uDDE6"},
+  {code:"+965",country:"Kuwait",flag:"\uD83C\uDDF0\uD83C\uDDFC"},
+  {code:"+968",country:"Oman",flag:"\uD83C\uDDF4\uD83C\uDDF2"},
+  {code:"+973",country:"Bahrain",flag:"\uD83C\uDDE7\uD83C\uDDED"},
+  {code:"+49",country:"Germany",flag:"\uD83C\uDDE9\uD83C\uDDEA"},
+  {code:"+33",country:"France",flag:"\uD83C\uDDEB\uD83C\uDDF7"},
+  {code:"+39",country:"Italy",flag:"\uD83C\uDDEE\uD83C\uDDF9"},
+  {code:"+34",country:"Spain",flag:"\uD83C\uDDEA\uD83C\uDDF8"},
+  {code:"+31",country:"Netherlands",flag:"\uD83C\uDDF3\uD83C\uDDF1"},
+  {code:"+46",country:"Sweden",flag:"\uD83C\uDDF8\uD83C\uDDEA"},
+  {code:"+47",country:"Norway",flag:"\uD83C\uDDF3\uD83C\uDDF4"},
+  {code:"+45",country:"Denmark",flag:"\uD83C\uDDE9\uD83C\uDDF0"},
+  {code:"+358",country:"Finland",flag:"\uD83C\uDDEB\uD83C\uDDEE"},
+  {code:"+41",country:"Switzerland",flag:"\uD83C\uDDE8\uD83C\uDDED"},
+  {code:"+43",country:"Austria",flag:"\uD83C\uDDE6\uD83C\uDDF9"},
+  {code:"+32",country:"Belgium",flag:"\uD83C\uDDE7\uD83C\uDDEA"},
+  {code:"+351",country:"Portugal",flag:"\uD83C\uDDF5\uD83C\uDDF9"},
+  {code:"+48",country:"Poland",flag:"\uD83C\uDDF5\uD83C\uDDF1"},
+  {code:"+7",country:"Russia",flag:"\uD83C\uDDF7\uD83C\uDDFA"},
+  {code:"+380",country:"Ukraine",flag:"\uD83C\uDDFA\uD83C\uDDE6"},
+  {code:"+90",country:"Turkey",flag:"\uD83C\uDDF9\uD83C\uDDF7"},
+  {code:"+20",country:"Egypt",flag:"\uD83C\uDDEA\uD83C\uDDEC"},
+  {code:"+234",country:"Nigeria",flag:"\uD83C\uDDF3\uD83C\uDDEC"},
+  {code:"+27",country:"South Africa",flag:"\uD83C\uDDFF\uD83C\uDDE6"},
+  {code:"+254",country:"Kenya",flag:"\uD83C\uDDF0\uD83C\uDDEA"},
+  {code:"+251",country:"Ethiopia",flag:"\uD83C\uDDEA\uD83C\uDDF9"},
+  {code:"+233",country:"Ghana",flag:"\uD83C\uDDEC\uD83C\uDDED"},
+  {code:"+213",country:"Algeria",flag:"\uD83C\uDDE9\uD83C\uDDFF"},
+  {code:"+212",country:"Morocco",flag:"\uD83C\uDDF2\uD83C\uDDE6"},
+  {code:"+216",country:"Tunisia",flag:"\uD83C\uDDF9\uD83C\uDDF3"},
+  {code:"+218",country:"Libya",flag:"\uD83C\uDDF1\uD83C\uDDFE"},
+  {code:"+249",country:"Sudan",flag:"\uD83C\uDDF8\uD83C\uDDE9"},
+  {code:"+82",country:"South Korea",flag:"\uD83C\uDDF0\uD83C\uDDF7"},
+  {code:"+81",country:"Japan",flag:"\uD83C\uDDEF\uD83C\uDDF5"},
+  {code:"+86",country:"China",flag:"\uD83C\uDDE8\uD83C\uDDF3"},
+  {code:"+65",country:"Singapore",flag:"\uD83C\uDDF8\uD83C\uDDEC"},
+  {code:"+60",country:"Malaysia",flag:"\uD83C\uDDF2\uD83C\uDDFE"},
+  {code:"+66",country:"Thailand",flag:"\uD83C\uDDF9\uD83C\uDDED"},
+  {code:"+62",country:"Indonesia",flag:"\uD83C\uDDEE\uD83C\uDDE9"},
+  {code:"+63",country:"Philippines",flag:"\uD83C\uDDF5\uD83C\uDDED"},
+  {code:"+84",country:"Vietnam",flag:"\uD83C\uDDFB\uD83C\uDDF3"},
+  {code:"+94",country:"Sri Lanka",flag:"\uD83C\uDDF1\uD83C\uDDF0"},
+  {code:"+880",country:"Bangladesh",flag:"\uD83C\uDDE7\uD83C\uDDE9"},
+  {code:"+977",country:"Nepal",flag:"\uD83C\uDDF3\uD83C\uDDF5"},
+  {code:"+95",country:"Myanmar",flag:"\uD83C\uDDF2\uD83C\uDDF2"},
+  {code:"+855",country:"Cambodia",flag:"\uD83C\uDDF0\uD83C\uDDED"},
+  {code:"+856",country:"Laos",flag:"\uD83C\uDDF1\uD83C\uDDE6"},
+  {code:"+673",country:"Brunei",flag:"\uD83C\uDDE7\uD83C\uDDF3"},
+  {code:"+93",country:"Afghanistan",flag:"\uD83C\uDDE6\uD83C\uDDEB"},
+  {code:"+98",country:"Iran",flag:"\uD83C\uDDEE\uD83C\uDDF7"},
+  {code:"+964",country:"Iraq",flag:"\uD83C\uDDEE\uD83C\uDDF6"},
+  {code:"+962",country:"Jordan",flag:"\uD83C\uDDEF\uD83C\uDDF4"},
+  {code:"+961",country:"Lebanon",flag:"\uD83C\uDDF1\uD83C\uDDE7"},
+  {code:"+967",country:"Yemen",flag:"\uD83C\uDDFE\uD83C\uDDEA"},
+  {code:"+963",country:"Syria",flag:"\uD83C\uDDF8\uD83C\uDDFE"},
+  {code:"+972",country:"Israel",flag:"\uD83C\uDDEE\uD83C\uDDF1"},
+  {code:"+52",country:"Mexico",flag:"\uD83C\uDDF2\uD83C\uDDFD"},
+  {code:"+55",country:"Brazil",flag:"\uD83C\uDDE7\uD83C\uDDF7"},
+  {code:"+54",country:"Argentina",flag:"\uD83C\uDDE6\uD83C\uDDF7"},
+  {code:"+56",country:"Chile",flag:"\uD83C\uDDE8\uD83C\uDDF1"},
+  {code:"+57",country:"Colombia",flag:"\uD83C\uDDE8\uD83C\uDDF4"},
+  {code:"+51",country:"Peru",flag:"\uD83C\uDDF5\uD83C\uDDEA"},
+  {code:"+58",country:"Venezuela",flag:"\uD83C\uDDFB\uD83C\uDDEA"},
+  {code:"+593",country:"Ecuador",flag:"\uD83C\uDDEA\uD83C\uDDE8"},
+  {code:"+591",country:"Bolivia",flag:"\uD83C\uDDE7\uD83C\uDDF4"},
+  {code:"+595",country:"Paraguay",flag:"\uD83C\uDDF5\uD83C\uDDFE"},
+  {code:"+598",country:"Uruguay",flag:"\uD83C\uDDFA\uD83C\uDDFE"},
+  {code:"+64",country:"New Zealand",flag:"\uD83C\uDDF3\uD83C\uDDFF"},
+  {code:"+353",country:"Ireland",flag:"\uD83C\uDDEE\uD83C\uDDEA"},
+  {code:"+30",country:"Greece",flag:"\uD83C\uDDEC\uD83C\uDDF7"},
+  {code:"+420",country:"Czech Republic",flag:"\uD83C\uDDE8\uD83C\uDDFF"},
+  {code:"+36",country:"Hungary",flag:"\uD83C\uDDED\uD83C\uDDFA"},
+  {code:"+40",country:"Romania",flag:"\uD83C\uDDF7\uD83C\uDDF4"},
+  {code:"+359",country:"Bulgaria",flag:"\uD83C\uDDE7\uD83C\uDDEC"},
+  {code:"+385",country:"Croatia",flag:"\uD83C\uDDED\uD83C\uDDF7"},
+  {code:"+381",country:"Serbia",flag:"\uD83C\uDDF7\uD83C\uDDF8"},
+  {code:"+386",country:"Slovenia",flag:"\uD83C\uDDF8\uD83C\uDDEE"},
+  {code:"+421",country:"Slovakia",flag:"\uD83C\uDDF8\uD83C\uDDF0"},
+  {code:"+370",country:"Lithuania",flag:"\uD83C\uDDF1\uD83C\uDDF9"},
+  {code:"+371",country:"Latvia",flag:"\uD83C\uDDF1\uD83C\uDDFB"},
+  {code:"+372",country:"Estonia",flag:"\uD83C\uDDEA\uD83C\uDDEA"},
+  {code:"+375",country:"Belarus",flag:"\uD83C\uDDE7\uD83C\uDDFE"}
+];
+
+// Sort alphabetically
+CC_LIST.sort(function(a, b){ return a.country.localeCompare(b.country); });
+
+// ================================================================
+// COUNTRY CODE DROPDOWN
+// ================================================================
+function renderCCList(list) {
+  var ul = document.getElementById("ccList");
+  if (!list.length) {
+    ul.innerHTML = '<div style="padding:12px 14px;opacity:.4;font-size:.8rem">No results</div>';
+    return;
+  }
+  ul.innerHTML = list.map(function(c) {
+    var dc = c.code.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+    var dn = c.country.replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+    var df = c.flag;
+    return '<div class="cc-item" onclick="selectCC(\'' + dc + '\',\'' + dn + '\',\'' + df + '\')">' +
+      '<span class="flag">' + c.flag + '</span>' +
+      '<span class="name">' + c.country + '</span>' +
+      '<span class="dial">' + c.code + '</span>' +
+    '</div>';
+  }).join("");
+}
+
+window.toggleCC = function(e) {
+  e.stopPropagation();
+  var dd = document.getElementById("ccDropdown");
+  var btn = document.getElementById("ccBtn");
+  var isOpen = dd.classList.contains("open");
+  if (!isOpen) {
+    dd.classList.add("open");
+    btn.classList.add("open");
+    renderCCList(CC_LIST);
+    setTimeout(function(){ document.getElementById("ccSearch").focus(); }, 50);
+  } else {
+    dd.classList.remove("open");
+    btn.classList.remove("open");
+  }
+};
+
+window.filterCC = function(val) {
+  var q = val.toLowerCase();
+  var filtered = CC_LIST.filter(function(c){ return c.country.toLowerCase().includes(q) || c.code.includes(q); });
+  renderCCList(filtered);
+};
+
+window.selectCC = function(code, country, flag) {
+  selectedCCData = { code: code, country: country, flag: flag };
+  document.getElementById("ccFlag").textContent = flag;
+  document.getElementById("ccCode").textContent = code;
+  document.getElementById("ccDropdown").classList.remove("open");
+  document.getElementById("ccBtn").classList.remove("open");
+  document.getElementById("fPhone").focus();
+};
+
+// Close dropdown on outside click
+document.addEventListener("click", function(e) {
+  var wrap = document.querySelector(".country-code-wrap");
+  if (wrap && !wrap.contains(e.target)) {
+    document.getElementById("ccDropdown").classList.remove("open");
+    document.getElementById("ccBtn").classList.remove("open");
+  }
+});
+
+// ================================================================
+// ZIP CODE AUTO-DETECT (zippopotam.us)
+// ================================================================
+window.detectZip = function(val) {
+  clearTimeout(zipDebounce);
+  var zip = val.trim();
+  document.getElementById("zipResult").innerHTML = "";
+  if (zip.length < 3) return;
+  zipDebounce = setTimeout(async function() {
+    document.getElementById("zipSpinner").style.display = "inline";
+    try {
+      // Try to detect country from existing country input or selected CC
+      var countryInput = document.getElementById("fCountry").value.trim();
+      // zippopotam.us uses 2-letter country codes
+      // Build a mapping from common country names to codes
+      var CC_MAP = {
+        "us": "United States", "gb": "United Kingdom", "in": "India", "au": "Australia",
+        "ca": "Canada", "de": "Germany", "fr": "France", "it": "Italy", "es": "Spain",
+        "nl": "Netherlands", "se": "Sweden", "no": "Norway", "dk": "Denmark", "fi": "Finland",
+        "ch": "Switzerland", "at": "Austria", "be": "Belgium", "pt": "Portugal", "pl": "Poland",
+        "ru": "Russia", "tr": "Turkey", "br": "Brazil", "mx": "Mexico", "ar": "Argentina",
+        "cl": "Chile", "co": "Colombia", "nz": "New Zealand", "ie": "Ireland", "gr": "Greece",
+        "jp": "Japan", "kr": "South Korea", "sg": "Singapore", "my": "Malaysia", "th": "Thailand",
+        "id": "Indonesia", "ph": "Philippines", "vn": "Vietnam", "lk": "Sri Lanka", "bd": "Bangladesh",
+        "np": "Nepal", "za": "South Africa", "ng": "Nigeria", "ke": "Kenya", "eg": "Egypt",
+        "ma": "Morocco", "dz": "Algeria", "ua": "Ukraine", "ro": "Romania", "hu": "Hungary",
+        "cz": "Czech Republic", "bg": "Bulgaria", "hr": "Croatia", "rs": "Serbia", "sk": "Slovakia",
+        "lt": "Lithuania", "lv": "Latvia", "ee": "Estonia",
+        "ae": "UAE", "sa": "Saudi Arabia", "qa": "Qatar", "kw": "Kuwait", "om": "Oman", "bh": "Bahrain",
+        "il": "Israel", "jo": "Jordan", "lb": "Lebanon", "ye": "Yemen", "sy": "Syria", "iq": "Iraq",
+        "ir": "Iran", "af": "Afghanistan", "cn": "China", "vn": "Vietnam", "bd": "Bangladesh",
+        "mm": "Myanmar", "kh": "Cambodia", "la": "Laos", "bn": "Brunei", "pe": "Peru", "ve": "Venezuela",
+        "ec": "Ecuador", "bo": "Bolivia", "py": "Paraguay", "uy": "Uruguay", "ke": "Kenya",
+        "et": "Ethiopia", "gh": "Ghana", "tz": "Tanzania", "ug": "Uganda", "sn": "Senegal"
+      };
+      // Reverse map: country name -> code
+      var NAME_TO_CODE = {};
+      Object.keys(CC_MAP).forEach(function(k){ NAME_TO_CODE[CC_MAP[k].toLowerCase()] = k; });
+
+      // Try multiple countries if we don't know
+      var tryCountries = [];
+      // Check if countryInput matches
+      if (countryInput) {
+        var c2 = NAME_TO_CODE[countryInput.toLowerCase()];
+        if (c2) tryCountries.push(c2);
+      }
+      // Also infer from CC code
+      var dialCodeToCC = { "+1":"us","+44":"gb","+91":"in","+61":"au","+49":"de","+33":"fr","+39":"it","+34":"es","+31":"nl","+46":"se","+47":"no","+45":"dk","+358":"fi","+41":"ch","+43":"at","+32":"be","+351":"pt","+48":"pl","+7":"ru","+90":"tr","+55":"br","+52":"mx","+54":"ar","+56":"cl","+57":"co","+64":"nz","+353":"ie","+30":"gr","+81":"jp","+82":"kr","+65":"sg","+60":"my","+66":"th","+62":"id","+63":"ph","+84":"vn","+94":"lk","+880":"bd","+977":"np","+27":"za","+234":"ng","+254":"ke","+20":"eg","+212":"ma","+213":"dz","+380":"ua","+40":"ro","+36":"hu","+420":"cz","+359":"bg","+385":"hr","+381":"rs","+421":"sk","+370":"lt","+371":"lv","+372":"ee","+971":"ae","+966":"sa","+974":"qa","+965":"kw","+968":"om","+973":"bh","+972":"il","+962":"jo","+961":"lb","+967":"ye","+963":"sy","+964":"iq","+98":"ir","+86":"cn","+251":"et","+233":"gh","+86":"cn","+1":"ca" };
+      var inferCC = dialCodeToCC[selectedCCData.code];
+      if (inferCC && !tryCountries.includes(inferCC)) tryCountries.push(inferCC);
+      // Add common fallbacks
+      ["us","gb","in","au","ca","de","fr","br","mx","sg"].forEach(function(c){ if(!tryCountries.includes(c)) tryCountries.push(c); });
+
+      var found = false;
+      for (var ci = 0; ci < tryCountries.length && !found; ci++) {
+        try {
+          var cc = tryCountries[ci];
+          var url = "https://api.zippopotam.us/" + cc + "/" + encodeURIComponent(zip);
+          var resp = await fetch(url);
+          if (!resp.ok) continue;
+          var data = await resp.json();
+          if (!data.places || !data.places.length) continue;
+          found = true;
+          var place = data.places[0];
+          var city = place["place name"] || "";
+          var state = place["state"] || "";
+          var countryName = CC_MAP[cc] || cc.toUpperCase();
+
+          // Detect country flag
+          var flagMap = { "us":"\uD83C\uDDFA\uD83C\uDDF8","gb":"\uD83C\uDDEC\uD83C\uDDE7","in":"\uD83C\uDDEE\uD83C\uDDF3","au":"\uD83C\uDDE6\uD83C\uDDFA","ca":"\uD83C\uDDE8\uD83C\uDDE6","de":"\uD83C\uDDE9\uD83C\uDDEA","fr":"\uD83C\uDDEB\uD83C\uDDF7","it":"\uD83C\uDDEE\uD83C\uDDF9","es":"\uD83C\uDDEA\uD83C\uDDF8","nl":"\uD83C\uDDF3\uD83C\uDDF1","se":"\uD83C\uDDF8\uD83C\uDDEA","no":"\uD83C\uDDF3\uD83C\uDDF4","dk":"\uD83C\uDDE9\uD83C\uDDF0","fi":"\uD83C\uDDEB\uD83C\uDDEE","ch":"\uD83C\uDDE8\uD83C\uDDED","at":"\uD83C\uDDE6\uD83C\uDDF9","be":"\uD83C\uDDE7\uD83C\uDDEA","pt":"\uD83C\uDDF5\uD83C\uDDF9","pl":"\uD83C\uDDF5\uD83C\uDDF1","ru":"\uD83C\uDDF7\uD83C\uDDFA","tr":"\uD83C\uDDF9\uD83C\uDDF7","br":"\uD83C\uDDE7\uD83C\uDDF7","mx":"\uD83C\uDDF2\uD83C\uDDFD","ar":"\uD83C\uDDE6\uD83C\uDDF7","cl":"\uD83C\uDDE8\uD83C\uDDF1","co":"\uD83C\uDDE8\uD83C\uDDF4","nz":"\uD83C\uDDF3\uD83C\uDDFF","ie":"\uD83C\uDDEE\uD83C\uDDEA","gr":"\uD83C\uDDEC\uD83C\uDDF7","jp":"\uD83C\uDDEF\uD83C\uDDF5","kr":"\uD83C\uDDF0\uD83C\uDDF7","sg":"\uD83C\uDDF8\uD83C\uDDEC","my":"\uD83C\uDDF2\uD83C\uDDFE","th":"\uD83C\uDDF9\uD83C\uDDED","id":"\uD83C\uDDEE\uD83C\uDDE9","ph":"\uD83C\uDDF5\uD83C\uDDED","vn":"\uD83C\uDDFB\uD83C\uDDF3","lk":"\uD83C\uDDF1\uD83C\uDDF0","bd":"\uD83C\uDDE7\uD83C\uDDE9","np":"\uD83C\uDDF3\uD83C\uDDF5","za":"\uD83C\uDDFF\uD83C\uDDE6","ng":"\uD83C\uDDF3\uD83C\uDDEC","ke":"\uD83C\uDDF0\uD83C\uDDEA","eg":"\uD83C\uDDEA\uD83C\uDDEC","ma":"\uD83C\uDDF2\uD83C\uDDE6","dz":"\uD83C\uDDE9\uD83C\uDDFF","ua":"\uD83C\uDDFA\uD83C\uDDE6","ro":"\uD83C\uDDF7\uD83C\uDDF4","hu":"\uD83C\uDDED\uD83C\uDDFA","cz":"\uD83C\uDDE8\uD83C\uDDFF","bg":"\uD83C\uDDE7\uD83C\uDDEC","hr":"\uD83C\uDDED\uD83C\uDDF7","rs":"\uD83C\uDDF7\uD83C\uDDF8","sk":"\uD83C\uDDF8\uD83C\uDDF0","lt":"\uD83C\uDDF1\uD83C\uDDF9","lv":"\uD83C\uDDF1\uD83C\uDDFB","ee":"\uD83C\uDDEA\uD83C\uDDEA" };
+          var flag = flagMap[cc] || "";
+
+          // Auto-fill fields
+          document.getElementById("fCity").value = city;
+          document.getElementById("fState").value = state;
+          document.getElementById("fCountry").value = countryName;
+
+          // Show result badge
+          document.getElementById("zipResult").innerHTML =
+            '<span class="loc-flag">' + flag + '</span>' +
+            '<span class="loc-badge">' + city + (state ? ", " + state : "") + '</span>' +
+            '<span class="loc-badge" style="background:#e8fdf0;color:#2d7a4f">' + countryName + '</span>';
+
+          // Also update phone country code to match
+          // Alias map for country name differences between CC_MAP and CC_LIST
+          var ccAliases = {"united arab emirates":"UAE","uk":"United Kingdom","south korea":"South Korea"};
+          var lookupName = ccAliases[countryName.toLowerCase()] || countryName;
+          var matchCC = CC_LIST.find(function(x){ return x.country.toLowerCase() === lookupName.toLowerCase(); });
+          if (matchCC) {
+            selectedCCData = { code: matchCC.code, country: matchCC.country, flag: matchCC.flag };
+            document.getElementById("ccFlag").textContent = matchCC.flag;
+            document.getElementById("ccCode").textContent = matchCC.code;
+          }
+        } catch(e2) { /* continue */ }
+      }
+      if (!found) {
+        document.getElementById("zipResult").innerHTML = '<span style="color:#e05050;font-size:.72rem">ZIP not found &mdash; please fill city &amp; country manually</span>';
+      }
+    } catch(err) {
+      document.getElementById("zipResult").innerHTML = '<span style="font-size:.72rem;opacity:.4">Could not detect &mdash; enter manually</span>';
+    }
+    document.getElementById("zipSpinner").style.display = "none";
+  }, 600);
+};
+
+// ================================================================
+// RENDER CART
+// ================================================================
+function renderCart() {
+  var items = Cart.get();
+  var wrap = document.getElementById("cartItemsWrap");
+  if (!items.length) {
+    wrap.innerHTML = '<div class="cart-empty"><div class="icon">&#128717;</div><p>Your cart is empty</p><br/><a href="products.html" style="color:var(--deep-rose);font-size:.78rem;letter-spacing:2px;text-transform:uppercase">Browse Products &#8594;</a></div>';
+    updateSummary(); return;
+  }
+  wrap.innerHTML = items.map(function(i) {
+    var imgH = i.image ? '<img src="' + i.image + '" alt="' + (i.name||"") + '"/>' : '&#127873;';
+    return '<div class="cart-item">' +
+      '<div class="item-img">' + imgH + '</div>' +
+      '<div class="item-info">' +
+        '<div class="item-name">' + (i.name||"") + '</div>' +
+        '<div class="item-price">&#8377;' + Number(i.price).toLocaleString("en-IN") + '</div>' +
+        '<div class="item-qty">' +
+          '<button class="qty-btn" onclick="Cart.updateQty(\'' + i.id + '\',-1)">&#8722;</button>' +
+          '<span class="qty-num">' + (i.qty||1) + '</span>' +
+          '<button class="qty-btn" onclick="Cart.updateQty(\'' + i.id + '\',1)">+</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="item-total">&#8377;' + (i.price*(i.qty||1)).toLocaleString("en-IN") + '</div>' +
+      '<button class="remove-btn" onclick="Cart.remove(\'' + i.id + '\')">&#10005;</button>' +
+    '</div>';
+  }).join("");
+  updateSummary();
+}
+
+// ================================================================
+// SUMMARY
+// ================================================================
+function updateSummary() {
+  var sub   = Cart.subtotal();
+  var total = Math.max(0, sub - discount) + deliveryFee;
+  var saved = discount;
+
+  document.getElementById("sumSub").textContent      = "₹" + sub.toLocaleString("en-IN");
+  document.getElementById("sumTotal").textContent    = "₹" + total.toLocaleString("en-IN");
+
+  // Discount row — hide if zero
+  var discRow = document.getElementById("sumDiscountRow");
+  if (discount > 0) {
+    discRow.style.display = "flex";
+    document.getElementById("sumDiscount").textContent = "-₹" + discount.toLocaleString("en-IN");
+  } else {
+    discRow.style.display = "none";
+  }
+
+  // Delivery
+  var delEl = document.getElementById("sumDelivery");
+  if (deliveryFee > 0) {
+    delEl.textContent = "₹" + deliveryFee.toLocaleString("en-IN");
+    delEl.className = "sum-value";
+  } else {
+    delEl.textContent = "FREE ✓";
+    delEl.className = "sum-value free";
+  }
+
+  // Savings badge
+  var savingsEl = document.getElementById("sumSavings");
+  if (saved > 0) {
+    document.getElementById("sumSaveAmt").textContent = "₹" + saved.toLocaleString("en-IN");
+    savingsEl.classList.add("show");
+  } else {
+    savingsEl.classList.remove("show");
+  }
+}
+
+// ================================================================
+// PROMO CODES
+// ================================================================
+window.applyPromo = async function() {
+  var code = document.getElementById("promoInput").value.trim().toUpperCase();
+  var msg = document.getElementById("promoMsg");
+  if (!code) { msg.innerHTML = '<span style="color:#e05050">Please enter a promo code</span>'; return; }
+  msg.innerHTML = '<span style="opacity:.45">Checking&hellip;</span>';
+  try {
+    var snap = await getDoc(doc(db, "promoCodes", code));
+    if (!snap.exists()) { discount = 0; updateSummary(); msg.innerHTML = '<span style="color:#e05050">&#10060; Invalid code</span>'; return; }
+    var promo = snap.data();
+    if (promo.active === false) { discount = 0; updateSummary(); msg.innerHTML = '<span style="color:#e05050">&#10060; This code is no longer active</span>'; return; }
+    var sub = Cart.subtotal();
+    if (promo.minOrder > 0 && sub < promo.minOrder) { discount = 0; updateSummary(); msg.innerHTML = '<span style="color:#e05050">&#10060; Min order &#8377;' + promo.minOrder + ' required</span>'; return; }
+    if (promo.maxUses > 0 && (promo.used||0) >= promo.maxUses) { discount = 0; updateSummary(); msg.innerHTML = '<span style="color:#e05050">&#10060; This code has expired</span>'; return; }
+    if (promo.type === "percent") discount = Math.round(sub * promo.value / 100);
+    else discount = Math.min(promo.value, sub);
+    appliedPromoCode = code;
+    msg.innerHTML = '<span style="color:var(--green)">&#9989; ' + (promo.type==="percent" ? promo.value+"%" : "&#8377;"+promo.value) + ' discount applied! You save &#8377;' + discount + '</span>';
+    updateSummary();
+  } catch(e) { msg.innerHTML = '<span style="color:#e05050">&#10060; Error checking code</span>'; }
+};
+
+// ================================================================
+// DELIVERY
+// ================================================================
+window.updateDelivery = function(inp) {
+  deliveryFee = inp.value === "express" ? 99 : 0;
+  document.querySelectorAll(".delivery-opt").forEach(function(o){ o.classList.remove("selected"); });
+  inp.closest(".delivery-opt").classList.add("selected");
+  updateSummary();
+};
+
+// ================================================================
+// STEP NAVIGATION
+// ================================================================
+window.goToDetails = function() {
+  if (!Cart.get().length) { toast("\u26a0\ufe0f Your cart is empty!"); return; }
+  document.getElementById("cartStep").style.display = "none";
+  document.getElementById("detailsStep").style.display = "block";
+  document.getElementById("step1").classList.add("done");
+  document.getElementById("step2").classList.add("active");
+  document.getElementById("line1").classList.add("done");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+window.goBack = function() {
+  document.getElementById("detailsStep").style.display = "none";
+  document.getElementById("cartStep").style.display = "block";
+  document.getElementById("step1").classList.remove("done");
+  document.getElementById("step2").classList.remove("active");
+  document.getElementById("line1").classList.remove("done");
+};
+
+// ================================================================
+// VALIDATE & OPEN PAYMENT
+// ================================================================
+window.goToPayment = function() {
+  var name = document.getElementById("fName").value.trim();
+  var phone = document.getElementById("fPhone").value.trim();
+  var addr = document.getElementById("fAddr").value.trim();
+  var pin = document.getElementById("fPin").value.trim();
+  var city = document.getElementById("fCity").value.trim();
+  var country = document.getElementById("fCountry").value.trim();
+
+  var errs = [];
+  if (!name)    { document.getElementById("fName").classList.add("error"); errs.push("Name"); } else document.getElementById("fName").classList.remove("error");
+  if (!phone)   { document.getElementById("fPhone").classList.add("error"); errs.push("Phone"); } else document.getElementById("fPhone").classList.remove("error");
+  if (!addr)    { document.getElementById("fAddr").classList.add("error"); errs.push("Address"); } else document.getElementById("fAddr").classList.remove("error");
+  if (!pin)     { document.getElementById("fPin").classList.add("error"); errs.push("ZIP"); } else document.getElementById("fPin").classList.remove("error");
+  if (!city)    { document.getElementById("fCity").classList.add("error"); errs.push("City"); } else document.getElementById("fCity").classList.remove("error");
+  if (!country) { document.getElementById("fCountry").classList.add("error"); errs.push("Country"); } else document.getElementById("fCountry").classList.remove("error");
+
+  // Block Pakistan
+  if (country.toLowerCase().includes("pakistan")) {
+    toast("\u274c We do not deliver to Pakistan.");
+    document.getElementById("fCountry").classList.add("error");
+    return;
+  }
+
+  if (errs.length) { toast("\u26a0\ufe0f Please fill: " + errs.join(", ")); return; }
+
+  var total = Math.max(0, Cart.subtotal() - discount) + deliveryFee;
+  var note = "Aneesa Hampers Order";
+  var upiUrl = "upi://pay?pa=" + UPI_ID + "&pn=" + encodeURIComponent(UPI_NAME) + "&am=" + total + "&cu=INR&tn=" + encodeURIComponent(note);
+  var qrUrl = "https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=" + encodeURIComponent(upiUrl) + "&choe=UTF-8";
+  document.getElementById("payAmount").textContent = "\u20b9" + total.toLocaleString("en-IN");
+  // QR removed
+  document.getElementById("phonePeLink").href = "phonepe://pay?pa=" + UPI_ID + "&pn=" + encodeURIComponent(UPI_NAME) + "&am=" + total + "&cu=INR&tn=" + encodeURIComponent(note);
+  document.getElementById("step2").classList.add("done");
+  document.getElementById("step3").classList.add("active");
+  document.getElementById("line2").classList.add("done");
+  document.getElementById("payModal").classList.add("open");
+};
+
+window.closePayModal = function() { document.getElementById("payModal").classList.remove("open"); };
+
+// ================================================================
+// CONFIRM PAID → SAVE ORDER TO FIREBASE (full data for admin)
+// ================================================================
+window.confirmPaid = async function() {
+  var items = Cart.get();
+  var total = Math.max(0, Cart.subtotal() - discount) + deliveryFee;
+  var fullPhone = selectedCCData.code + " " + document.getElementById("fPhone").value.trim();
+
+  var orderData = {
+    // Customer info
+    customerName:    document.getElementById("fName").value.trim(),
+    customerPhone:   fullPhone,
+    customerEmail:   currentUser ? currentUser.email : "",
+    customerUID:     currentUser ? currentUser.uid : "guest",
+    // Delivery address
+    address:         document.getElementById("fAddr").value.trim(),
+    city:            document.getElementById("fCity").value.trim(),
+    state:           document.getElementById("fState").value.trim(),
+    country:         document.getElementById("fCountry").value.trim(),
+    zipCode:         document.getElementById("fPin").value.trim(),
+    // Order details
+    items:           items.map(function(i){ return { id: i.id, name: i.name, price: i.price, qty: i.qty||1, image: i.image||"" }; }),
+    subtotal:        Cart.subtotal(),
+    discount:        discount,
+    promoCode:       appliedPromoCode,
+    deliveryFee:     deliveryFee,
+    deliveryType:    document.querySelector('input[name="delivery"]:checked').value,
+    total:           total,
+    // Payment
+    paymentMethod:   "UPI",
+    upiId:           UPI_ID,
+    // Meta
+    status:          "pending",
+    giftMessage:     document.getElementById("fMsg").value.trim(),
+    createdAt:       serverTimestamp()
+  };
+
+  // Block Pakistan at final step too
+  if (orderData.country.toLowerCase().includes("pakistan")) {
+    toast("\u274c We do not deliver to Pakistan.");
+    return;
+  }
+
+  try {
+    // Generate human-readable tracking ID: AH + 6 random alphanumeric chars
+    var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    var trackingId = 'AH';
+    for (var ti = 0; ti < 6; ti++) trackingId += chars[Math.floor(Math.random() * chars.length)];
+    orderData.trackingId = trackingId;
+    // Remove duplicate status field (already set above, firebase adds createdAt)
+    delete orderData.status; // will be set by server
+    orderData.status = "pending";
+
+    var ref = await addDoc(collection(db, "orders"), orderData);
+    currentOrderId = ref.id;
+    closePayModal();
+
+    // Show success
+    document.getElementById("detailsStep").style.display = "none";
+    document.getElementById("successScreen").classList.add("show");
+    document.getElementById("summaryBox").style.display = "none";
+    document.getElementById("successOrderId").textContent = "Tracking ID: " + trackingId;
+    document.getElementById("trackOrderLink").href = "track.html?id=" + trackingId;
+
+    // WhatsApp notification to admin
+    var lines = items.map(function(i){ return "\u2022 " + i.name + " \u00d7" + (i.qty||1) + " = \u20b9" + (i.price*(i.qty||1)).toLocaleString("en-IN"); }).join("\n");
+    var waMsg =
+      "\uD83C\uDF81 *New Order \u2014 Aneesa Hampers*\n" +
+      "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n" +
+      "\uD83D\uDC64 *Name:* " + orderData.customerName + "\n" +
+      "\uD83D\uDCDE *Phone:* " + orderData.customerPhone + "\n" +
+      (orderData.customerEmail ? "\uD83D\uDCE7 *Email:* " + orderData.customerEmail + "\n" : "") +
+      "\uD83D\uDCCD *Address:* " + orderData.address + ", " + orderData.city + (orderData.state ? ", " + orderData.state : "") + " - " + orderData.zipCode + "\n" +
+      "\uD83C\uDF0D *Country:* " + orderData.country + "\n" +
+      "\uD83D\uDE9A *Delivery:* " + orderData.deliveryType + "\n" +
+      (orderData.giftMessage ? "\uD83D\uDC8C *Message:* " + orderData.giftMessage + "\n" : "") +
+      "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n" +
+      "\uD83D\uDED2 *Items:*\n" + lines + "\n" +
+      "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n" +
+      "\uD83D\uDCB0 *Total: \u20b9" + total.toLocaleString("en-IN") + "*\n" +
+      "\u2705 *Payment: UPI Paid*\n" +
+      "\uD83D\uDD16 *Tracking ID:* " + trackingId + "\n" +
+      "\uD83C\uDD94 *Order ID:* #" + currentOrderId.slice(-6).toUpperCase();
+
+    document.getElementById("confirmWA").href = "https://wa.me/" + WA_NUM + "?text=" + encodeURIComponent(waMsg);
+
+    // Clear this user's cart only, then sign out
+    var userCartKey = cartKey(); // get key before clearing ah_user
+    localStorage.removeItem(userCartKey);
+    localStorage.removeItem("ah_user");
+    try { await auth.signOut(); } catch(se) {}
+
+    // Auto open WhatsApp after 1.2 seconds
+    setTimeout(function(){ window.open("https://wa.me/" + WA_NUM + "?text=" + encodeURIComponent(waMsg), "_blank"); }, 1200);
+
+  } catch(e) {
+    toast("\u274c Error saving order: " + e.message);
+    console.error(e);
+  }
+};
+
+// ================================================================
+// WA BUTTONS
+// ================================================================
+document.getElementById("navWA").addEventListener("click", function(e){
+  e.preventDefault();
+  window.open("https://wa.me/" + WA_NUM + "?text=Hi! I want to order a hamper from Aneesa Hampers!", "_blank");
+});
+document.getElementById("floatWA").addEventListener("click", function(e){
+  e.preventDefault();
+  window.open("https://wa.me/" + WA_NUM + "?text=Hi! I want to order a hamper!", "_blank");
+});
+
+// ================================================================
+// INIT
+// ================================================================
+renderCart();
+updateSummary();
+
+</script>
+<script src="mobilenav.js"></script>
+<script src="bottomnav.js"></script>
+</body>
+</html>
