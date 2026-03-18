@@ -1790,4 +1790,25 @@ onSnapshot(doc(db,'siteSettings','config'), snap => {
     const g = cfg.gallery;
     if(g.eyebrow) document.getElementById('galEyebrow').value = g.eyebrow;
     if(g.title)   document.getElementById('galTitle').value = g.title;
-    if(g.subtitle)document.getElem
+    if(g.subtitle)ById('galSub').value = g.subtitle;
+    if(g.handle)   document.getElementById('galHandle').value = g.handle;
+    if(g.items)    { _adminGallery = g.items.map(i=>({...i})); renderGalleryEditor(); }
+  }
+
+  // Popup
+  if(cfg.welcomePopup) {
+    const wp = cfg.welcomePopup;
+    const se = (id,v) => { const el=document.getElementById(id); if(el) el.value=v; };
+    se('ppStatus',  wp.active===false?'false':'true');
+    se('ppDisc',    wp.discount||15);
+    se('ppPrefix',  wp.codePrefix||('AH'+(wp.discount||15)));
+    se('ppSub',     wp.subtext||'');
+    se('ppDays',    wp.validDays||30);
+    se('ppMin',     wp.minOrder||0);
+    updatePopupPreview();
+  }
+});
+
+</script>
+</body>
+</html>
