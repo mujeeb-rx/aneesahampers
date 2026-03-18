@@ -8,9 +8,9 @@
 <style>
 :root{--blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;--burgundy:#3b0d1a;--cream:#fdf6f0;--gold:#c9a96e;--white:#fff;--green:#25D366;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);cursor:none;}
-.cursor{width:8px;height:8px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}
-.cursor-ring{width:28px;height:28px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:left .08s,top .08s;opacity:.4;}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);overflow-x:hidden;}
+@media(pointer:fine){body{cursor:none;}.cursor{width:8px;height:8px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}.cursor-ring{width:28px;height:28px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:left .08s,top .08s;opacity:.4;}}
+@media(pointer:coarse){.cursor,.cursor-ring{display:none;}body{cursor:auto;}button,a,input,select,textarea{cursor:pointer;}}
 #ah-toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:white;padding:11px 24px;border-radius:30px;font-size:.76rem;z-index:9999;display:none;white-space:nowrap;box-shadow:0 6px 24px rgba(59,13,26,.3);}
 
 /* NAV */
@@ -173,6 +173,38 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
 .modal-title em{font-style:italic;color:var(--deep-rose);}
 .upi-amount{font-size:1.45rem;font-weight:600;color:var(--deep-rose);margin-bottom:5px;}
 .upi-sub{font-size:.76rem;opacity:.48;margin-bottom:18px;}
+
+/* ── BUY NOW OVERLAY — Flipkart-style ── */
+#buyNowOverlay{position:fixed;inset:0;z-index:3000;background:#f8f1f3;overflow-y:auto;display:none;flex-direction:column;}
+#buyNowOverlay.open{display:flex;}
+.bn-header{background:var(--burgundy);padding:16px 18px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:10;}
+.bn-header-back{width:36px;height:36px;background:rgba(255,255,255,.15);border:none;border-radius:50%;color:white;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.bn-header-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:white;font-style:italic;}
+.bn-product-bar{background:white;padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(59,13,26,.06);}
+.bn-prod-img{width:56px;height:56px;border-radius:10px;object-fit:contain;background:#f5e8ec;padding:4px;flex-shrink:0;}
+.bn-prod-name{font-size:.9rem;font-weight:600;color:var(--burgundy);flex:1;line-height:1.3;}
+.bn-prod-price{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--deep-rose);white-space:nowrap;}
+/* Address card */
+.bn-section{background:white;border-radius:14px;margin:0 14px 12px;padding:16px 18px;box-shadow:0 2px 10px rgba(59,13,26,.05);}
+.bn-section-label{font-size:.6rem;letter-spacing:2.5px;text-transform:uppercase;color:rgba(59,13,26,.4);font-weight:600;margin-bottom:10px;}
+.bn-addr-display{font-size:.86rem;line-height:1.7;color:var(--burgundy);}
+.bn-addr-name{font-weight:700;font-size:.94rem;}
+.bn-change-btn{display:inline-block;margin-top:10px;padding:7px 18px;background:transparent;border:1.5px solid var(--deep-rose);color:var(--deep-rose);border-radius:20px;font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-weight:600;transition:all .2s;}
+.bn-change-btn:hover{background:var(--deep-rose);color:white;}
+/* Edit address form inside overlay */
+.bn-addr-form{display:none;margin-top:12px;border-top:1px solid rgba(192,100,122,.12);padding-top:12px;}
+.bn-addr-form.open{display:block;}
+.bn-input{width:100%;padding:11px 14px;border:1.5px solid rgba(192,100,122,.2);border-radius:10px;font-family:'Jost',sans-serif;font-size:.84rem;color:var(--burgundy);background:#fdf8f5;outline:none;margin-bottom:8px;box-sizing:border-box;transition:border-color .2s;}
+.bn-input:focus{border-color:var(--deep-rose);}
+.bn-input::placeholder{color:rgba(59,13,26,.3);}
+/* Price summary */
+.bn-price-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:.84rem;}
+.bn-price-row.total{border-top:1.5px solid rgba(192,100,122,.12);margin-top:8px;padding-top:12px;font-weight:700;font-size:1rem;}
+.bn-total-lbl{color:rgba(59,13,26,.6);}
+.bn-total-val{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--deep-rose);font-weight:700;}
+/* Pay button */
+.bn-pay-btn{position:sticky;bottom:0;background:white;padding:14px 18px calc(14px + env(safe-area-inset-bottom,0px));border-top:1px solid rgba(192,100,122,.1);margin-top:auto;}
+.bn-pay-btn button{width:100%;padding:16px;background:linear-gradient(135deg,var(--burgundy),var(--deep-rose));color:white;border:none;border-radius:14px;font-family:'Jost',sans-serif;font-size:.84rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;}
 .qr-img{width:188px;height:188px;border-radius:14px;border:3px solid var(--blush);margin:0 auto 14px;display:block;}
 .upi-id-box{background:var(--blush);border-radius:11px;padding:11px 16px;font-size:.82rem;margin-bottom:14px;}
 .upi-id-box strong{display:block;font-size:.96rem;color:var(--deep-rose);margin-top:2px;}
@@ -492,6 +524,72 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
   </div>
 </div>
 
+<!-- ══ BUY NOW OVERLAY — Flipkart style ══ -->
+<div id="buyNowOverlay">
+
+  <!-- Header -->
+  <div class="bn-header">
+    <button class="bn-header-back" onclick="closeBuyNow()">←</button>
+    <div class="bn-header-title">Order Summary</div>
+  </div>
+
+  <!-- Product bar -->
+  <div class="bn-product-bar">
+    <img id="bnProdImg" class="bn-prod-img" src="" alt=""/>
+    <div class="bn-prod-name" id="bnProdName">—</div>
+    <div class="bn-prod-price" id="bnProdPrice">₹0</div>
+  </div>
+
+  <!-- Delivery Address -->
+  <div class="bn-section">
+    <div class="bn-section-label">📍 Delivery Address</div>
+    <!-- Saved address display -->
+    <div id="bnAddrDisplay">
+      <div class="bn-addr-display" id="bnAddrText">No address saved yet.</div>
+      <button class="bn-change-btn" onclick="toggleBnAddrForm()">✏️ Change Address</button>
+    </div>
+    <!-- Edit address form (hidden by default) -->
+    <div class="bn-addr-form" id="bnAddrForm">
+      <input class="bn-input" id="bnName"  placeholder="Full Name *" autocomplete="name"/>
+      <input class="bn-input" id="bnPhone" placeholder="Phone Number *" type="tel" autocomplete="tel"/>
+      <input class="bn-input" id="bnAddr"  placeholder="House no, Street, Area *"/>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <input class="bn-input" id="bnPin"   placeholder="PIN Code *" type="number" style="margin-bottom:0" oninput="bnDetectPin(this.value)"/>
+        <input class="bn-input" id="bnCity"  placeholder="City *" style="margin-bottom:0"/>
+      </div>
+      <div style="margin-top:8px;">
+        <input class="bn-input" id="bnState"   placeholder="State"/>
+        <input class="bn-input" id="bnCountry" placeholder="Country *" value="India"/>
+      </div>
+      <button onclick="saveBnAddress()" style="width:100%;padding:12px;background:var(--burgundy);color:white;border:none;border-radius:10px;font-family:'Jost',sans-serif;font-size:.76rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;cursor:pointer;margin-top:4px;">Save Address &amp; Continue</button>
+    </div>
+  </div>
+
+  <!-- Gift Message -->
+  <div class="bn-section">
+    <div class="bn-section-label">🎁 Gift Message (optional)</div>
+    <textarea id="bnGiftMsg" class="bn-input" rows="2" placeholder="Write a personal message for the recipient…" style="resize:none;margin-bottom:0;"></textarea>
+  </div>
+
+  <!-- Price Summary -->
+  <div class="bn-section">
+    <div class="bn-section-label">💰 Price Details</div>
+    <div class="bn-price-row"><span class="bn-total-lbl">Product Price</span><span id="bnLinePrice">₹0</span></div>
+    <div class="bn-price-row"><span class="bn-total-lbl">Delivery</span><span style="color:var(--green);font-weight:600;">FREE</span></div>
+    <div class="bn-price-row total"><span class="bn-total-lbl">Total Amount</span><span class="bn-total-val" id="bnTotalAmt">₹0</span></div>
+  </div>
+
+  <div style="height:100px;"></div><!-- spacer for sticky button -->
+
+  <!-- Sticky Pay Button -->
+  <div class="bn-pay-btn">
+    <button onclick="bnProceedToPay()">
+      <span>🔒</span> Proceed to Pay — <span id="bnPayAmt">₹0</span>
+    </button>
+  </div>
+
+</div>
+
 <!-- UPI PAYMENT MODAL -->
 <div class="modal-overlay" id="payModal">
   <div class="modal-box">
@@ -563,6 +661,18 @@ function badge() { document.querySelectorAll(".cart-count").forEach(function(el)
 badge();
 
 var discount = 0, deliveryFee = 0, currentOrderId = "", appliedPromoCode = "";
+
+// Fill delivery form from saved address
+function _fillDeliveryForm(a) {
+  var s = function(id, v) { var el = document.getElementById(id); if (el && v) el.value = v; };
+  s('fName',    a.name);
+  s('fPhone',   a.phone);
+  s('fAddr',    a.addr);
+  s('fPin',     a.pin);
+  s('fCity',    a.city);
+  s('fState',   a.state);
+  s('fCountry', a.country || 'India');
+}
 var currentUser = null;
 var selectedCCData = { code: "+91", country: "India", flag: "\uD83C\uDDEE\uD83C\uDDF3" };
 var zipDebounce = null;
@@ -646,12 +756,28 @@ onAuthStateChanged(auth, async function(user) {
     renderCart();
     badge();
 
-    // Auto-fill form fields
+    // Auto-fill form fields from saved address
     document.getElementById("fName").value = displayName;
     try {
       var stored = JSON.parse(localStorage.getItem("ah_user") || "{}");
       if (stored.phone) document.getElementById("fPhone").value = stored.phone;
     } catch(e3) {}
+    // Auto-fill delivery address from saved address
+    try {
+      var savedAddr = JSON.parse(localStorage.getItem('ah_saved_address') || 'null');
+      if (!savedAddr && currentUser) {
+        // Try to load from Firestore
+        getDoc(doc(db, 'customers', user.uid)).then(function(snap) {
+          if (snap.exists() && snap.data().savedAddress) {
+            var a = snap.data().savedAddress;
+            localStorage.setItem('ah_saved_address', JSON.stringify(a));
+            _fillDeliveryForm(a);
+          }
+        }).catch(function(){});
+      } else if (savedAddr) {
+        _fillDeliveryForm(savedAddr);
+      }
+    } catch(e4) {}
   } else {
     gate.style.display = "block";
     document.getElementById("userStrip").style.display = "none";
@@ -1235,6 +1361,41 @@ window.closePayModal = function() { document.getElementById("payModal").classLis
 // CONFIRM PAID → SAVE ORDER TO FIREBASE (full data for admin)
 // ================================================================
 window.confirmPaid = async function() {
+  // ── Buy Now path: use pre-built order data ──
+  if (window._bnOrderData) {
+    var bnData = window._bnOrderData;
+    var bnItems = bnData.items;
+    var bnTotal = bnData.total;
+    try {
+      var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      var trackingId = 'AH';
+      for (var ti=0;ti<6;ti++) trackingId += chars[Math.floor(Math.random()*chars.length)];
+      bnData.trackingId = trackingId;
+      bnData.createdAt  = serverTimestamp();
+      var ref = await addDoc(collection(db, 'orders'), bnData);
+      currentOrderId = ref.id;
+      window._bnOrderData = null;
+      localStorage.removeItem('ah_buynow');
+      closePayModal();
+      var bnOv = document.getElementById('buyNowOverlay');
+      if(bnOv){ bnOv.classList.remove('open'); }
+      document.body.style.overflow = '';
+      document.getElementById('detailsStep').style.display = 'none';
+      document.getElementById('successScreen').classList.add('show');
+      document.getElementById('summaryBox').style.display = 'none';
+      window.scrollTo({top:0,behavior:'smooth'});
+      var soId=document.getElementById('successOrderId'); if(soId) soId.textContent='Tracking ID: '+trackingId;
+      var trl2=document.getElementById('trackOrderLink2'); if(trl2) trl2.href='track.html?id='+trackingId;
+      _buildConfirmItems(bnItems, bnTotal, trackingId, 'standard');
+      var lines=bnItems.map(function(i){return '• '+i.name+' ×'+(i.qty||1)+' = ₹'+(i.price*(i.qty||1)).toLocaleString('en-IN');}).join('\n');
+      var waMsg='🎁 *New Order — Aneesa Hampers*\n━━━━━━━\n👤 '+bnData.customerName+'\n📞 '+bnData.customerPhone+'\n📍 '+bnData.address+', '+bnData.city+(bnData.state?', '+bnData.state:'')+(bnData.zipCode?' - '+bnData.zipCode:'')+'\n🌍 '+bnData.country+'\n'+(bnData.giftMessage?'💌 '+bnData.giftMessage+'\n':'')+'━━━━━━━\n🛒 *Items:*\n'+lines+'\n━━━━━━━\n💰 *Total: ₹'+bnTotal.toLocaleString('en-IN')+'*\n🔖 Tracking: '+trackingId+'\n⚠️ Awaiting payment screenshot.';
+      var waEl=document.getElementById('confirmWA'); if(waEl) waEl.href='https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(waMsg);
+      toast('🎉 Order placed!');
+    } catch(e){ toast('❌ Error: '+e.message); console.error(e); }
+    return;
+  }
+
+  // ── Normal cart path ──
   var items = Cart.get();
   var total = Math.max(0, Cart.subtotal() - discount) + deliveryFee;
   var fullPhone = selectedCCData.code + " " + document.getElementById("fPhone").value.trim();
@@ -1317,6 +1478,21 @@ window.confirmPaid = async function() {
 
     document.getElementById("confirmWA").href = "https://wa.me/" + WA_NUM + "?text=" + encodeURIComponent(waMsg);
 
+    // Save delivery address for next order
+    var addrToSave = {
+      name:    orderData.customerName,
+      phone:   document.getElementById("fPhone").value.trim(),
+      addr:    orderData.address,
+      pin:     orderData.zipCode,
+      city:    orderData.city,
+      state:   orderData.state,
+      country: orderData.country
+    };
+    localStorage.setItem('ah_saved_address', JSON.stringify(addrToSave));
+    if (currentUser) {
+      setDoc(doc(db,'customers',currentUser.uid),{savedAddress:addrToSave},{merge:true}).catch(function(){});
+    }
+
     // Clear this user's cart only, then sign out
     var userCartKey = cartKey(); // get key before clearing ah_user
     localStorage.removeItem(userCartKey);
@@ -1331,6 +1507,198 @@ window.confirmPaid = async function() {
     console.error(e);
   }
 };
+
+// ================================================================
+// BUY NOW — FLIPKART-STYLE INSTANT CHECKOUT
+// ================================================================
+var _bnItem = null; // current buy-now product
+
+// ── Address helpers ──
+function _loadSavedAddress() {
+  try { return JSON.parse(localStorage.getItem('ah_saved_address') || 'null'); } catch(e) { return null; }
+}
+function _saveAddress(addr) {
+  localStorage.setItem('ah_saved_address', JSON.stringify(addr));
+  // Also persist to Firestore if logged in
+  if (currentUser) {
+    setDoc(doc(db, 'customers', currentUser.uid), { savedAddress: addr }, { merge: true }).catch(function(){});
+  }
+}
+
+// ── Open Buy Now overlay ──
+window.openBuyNow = function(item) {
+  _bnItem = item;
+  // Fill product info
+  var img = document.getElementById('bnProdImg');
+  var nm  = document.getElementById('bnProdName');
+  var pr  = document.getElementById('bnProdPrice');
+  var lp  = document.getElementById('bnLinePrice');
+  var ta  = document.getElementById('bnTotalAmt');
+  var pa  = document.getElementById('bnPayAmt');
+  var total = item.price * (item.qty || 1);
+  if (img) { img.src = item.image || ''; img.style.display = item.image ? 'block' : 'none'; }
+  if (nm)  nm.textContent  = item.name + (item.qty > 1 ? ' × ' + item.qty : '');
+  if (pr)  pr.textContent  = '₹' + total.toLocaleString('en-IN');
+  if (lp)  lp.textContent  = '₹' + total.toLocaleString('en-IN');
+  if (ta)  ta.textContent  = '₹' + total.toLocaleString('en-IN');
+  if (pa)  pa.textContent  = '₹' + total.toLocaleString('en-IN');
+
+  // Load saved address
+  _bnRenderAddress();
+
+  // Show overlay
+  var ov = document.getElementById('buyNowOverlay');
+  if (ov) { ov.classList.add('open'); document.body.style.overflow = 'hidden'; }
+  window.scrollTo(0, 0);
+};
+
+window.closeBuyNow = function() {
+  var ov = document.getElementById('buyNowOverlay');
+  if (ov) ov.classList.remove('open');
+  document.body.style.overflow = '';
+  localStorage.removeItem('ah_buynow');
+};
+
+function _bnRenderAddress() {
+  var addr = _loadSavedAddress();
+  var addrText = document.getElementById('bnAddrText');
+  var form     = document.getElementById('bnAddrForm');
+  if (!addr) {
+    // No saved address — show form straight away
+    if (addrText) addrText.innerHTML = '<span style="opacity:.45;font-size:.82rem;">No saved address — fill in below to continue.</span>';
+    if (form) form.classList.add('open');
+    // Pre-fill from currentUser if available
+    if (currentUser) {
+      var el = document.getElementById('bnName');
+      if (el && !el.value) el.value = currentUser.displayName || '';
+    }
+    return;
+  }
+  // Show saved address
+  if (addrText) {
+    addrText.innerHTML =
+      '<div class="bn-addr-name">' + (addr.name || '') + '</div>' +
+      '<div>' + (addr.phone || '') + '</div>' +
+      '<div>' + (addr.addr || '') + '</div>' +
+      '<div>' + [addr.city, addr.state, addr.pin].filter(Boolean).join(', ') + '</div>' +
+      '<div>' + (addr.country || 'India') + '</div>';
+  }
+  if (form) form.classList.remove('open');
+  // Pre-fill form fields with saved values (for editing)
+  _bnFillForm(addr);
+}
+
+function _bnFillForm(addr) {
+  var s = function(id, v) { var el = document.getElementById(id); if (el) el.value = v || ''; };
+  s('bnName',    addr.name);
+  s('bnPhone',   addr.phone);
+  s('bnAddr',    addr.addr);
+  s('bnPin',     addr.pin);
+  s('bnCity',    addr.city);
+  s('bnState',   addr.state);
+  s('bnCountry', addr.country || 'India');
+}
+
+window.toggleBnAddrForm = function() {
+  var form = document.getElementById('bnAddrForm');
+  if (form) form.classList.toggle('open');
+};
+
+window.bnDetectPin = function(pin) {
+  if (!pin || pin.length < 6) return;
+  fetch('https://api.postalpincode.in/pincode/' + pin)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice.length) {
+        var po = data[0].PostOffice[0];
+        var city = document.getElementById('bnCity');
+        var state = document.getElementById('bnState');
+        var country = document.getElementById('bnCountry');
+        if (city && !city.value) city.value = po.District || po.Name || '';
+        if (state && !state.value) state.value = po.State || '';
+        if (country) country.value = 'India';
+      }
+    }).catch(function(){});
+};
+
+window.saveBnAddress = function() {
+  var g = function(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  var name  = g('bnName');
+  var phone = g('bnPhone');
+  var addr  = g('bnAddr');
+  var pin   = g('bnPin');
+  var city  = g('bnCity');
+  var country = g('bnCountry') || 'India';
+  if (!name)  { toast('⚠️ Please enter your name'); return; }
+  if (!phone) { toast('⚠️ Please enter phone number'); return; }
+  if (!addr)  { toast('⚠️ Please enter your address'); return; }
+  if (!city)  { toast('⚠️ Please enter city'); return; }
+  var savedAddr = { name:name, phone:phone, addr:addr, pin:pin, city:city, state:g('bnState'), country:country };
+  _saveAddress(savedAddr);
+  _bnRenderAddress();
+  toast('✅ Address saved!');
+};
+
+window.bnProceedToPay = function() {
+  if (!_bnItem) return;
+  var addr = _loadSavedAddress();
+  if (!addr || !addr.name || !addr.addr || !addr.city) {
+    toast('⚠️ Please save your delivery address first');
+    var form = document.getElementById('bnAddrForm');
+    if (form) form.classList.add('open');
+    return;
+  }
+  // Build order data and go straight to payment
+  var total = _bnItem.price * (_bnItem.qty || 1);
+  var giftMsg = document.getElementById('bnGiftMsg');
+  window._bnOrderData = {
+    customerName:  addr.name,
+    customerPhone: addr.phone,
+    customerEmail: currentUser ? currentUser.email : '',
+    customerUID:   currentUser ? currentUser.uid   : 'guest',
+    address:       addr.addr,
+    city:          addr.city,
+    state:         addr.state || '',
+    country:       addr.country || 'India',
+    zipCode:       addr.pin    || '',
+    items:         [{ id:_bnItem.id, name:_bnItem.name, price:_bnItem.price, qty:_bnItem.qty||1, image:_bnItem.image||'' }],
+    subtotal:      total,
+    discount:      0,
+    promoCode:     '',
+    deliveryFee:   0,
+    deliveryType:  'standard',
+    total:         total,
+    paymentMethod: 'UPI',
+    upiId:         UPI_ID,
+    status:        'pending_screenshot',
+    giftMessage:   giftMsg ? giftMsg.value.trim() : '',
+    isBuyNow:      true
+  };
+  // Open payment modal
+  var note = 'Aneesa Hampers Order';
+  var upiStr = 'upi://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + total + '&cu=INR&tn=' + encodeURIComponent(note);
+  document.getElementById('payAmount').textContent = '₹' + total.toLocaleString('en-IN');
+  document.getElementById('payQRImg').src = 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=' + encodeURIComponent(upiStr) + '&choe=UTF-8';
+  document.getElementById('phonePeLink').href = 'phonepe://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + total + '&cu=INR&tn=' + encodeURIComponent(note);
+  document.getElementById('gpayLink').href    = 'tez://upi/pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + total + '&cu=INR&tn=' + encodeURIComponent(note);
+  document.getElementById('paytmLink').href   = 'paytmmp://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + total + '&cu=INR&tn=' + encodeURIComponent(note);
+  document.getElementById('payModal').classList.add('open');
+};
+
+// ── On page load: check if came from Buy Now ──
+(function() {
+  var isBuyNow = window.location.search.indexOf('buynow=1') !== -1;
+  if (!isBuyNow) return;
+  var raw = localStorage.getItem('ah_buynow');
+  if (!raw) return;
+  try {
+    var item = JSON.parse(raw);
+    if (item && item.id) {
+      // Wait for DOM then open overlay
+      setTimeout(function() { openBuyNow(item); }, 300);
+    }
+  } catch(e) {}
+})();
 
 // ================================================================
 // WA BUTTONS

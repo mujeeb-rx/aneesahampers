@@ -362,39 +362,64 @@ window.showPanel = function(id) {
 // SAVE PROFILE
 window.saveProfile = async function() {
   if(!_uid){toast('⚠️ Not logged in');return;}
-  const data={name:document.getElementById('profName').value.trim(),phone:document.getElementById('profPhone').value.trim(),dob:document.getElementById('profDob').value,updatedAt:serverTimestamp()};
-  await setDoc(doc(db,'users',_uid),data,{merge:true});
-  // Update session
-  const s=JSON.parse(localStorage.getItem('ah_user')||'{}');
-  s.name=data.name; localStorage.setItem('ah_user',JSON.stringify(s));
-  document.getElementById('avName').textContent=data.name;
-  document.getElementById('avCircle').textContent=(data.name||'A').charAt(0).toUpperCase();
-  toast('✅ Profile saved!');
+  try {
+    const data={name:document.getElementById('profName').value.trim(),phone:document.getElementById('profPhone').value.trim(),dob:document.getElementById('profDob').value,updatedAt:serverTimestamp()};
+    await setDoc(doc(db,'users',_uid),data,{merge:true});
+    // Update session
+    const s=JSON.parse(localStorage.getItem('ah_user')||'{}');
+    s.name=data.name; localStorage.setItem('ah_user',JSON.stringify(s));
+    document.getElementById('avName').textContent=data.name;
+    document.getElementById('avCircle').textContent=(data.name||'A').charAt(0).toUpperCase();
+    toast('✅ Profile saved!');
+  } catch(e) {
+    console.error('saveProfile error:',e);
+    toast('❌ Failed to save profile. Please try again.');
+  }
 };
 
 // SAVE ADDRESS
 window.saveAddress = async function() {
   if(!_uid){toast('⚠️ Not logged in');return;}
-  await setDoc(doc(db,'users',_uid),{address:document.getElementById('addrLine').value.trim(),city:document.getElementById('addrCity').value.trim(),state:document.getElementById('addrState').value.trim(),pincode:document.getElementById('addrPin').value.trim(),landmark:document.getElementById('addrLandmark').value.trim(),updatedAt:serverTimestamp()},{merge:true});
-  toast('✅ Address saved!');
+  try {
+    await setDoc(doc(db,'users',_uid),{address:document.getElementById('addrLine').value.trim(),city:document.getElementById('addrCity').value.trim(),state:document.getElementById('addrState').value.trim(),pincode:document.getElementById('addrPin').value.trim(),landmark:document.getElementById('addrLandmark').value.trim(),updatedAt:serverTimestamp()},{merge:true});
+    toast('✅ Address saved!');
+  } catch(e) {
+    console.error('saveAddress error:',e);
+    toast('❌ Failed to save address. Please try again.');
+  }
 };
 
 // PASSWORD RESET
 window.sendPwReset = async function() {
   const email=document.getElementById('profEmail').value;
   if(!email){toast('⚠️ No email found');return;}
-  await sendPasswordResetEmail(auth,email);
-  toast('📧 Reset email sent! Check your inbox.');
+  try {
+    await sendPasswordResetEmail(auth,email);
+    toast('📧 Reset email sent! Check your inbox.');
+  } catch(e) {
+    console.error('sendPwReset error:',e);
+    toast('❌ ' + (e.message || 'Failed to send reset email.'));
+  }
 };
 
 // ORDERS — real-time listener
 const STATUS_STEPS = ['pending','confirmed','shipped','delivered'];
 function startOrderListener(uid) {
   if(_unsubOrders) _unsubOrders();
-  const q = query(collection(db,'orders'),where('uid','==',uid),orderBy('createdAt','desc'));
+  // Note: orderBy+where requires a composite Firestore index, so we sort client-side
+  const q = query(collection(db,'orders'),where('uid','==',uid));
   _unsubOrders = onSnapshot(q, snap => {
     const orders = snap.docs.map(d=>({id:d.id,...d.data()}));
+    // Sort by createdAt descending client-side
+    orders.sort((a,b)=>{
+      const ta = a.createdAt?.toDate?.()?.getTime?.() || (typeof a.createdAt==='number'?a.createdAt:0);
+      const tb = b.createdAt?.toDate?.()?.getTime?.() || (typeof b.createdAt==='number'?b.createdAt:0);
+      return tb - ta;
+    });
     renderOrders(orders);
+  }, err => {
+    console.error('Orders listener error:', err);
+    document.getElementById('ordersContainer').innerHTML = `<div class="empty-box"><div class="empty-icon">⚠️</div><div class="empty-title">Couldn't Load Orders</div><div class="empty-sub">Please check your connection and try again.</div></div>`;
   });
 }
 function fmtDate(ts){if(!ts)return'—';const d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});}
@@ -446,6 +471,8 @@ window.cancelOrder = async function(id) {
 // LOGOUT
 window.doLogout = async function() {
   if(!confirm('Sign out?')) return;
+  // Unsubscribe real-time listener before logout to prevent memory leak
+  if(_unsubOrders){try{_unsubOrders();}catch(e){}  _unsubOrders=null;}
   try{await signOut(auth);}catch(e){}
   Object.keys(localStorage).filter(k=>k.startsWith('ah_')).forEach(k=>localStorage.removeItem(k));
   window.location.href='index.html';
