@@ -164,7 +164,7 @@ textarea.fi{resize:vertical;min-height:80px;}
 .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
 .cat-item{background:white;border-radius:14px;overflow:hidden;box-shadow:0 2px 14px rgba(59,13,26,.05);transition:transform .2s;}
 .cat-item:hover{transform:translateY(-2px);}
-.cat-top{height:80px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;position:relative;}
+.cat-top{height:100px;display:flex;align-items:center;justify-content:center;font-size:2.8rem;position:relative;overflow:hidden;}
 .cat-body{padding:12px 14px;}
 .cat-name{font-family:'Cormorant Garamond',serif;font-size:1.05rem;margin-bottom:3px;}
 .cat-slug{font-size:.62rem;font-family:monospace;opacity:.38;margin-bottom:8px;}
@@ -1314,11 +1314,11 @@ window.saveCat = async function() {
   try {
     if(_catEditMode){
       await updateDoc(doc(db,'categories',document.getElementById('catEditId').value),{...data,updatedAt:serverTimestamp()});
-      toast('✅ Category updated!');
+      toast('✅ Category updated! Cover photo live on site.'); setTimeout(()=>closeModal('catModal'), 400);
     } else {
       if(_cats.find(c=>(c.slug||c.id)===slug)){toast('⚠️ Slug already exists','err');return;}
       await setDoc(doc(db,'categories',slug),{...data,createdAt:serverTimestamp()});
-      toast(`✅ Category "${name}" created!`);
+      toast(`✅ Category "${name}" created!`); setTimeout(()=>closeModal('catModal'), 400);
     }
     closeModal('catModal');
   } catch(e){toast('❌ '+e.message,'err');}
@@ -1528,7 +1528,10 @@ window.uploadCatCover = async function(input) {
     if (urlInput) urlInput.value = url;
     // Show preview + reset position
     _showCatCoverPreview(url, true);
-    if (statusEl) { statusEl.style.color='#2d7a4f'; statusEl.textContent = '✅ Photo uploaded! Adjust position using sliders below.'; }
+    if (statusEl) { statusEl.style.color='#2d7a4f'; statusEl.textContent = '✅ Photo uploaded! Adjust position then click Save Category.'; }
+    // Flash the preview box to show it's ready
+    const prevBox = document.getElementById('catCoverPreviewBox');
+    if (prevBox) { prevBox.style.boxShadow='0 0 0 3px var(--deep-rose)'; setTimeout(()=>prevBox.style.boxShadow='',1200); }
     setTimeout(()=>{ if(statusEl) statusEl.textContent=''; }, 5000);
   } catch(e) {
     if (statusEl) { statusEl.style.color='#e05050'; statusEl.textContent = '❌ Upload failed: ' + e.message; }
