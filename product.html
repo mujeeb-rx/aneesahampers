@@ -57,7 +57,7 @@
     .slider-wrap{position:relative;height:430px;overflow:hidden;background:linear-gradient(135deg,var(--blush),#f0d4dc);}
     .slider-track{display:flex;height:100%;transition:transform .45s cubic-bezier(.4,0,.2,1);}
     .slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:6rem;flex-shrink:0;position:relative;}
-    .slide img{width:100%;height:100%;object-fit:cover;}
+    .slide img{width:100%;height:100%;object-fit:contain;padding:12px;background:white;}
     .slide-arrow{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;background:rgba(255,255,255,.9);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;z-index:10;box-shadow:var(--shadow-sm);transition:all .2s;opacity:0;}
     .slider-wrap:hover .slide-arrow{opacity:1;}
     .slide-arrow:hover{background:var(--burgundy);color:white;transform:translateY(-50%) scale(1.08);}
@@ -75,7 +75,7 @@
     .thumb-row{display:flex;gap:8px;padding:14px;overflow-x:auto;border-top:1px solid rgba(192,100,122,.08);}
     .thumb-row::-webkit-scrollbar{height:3px;}
     .thumb-row::-webkit-scrollbar-thumb{background:var(--rose);border-radius:3px;}
-    .thumb{width:66px;height:66px;border-radius:var(--radius-sm);object-fit:cover;cursor:pointer;border:2px solid transparent;transition:border-color .2s,transform .2s;flex-shrink:0;background:var(--blush);}
+    .thumb{width:66px;height:66px;border-radius:var(--radius-sm);object-fit:contain;padding:4px;cursor:pointer;border:2px solid transparent;transition:border-color .2s,transform .2s;flex-shrink:0;background:white;}
     .thumb:hover{transform:scale(1.05);}
     .thumb.active{border-color:var(--deep-rose);}
 
@@ -210,8 +210,8 @@
     /* MINI CARD */
     .mini-card{background:var(--white);border-radius:var(--radius-lg);overflow:hidden;cursor:pointer;transition:transform var(--transition),box-shadow var(--transition);box-shadow:var(--shadow-sm);}
     .mini-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
-    .mini-img{height:190px;overflow:hidden;background:var(--blush);position:relative;}
-    .mini-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s;}
+    .mini-img{height:190px;overflow:hidden;background:white;position:relative;}
+    .mini-img img{width:100%;height:100%;object-fit:contain;padding:8px;transition:transform .5s;}
     .mini-card:hover .mini-img img{transform:scale(1.07);}
     .mini-img-emoji{display:flex;align-items:center;justify-content:center;height:100%;font-size:3rem;}
     .mini-disc{position:absolute;top:9px;left:9px;background:linear-gradient(135deg,#e84393,#c0647a);color:white;font-size:.55rem;font-weight:700;padding:3px 9px;border-radius:14px;}
@@ -583,391 +583,374 @@
   </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp, limit }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+<script>
+// ============================================================
+// ANEESA HAMPERS — product.html
+// Uses Firestore REST API directly (no SDK module needed)
+// This avoids ALL Firebase module loading / init issues
+// ============================================================
 
-const firebaseConfig={apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",authDomain:"aneesa-hampers.firebaseapp.com",projectId:"aneesa-hampers",storageBucket:"aneesa-hampers.firebasestorage.app",messagingSenderId:"909653560410",appId:"1:909653560410:web:397db4fec2d9f042609c63"};
-const app=initializeApp(firebaseConfig);
-const db=getFirestore(app);
-const auth=getAuth(app);
-const WA_NUM='918639066613';
+const _FB_PROJECT = 'aneesa-hampers';
+const _FB_KEY     = 'AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM';
+const _FB_BASE    = `https://firestore.googleapis.com/v1/projects/${_FB_PROJECT}/databases/(default)/documents`;
+const WA_NUM      = '918639066613';
 
-// CURSOR
-const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
-document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';},80);});
+// Helpers
+const $  = id => document.getElementById(id);
+const toast = msg => { const t=$('ah-toast'); if(!t)return; t.textContent=msg; t.style.display='block'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',2800); };
 
-// CART
-function cartKey(){const u=JSON.parse(localStorage.getItem('ah_user')||'{}');return u.uid?'ah_cart_'+u.uid:'ah_cart_guest';}
-const Cart={
-  get(){try{return JSON.parse(localStorage.getItem(cartKey())||'[]')}catch{return[]}},
-  save(i){localStorage.setItem(cartKey(),JSON.stringify(i));badge();},
-  add(p){const it=Cart.get(),ex=it.find(i=>i.id===p.id);if(ex){ex.qty=(ex.qty||1)+1;}else{it.push({...p,qty:1});}Cart.save(it);toast(`✅ "${p.name}" added to cart!`);},
-  count(){return Cart.get().reduce((s,i)=>s+(i.qty||1),0);}
+// Cursor
+const cur=$('cursor'), ring=$('cursorRing');
+if(cur) document.addEventListener('mousemove', e=>{
+  cur.style.left=e.clientX+'px'; cur.style.top=e.clientY+'px';
+  setTimeout(()=>{ if(ring){ring.style.left=e.clientX+'px'; ring.style.top=e.clientY+'px';} }, 80);
+});
+
+// Cart (localStorage)
+function cartKey(){ try{ const u=JSON.parse(localStorage.getItem('ah_user')||'{}'); return u.uid?'ah_cart_'+u.uid:'ah_cart_guest'; }catch{return'ah_cart_guest';} }
+const Cart = {
+  get(){ try{return JSON.parse(localStorage.getItem(cartKey())||'[]');}catch{return[];} },
+  save(items){ localStorage.setItem(cartKey(), JSON.stringify(items)); _badge(); },
+  add(p){ const it=Cart.get(), ex=it.find(i=>i.id===p.id); if(ex)ex.qty=(ex.qty||1)+1; else it.push({...p,qty:1}); Cart.save(it); toast(`✅ "${p.name}" added to cart!`); },
+  count(){ return Cart.get().reduce((s,i)=>s+(i.qty||1),0); }
 };
-function badge(){document.querySelectorAll('.cart-count,.cart-badge,[data-cart-count]').forEach(el=>el.textContent=Cart.count());}
-function toast(msg){const t=document.getElementById('ah-toast');t.textContent=msg;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2600);}
+function _badge(){ document.querySelectorAll('.cart-count,.cart-badge,[data-cart-count]').forEach(el=>el.textContent=Cart.count()); }
+_badge();
 
-badge();
-
-// AUTH
-const _savedU=JSON.parse(localStorage.getItem('ah_user')||'null');
-if(_savedU&&_savedU.uid){
-  const greet=document.getElementById('navUserGreet');if(greet)greet.textContent='Hi, '+_savedU.name.split(' ')[0]+'!';
-  const logBtn=document.getElementById('navLogoutBtn');if(logBtn)logBtn.style.display='inline-flex';
-}
-window.doLogout=async function(){
-  if(!confirm('Log out?'))return;
-  try{await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js").then(m=>m.signOut(auth));}catch(e){}
-  localStorage.removeItem('ah_user');window.location.href='index.html';
-};
-
-// PRODUCT
-const productId = new URLSearchParams(location.search).get('id');
-if(!productId){document.getElementById('loadingState').innerHTML='<p>Product not found.</p>';throw new Error('No product ID');}
-
-let currentProduct = null;
-let allImages = [];
-let currentSlide = 0;
-let currentQty = 1;
-let lightboxIdx = 0;
-let selectedStarRating = 0;
-let isWishedState = false;
-
-// Wishlist helpers
-function getWishlist(){try{return JSON.parse(localStorage.getItem('ah_wish')||'[]')}catch{return[];}}
-function saveWishlist(w){localStorage.setItem('ah_wish',JSON.stringify(w));}
-
-window.toggleDetailWish = function(){
-  let w=getWishlist();
-  if(isWishedState){
-    w=w.filter(x=>x!==productId);
-    isWishedState=false;
-    toast('Removed from wishlist');
-  }else{
-    w.push(productId);
-    isWishedState=true;
-    toast('❤️ Saved to wishlist!');
+// Auth display
+try {
+  const su = JSON.parse(localStorage.getItem('ah_user')||'null');
+  if(su && su.name){
+    const g=$('navUserGreet'); if(g) g.textContent='Hi, '+su.name.split(' ')[0]+'!';
+    const lb=$('navLogoutBtn'); if(lb) lb.style.display='inline-flex';
   }
-  saveWishlist(w);
-  updateWishBtns();
-};
-function updateWishBtns(){
-  const floatBtn=document.getElementById('detWishBtn');
-  const listBtn=document.getElementById('detWishlistBtn');
-  if(floatBtn){floatBtn.textContent=isWishedState?'❤️':'🤍';floatBtn.classList.toggle('wished',isWishedState);}
-  if(listBtn){listBtn.textContent=isWishedState?'❤️ Wishlisted':'🤍 Add to Wishlist';listBtn.classList.toggle('wished',isWishedState);}
+} catch(e){}
+window.doLogout = () => { if(!confirm('Log out?'))return; localStorage.removeItem('ah_user'); location.href='index.html'; };
+
+// ── Firestore REST parser ──
+function _parseField(v) {
+  if(!v) return null;
+  if(v.stringValue  !== undefined) return v.stringValue;
+  if(v.integerValue !== undefined) return Number(v.integerValue);
+  if(v.doubleValue  !== undefined) return Number(v.doubleValue);
+  if(v.booleanValue !== undefined) return v.booleanValue;
+  if(v.arrayValue   !== undefined) return (v.arrayValue.values||[]).map(_parseField);
+  if(v.mapValue     !== undefined) return _parseDoc(v.mapValue.fields||{});
+  if(v.timestampValue !== undefined) return new Date(v.timestampValue);
+  if(v.nullValue    !== undefined) return null;
+  return null;
+}
+function _parseDoc(fields) {
+  const out = {};
+  for(const k in fields) out[k] = _parseField(fields[k]);
+  return out;
 }
 
-// Load product
-getDoc(doc(db,'products',productId)).then(snap=>{
-  if(!snap.exists()){document.getElementById('loadingState').innerHTML='<p>Product not found.</p>';return;}
-  currentProduct={id:snap.id,...snap.data()};
-  renderProduct(currentProduct);
-  isWishedState=getWishlist().includes(productId);
-  updateWishBtns();
-  loadRelated(currentProduct.category,currentProduct.id);
-}).catch(e=>{console.error(e);document.getElementById('loadingState').innerHTML='<p>Error loading product.</p>';});
+// ── Show/hide loader ──
+function _showError(msg) {
+  const ls=$('loadingState');
+  if(ls) ls.innerHTML=`<div style="text-align:center;padding:60px 20px">
+    <div style="font-size:3rem">⚠️</div>
+    <p style="margin:14px auto;max-width:340px;opacity:.65;line-height:1.6">${msg}</p>
+    <a href="products.html" style="display:inline-block;margin-top:14px;color:var(--deep-rose);font-size:.78rem;letter-spacing:2px;text-transform:uppercase">← Back to Products</a>
+  </div>`;
+}
+function _showProduct() {
+  const ls=$('loadingState'); if(ls) ls.style.display='none';
+  const pw=$('productWrap');  if(pw) pw.style.display='grid';
+  const rs=$('reviewsSection'); if(rs) rs.style.display='block';
+}
 
-function renderProduct(p){
-  document.title=`${p.name} – Aneesa Hampers`;
-  document.getElementById('bcName').textContent=p.name;
-  document.getElementById('detCat').textContent=(p.category||'Premium Gift').toUpperCase();
-  document.getElementById('detName').textContent=p.name;
+// ── State ──
+const _pid = new URLSearchParams(location.search).get('id');
+let _prod=null, _imgs=[], _qty=1, _slide=0, _lbIdx=0, _starRating=0, _wished=false;
 
-  // Price
-  const price=Number(p.price);
-  const disc=Number(p.discount)||0;
-  const effPrice=disc>0?Math.round(price*(1-disc/100)):price;
-  document.getElementById('detPrice').textContent=`₹${effPrice.toLocaleString()}`;
+if(!_pid) { _showError('No product ID found in URL.'); throw new Error('no id'); }
 
-  if(disc>0){
-    document.getElementById('detOrigPrice').textContent=`₹${price.toLocaleString()}`;
-    document.getElementById('detOrigPrice').style.display='inline';
-    document.getElementById('detOff').textContent=`${disc}% OFF`;
-    document.getElementById('detOff').style.display='inline-flex';
-    const saved=price-effPrice;
-    document.getElementById('detSavings').textContent=`You save ₹${saved.toLocaleString()} on this purchase!`;
-    document.getElementById('detSavings').style.display='block';
+// 10s timeout
+const _tout = setTimeout(()=>_showError('Timed out. Please check your internet connection.'), 10000);
+
+// Wishlist
+function _getWL(){ try{return JSON.parse(localStorage.getItem('ah_wish')||'[]');}catch{return[];} }
+function _saveWL(w){ localStorage.setItem('ah_wish',JSON.stringify(w)); }
+window.toggleDetailWish = () => {
+  let w=_getWL();
+  if(_wished){ w=w.filter(x=>x!==_pid); _wished=false; toast('Removed from wishlist'); }
+  else { w.push(_pid); _wished=true; toast('❤️ Saved to wishlist!'); }
+  _saveWL(w); _updateWishBtns();
+};
+function _updateWishBtns(){
+  const fb=$('detWishBtn'), lb=$('detWishlistBtn');
+  if(fb){ fb.textContent=_wished?'❤️':'🤍'; fb.classList.toggle('wished',_wished); }
+  if(lb){ lb.textContent=_wished?'❤️ Wishlisted':'🤍 Add to Wishlist'; lb.classList.toggle('wished',_wished); }
+}
+
+// ══════════════════════════════════════════
+//  LOAD PRODUCT via REST API
+// ══════════════════════════════════════════
+async function _loadProduct() {
+  try {
+    const url = `${_FB_BASE}/products/${_pid}?key=${_FB_KEY}`;
+    const res = await fetch(url);
+
+    if(res.status === 404) { clearTimeout(_tout); _showError('Product not found.'); return; }
+    if(res.status === 403) { clearTimeout(_tout); _showError('Access denied. Please sign in.'); return; }
+    if(!res.ok) { clearTimeout(_tout); _showError(`Server error (${res.status}). Please try again.`); return; }
+
+    const json = await res.json();
+    if(json.error) { clearTimeout(_tout); _showError(json.error.message||'Error loading product.'); return; }
+
+    _prod = { id: _pid, ..._parseDoc(json.fields||{}) };
+    clearTimeout(_tout);
+    _renderProduct(_prod);
+    _wished = _getWL().includes(_pid);
+    _updateWishBtns();
+    _showProduct();
+    _loadRelated(_prod.category, _pid);
+    _loadReviews(_pid);
+  } catch(e) {
+    clearTimeout(_tout);
+    console.error('Product load error:', e);
+    _showError('Network error. Please check your connection and try again.');
+  }
+}
+_loadProduct();
+
+// ── Render ──
+function _renderProduct(p) {
+  document.title = (p.name||'Product') + ' – Aneesa Hampers';
+  const bcn=$('bcName'); if(bcn) bcn.textContent=p.name||'';
+  const dc=$('detCat');  if(dc)  dc.textContent=(p.category||'Premium Gift').toUpperCase();
+  const dn=$('detName'); if(dn)  dn.textContent=p.name||'';
+
+  const price = Number(p.price)||0;
+  const disc  = Number(p.discount)||0;
+  const eff   = disc>0 ? Math.round(price*(1-disc/100)) : price;
+
+  const dp=$('detPrice'); if(dp) dp.textContent=`₹${eff.toLocaleString('en-IN')}`;
+  if(disc>0) {
+    const op=$('detOrigPrice'); if(op){op.textContent=`₹${price.toLocaleString('en-IN')}`;op.style.display='inline';}
+    const of=$('detOff'); if(of){of.textContent=`${disc}% OFF`;of.style.display='inline-flex';}
+    const ds=$('detSavings'); if(ds){ds.textContent=`You save ₹${(price-eff).toLocaleString('en-IN')} on this purchase!`;ds.style.display='block';}
   }
 
-  document.getElementById('detDesc').textContent=p.description||'';
+  const dd=$('detDesc'); if(dd) dd.textContent=p.description||'';
 
-  // Items
-  if(p.items&&p.items.length){
-    const box=document.getElementById('detItemsBox');
-    box.style.display='block';
-    document.getElementById('detItems').innerHTML=p.items.map(it=>`<span class="item-chip">${it}</span>`).join('');
+  if(Array.isArray(p.items)&&p.items.length) {
+    const box=$('detItemsBox'); if(box) box.style.display='block';
+    const il=$('detItems'); if(il) il.innerHTML=p.items.map(it=>`<span class="item-chip">${it}</span>`).join('');
   }
 
   // Images
-  allImages=p.images&&p.images.length?p.images:[];
-  const track=document.getElementById('sliderTrack');
-  const dots=document.getElementById('slideDots');
-  const thumbRow=document.getElementById('thumbRow');
-
-  if(allImages.length){
-    track.innerHTML=allImages.map((src,i)=>`<div class="slide" onclick="openLightbox(${i})"><img src="${src}" alt="${p.name} ${i+1}" loading="${i===0?'eager':'lazy'}" decoding="async"/></div>`).join('');
-    dots.innerHTML=allImages.map((_,i)=>`<button class="slide-dot ${i===0?'active':''}" onclick="goSlide(${i})"></button>`).join('');
-    thumbRow.innerHTML=allImages.map((src,i)=>`<img class="thumb ${i===0?'active':''}" src="${src}" alt="${p.name}" loading="lazy" onclick="goSlide(${i})"/>`).join('');
-  }else{
-    track.innerHTML=`<div class="slide"><div style="font-size:6rem">${p.emoji||'🎁'}</div></div>`;
+  _imgs = Array.isArray(p.images)&&p.images.length ? p.images : [];
+  const track=$('sliderTrack'), dots=$('slideDots'), thumbRow=$('thumbRow');
+  if(track) {
+    if(_imgs.length) {
+      track.innerHTML = _imgs.map((src,i)=>`<div class="slide" onclick="window._lbOpen(${i})"><img src="${src}" alt="${(p.name||'').replace(/"/g,'&#34;')}" loading="${i===0?'eager':'lazy'}"/></div>`).join('');
+      if(dots)     dots.innerHTML     = _imgs.map((_,i)=>`<button class="slide-dot${i===0?' active':''}" onclick="window._goSlide(${i})"></button>`).join('');
+      if(thumbRow) thumbRow.innerHTML = _imgs.map((src,i)=>`<img class="thumb${i===0?' active':''}" src="${src}" loading="lazy" onclick="window._goSlide(${i})" alt="${p.name||''}"/>`).join('');
+    } else {
+      track.innerHTML=`<div class="slide"><div style="font-size:6rem;display:flex;align-items:center;justify-content:center;height:100%">${p.emoji||'🎁'}</div></div>`;
+    }
   }
 
-  // Badges
-  const bw=document.getElementById('imgBadgeWrap');
-  if(disc>0) bw.innerHTML+=`<div class="img-badge">${disc}% OFF</div>`;
-  if(p.badge) bw.innerHTML+=`<div class="img-badge secondary">${p.badge}</div>`;
+  const bw=$('imgBadgeWrap');
+  if(bw){ if(disc>0) bw.innerHTML+=`<div class="img-badge">${disc}% OFF</div>`; if(p.badge) bw.innerHTML+=`<div class="img-badge secondary">${p.badge}</div>`; }
 
-  // Order summary
-  updateSummary(effPrice);
-
-  document.getElementById('loadingState').style.display='none';
-  document.getElementById('productWrap').style.display='grid';
-  document.getElementById('reviewsSection').style.display='block';
+  _updateSummary(eff);
 }
 
-// Slider
-window.goSlide = function(idx){
-  currentSlide=idx;
-  const track=document.getElementById('sliderTrack');
-  if(track) track.style.transform=`translateX(-${idx*100}%)`;
+// ── Slider ──
+window._goSlide = idx => {
+  _slide=idx;
+  const t=$('sliderTrack'); if(t) t.style.transform=`translateX(-${idx*100}%)`;
   document.querySelectorAll('.slide-dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
-  document.querySelectorAll('.thumb').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.thumb').forEach((th,i)=>th.classList.toggle('active',i===idx));
 };
-window.slideNav = function(dir){
-  const max=allImages.length||1;
-  goSlide((currentSlide+dir+max)%max);
-};
+window.slideNav = dir => window._goSlide((_slide+dir+(_imgs.length||1))%(_imgs.length||1));
 
-// Lightbox
-window.openLightbox = function(idx){
-  lightboxIdx=idx;
-  document.getElementById('lightboxImg').src=allImages[idx]||'';
-  document.getElementById('lightbox').classList.add('open');
-};
-window.closeLightbox = function(){document.getElementById('lightbox').classList.remove('open');};
-window.lightboxNav = function(dir){
-  lightboxIdx=(lightboxIdx+dir+allImages.length)%allImages.length;
-  document.getElementById('lightboxImg').src=allImages[lightboxIdx]||'';
-};
-document.getElementById('lightbox').addEventListener('click',e=>{if(e.target===document.getElementById('lightbox'))closeLightbox();});
+// ── Lightbox ──
+window._lbOpen = idx => { _lbIdx=idx; const i=$('lightboxImg'); if(i)i.src=_imgs[idx]||''; const lb=$('lightbox'); if(lb)lb.classList.add('open'); };
+window.closeLightbox = () => { const lb=$('lightbox'); if(lb)lb.classList.remove('open'); };
+window.lightboxNav   = dir => { _lbIdx=(_lbIdx+dir+_imgs.length)%_imgs.length; const i=$('lightboxImg'); if(i)i.src=_imgs[_lbIdx]||''; };
+const _lb=$('lightbox'); if(_lb) _lb.addEventListener('click',e=>{if(e.target===_lb)window.closeLightbox();});
 
-// Quantity
-window.changeQty = function(d){
-  currentQty=Math.max(1,currentQty+d);
-  document.getElementById('qtyNum').textContent=currentQty;
-  if(currentProduct){
-    const price=Number(currentProduct.price);
-    const disc=Number(currentProduct.discount)||0;
-    const effPrice=disc>0?Math.round(price*(1-disc/100)):price;
-    updateSummary(effPrice);
-  }
+// ── Qty / Summary ──
+window.changeQty = d => {
+  _qty=Math.max(1,_qty+d);
+  const qn=$('qtyNum'); if(qn) qn.textContent=_qty;
+  if(_prod){ const p=Number(_prod.price),di=Number(_prod.discount)||0,e=di>0?Math.round(p*(1-di/100)):p; _updateSummary(e); }
 };
-function updateSummary(effPrice){
-  document.getElementById('sumPrice').textContent=`₹${effPrice.toLocaleString()}`;
-  document.getElementById('sumQty').textContent=`×${currentQty}`;
-  document.getElementById('sumTotal').textContent=`₹${(effPrice*currentQty).toLocaleString()}`;
+function _updateSummary(eff) {
+  const sp=$('sumPrice'),sq=$('sumQty'),st=$('sumTotal');
+  if(sp)sp.textContent=`₹${eff.toLocaleString('en-IN')}`;
+  if(sq)sq.textContent=`×${_qty}`;
+  if(st)st.textContent=`₹${(eff*_qty).toLocaleString('en-IN')}`;
 }
 
-// Gift
-window.toggleGift = function(cb){
-  const input=document.getElementById('giftMsg');
-  input.style.display=cb.checked?'block':'none';
-  if(cb.checked) input.focus();
+// ── Misc ──
+window.toggleGift = cb => { const gi=$('giftMsg'); if(gi){gi.style.display=cb.checked?'block':'none'; if(cb.checked)gi.focus();} };
+window.checkDelivery = () => {
+  const pin=($('pinInput').value||'').trim(), res=$('pinResult');
+  if(!/^\d{6}$/.test(pin)){res.className='pin-result err';res.textContent='Please enter a valid 6-digit PIN.';return;}
+  res.className='pin-result ok';
+  res.textContent=pin.startsWith('516')
+    ?'✅ Free delivery! Same day if ordered before 2 PM.'
+    :`✅ Delivery available. Expected 2–4 business days.`;
 };
+window.toggleCoupon = () => { const cb=$('couponBox'); if(cb)cb.classList.toggle('open'); };
+window.copyCoupon   = () => { navigator.clipboard&&navigator.clipboard.writeText('ANEESA10').then(()=>toast('✅ Coupon copied!')); };
+window.upsellAdd    = (name,price) => Cart.add({id:'ups_'+name.replace(/\s/g,'_'),name,price:Number(price),image:''});
 
-// Delivery check
-window.checkDelivery = function(){
-  const pin=(document.getElementById('pinInput').value||'').trim();
-  const result=document.getElementById('pinResult');
-  if(!/^\d{6}$/.test(pin)){result.className='pin-result err';result.textContent='Please enter a valid 6-digit PIN code.';return;}
-  // Kadapa PIN codes: 516001-516004, 516004 etc.
-  const kadapaPins=['516001','516002','516003','516004','516360'];
-  if(kadapaPins.includes(pin)){
-    result.className='pin-result ok';
-    result.textContent='✅ Free delivery! Expected by Tomorrow, same-day if ordered before 2 PM.';
-  }else{
-    result.className='pin-result ok';
-    result.textContent=`✅ Delivery available to ${pin}. Expected in 2-4 business days.`;
-  }
-};
-
-// Coupon
-window.toggleCoupon = function(){
-  const box=document.getElementById('couponBox');
-  box.classList.toggle('open');
-  document.querySelector('.coupon-toggle').textContent=box.classList.contains('open')?'🏷️ Hide Coupon':'🏷️ Show Coupon Code';
-};
-window.copyCoupon = function(){
-  navigator.clipboard.writeText('ANEESA10').then(()=>toast('✅ Coupon code copied!')).catch(()=>{
-    const el=document.createElement('input');el.value='ANEESA10';document.body.appendChild(el);el.select();document.execCommand('copy');el.remove();toast('✅ Coupon code copied!');
-  });
-};
-
-// Upsell
-window.upsellAdd = function(name, price){
-  Cart.add({id:'upsell_'+name.replace(' ','_'),name,price:Number(price),image:'',qty:1});
-};
-
-// Add to Cart
-function addToCart(){
-  if(!currentProduct)return;
-  const price=Number(currentProduct.price);
-  const disc=Number(currentProduct.discount)||0;
-  const effPrice=disc>0?Math.round(price*(1-disc/100)):price;
-  const giftMsg=document.getElementById('giftCheck').checked?document.getElementById('giftMsg').value:'';
-  Cart.add({id:currentProduct.id,name:currentProduct.name,price:effPrice,image:allImages[0]||'',qty:currentQty,giftMsg});
+// ── Add to Cart / Buy Now ──
+function _effPrice(){ if(!_prod)return 0; const p=Number(_prod.price),d=Number(_prod.discount)||0; return d>0?Math.round(p*(1-d/100)):p; }
+function _addToCart(){
+  if(!_prod)return;
+  const gm=$('giftCheck')&&$('giftCheck').checked?($('giftMsg')&&$('giftMsg').value||''):'';
+  Cart.add({id:_prod.id,name:_prod.name,price:_effPrice(),image:_imgs[0]||'',qty:_qty,giftMsg:gm});
 }
-function buyNow(){
-  if(!currentProduct)return;
-  const price=Number(currentProduct.price);
-  const disc=Number(currentProduct.discount)||0;
-  const effPrice=disc>0?Math.round(price*(1-disc/100)):price;
-  const item={id:currentProduct.id,name:currentProduct.name,price:effPrice,image:allImages[0]||'',qty:currentQty};
+function _buyNow(){
+  if(!_prod)return;
+  const item={id:_prod.id,name:_prod.name,price:_effPrice(),image:_imgs[0]||'',qty:_qty};
   localStorage.setItem('ah_pending_buynow',JSON.stringify(item));
   Cart.add(item);
-  window.location.href='cart.html';
+  location.href='cart.html';
 }
+['addCartBtn','addCartBtn2','stickyCartBtn'].forEach(id=>{ const el=$(id); if(el)el.onclick=_addToCart; });
+['buyNowBtn','buyNowBtn2','stickyBuyBtn'].forEach(id=>{ const el=$(id); if(el)el.onclick=_buyNow; });
 
-document.getElementById('addCartBtn').onclick=addToCart;
-document.getElementById('addCartBtn2').onclick=addToCart;
-document.getElementById('buyNowBtn').onclick=buyNow;
-document.getElementById('buyNowBtn2').onclick=buyNow;
-document.getElementById('stickyCartBtn').onclick=addToCart;
-document.getElementById('stickyBuyBtn').onclick=buyNow;
+const fwa=$('floatWA');
+if(fwa)fwa.onclick=e=>{ e.preventDefault(); if(_prod)window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(`Hi! I want to order *${_prod.name}* (₹${_effPrice()*_qty}) from Aneesa Hampers 🎁`)},'_blank`); };
 
-// WhatsApp
-document.getElementById('floatWA').onclick=e=>{
-  e.preventDefault();
-  if(currentProduct){window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(`Hi! I want to order *${currentProduct.name}* (₹${Number(currentProduct.price)*currentQty}) from Aneesa Hampers 🎁`)},'_blank');}
-};
+// ── Stars ──
+function _starsHtml(r,size='1rem'){ let h=''; for(let i=1;i<=5;i++)h+=`<span style="font-size:${size};opacity:${i<=Math.round(r)?1:.2}">⭐</span>`; return h; }
 
-// Stars helper
-function starsHtml(r,size='1rem'){
-  let h='';for(let i=1;i<=5;i++)h+=`<span style="font-size:${size};opacity:${i<=Math.round(r)?1:.2}">⭐</span>`;
-  return h;
+// ── Reviews via REST ──
+async function _loadReviews(pid){
+  try{
+    const url=`${_FB_BASE}/reviews?key=${_FB_KEY}&pageSize=50`;
+    const res=await fetch(url);
+    if(!res.ok)return;
+    const json=await res.json();
+    const docs=(json.documents||[]);
+    const reviews=docs.map(d=>({id:d.name.split('/').pop(),..._parseDoc(d.fields||{})}))
+      .filter(r=>r.productId===pid)
+      .sort((a,b)=>{ const ta=a.createdAt instanceof Date?a.createdAt.getTime():0, tb=b.createdAt instanceof Date?b.createdAt.getTime():0; return tb-ta; });
+    _renderReviews(reviews);
+    _renderRatingSummary(reviews);
+    _updateRatingDisplay(reviews);
+  }catch(e){console.warn('reviews:',e);}
 }
-
-// Reviews real-time
-const rvQ=query(collection(db,'reviews'),where('productId','==',productId),orderBy('createdAt','desc'));
-onSnapshot(rvQ,snap=>{
-  const reviews=snap.docs.map(d=>({id:d.id,...d.data()}));
-  renderReviews(reviews);renderRatingSummary(reviews);updateRatingDisplay(reviews);
-});
-
-function renderReviews(reviews){
-  const list=document.getElementById('reviewsList');
-  if(!reviews.length){list.innerHTML=`<div style="text-align:center;padding:28px;opacity:.4">No reviews yet — be the first! 🌸</div>`;return;}
-  list.innerHTML=reviews.map(r=>{
-    const initials=(r.name||'AN').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
-    const date=r.createdAt?.toDate?r.createdAt.toDate().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'Recently';
+function _renderReviews(rv){
+  const list=$('reviewsList'); if(!list)return;
+  if(!rv.length){list.innerHTML='<div style="text-align:center;padding:28px;opacity:.4">No reviews yet — be the first! 🌸</div>';return;}
+  list.innerHTML=rv.map(r=>{
+    const ini=(r.name||'AN').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+    const date=r.createdAt instanceof Date?r.createdAt.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'Recently';
     return `<div class="review-card">
       <div class="review-top">
-        <div class="reviewer"><div class="reviewer-av">${initials}</div><div><div class="reviewer-name">${r.name}</div><div class="reviewer-date">${date}</div></div></div>
-        <div>${starsHtml(r.rating,'.85rem')}</div>
+        <div class="reviewer"><div class="reviewer-av">${ini}</div><div><div class="reviewer-name">${r.name||''}</div><div class="reviewer-date">${date}</div></div></div>
+        <div>${_starsHtml(r.rating||5,'.85rem')}</div>
       </div>
-      <div class="review-text">${r.text}</div>
+      <div class="review-text">${r.text||''}</div>
       <div class="review-verified">✓ Verified Purchase</div>
     </div>`;
   }).join('');
 }
-function renderRatingSummary(reviews){
-  if(!reviews.length)return;
-  const avg=reviews.reduce((s,r)=>s+r.rating,0)/reviews.length;
-  document.getElementById('bigRating').textContent=(Math.round(avg*10)/10).toFixed(1);
-  document.getElementById('summaryStars').innerHTML=starsHtml(avg,'1rem');
-  document.getElementById('totalReviews').textContent=`${reviews.length} review${reviews.length!==1?'s':''}`;
-  const counts=[5,4,3,2,1].map(s=>reviews.filter(r=>r.rating===s).length);
-  document.getElementById('ratingBars').innerHTML=[5,4,3,2,1].map((s,i)=>`
-    <div class="rating-bar-row">
-      <div class="rating-bar-label">${s}⭐</div>
-      <div class="rating-bar-track"><div class="rating-bar-fill" style="width:${reviews.length?counts[i]/reviews.length*100:0}%"></div></div>
-      <div class="rating-bar-count">${counts[i]}</div>
-    </div>`).join('');
+function _renderRatingSummary(rv){
+  if(!rv.length)return;
+  const avg=rv.reduce((s,r)=>s+(r.rating||5),0)/rv.length;
+  const br=$('bigRating'),ss=$('summaryStars'),tr=$('totalReviews'),rb=$('ratingBars');
+  if(br)br.textContent=(Math.round(avg*10)/10).toFixed(1);
+  if(ss)ss.innerHTML=_starsHtml(avg,'1rem');
+  if(tr)tr.textContent=`${rv.length} review${rv.length!==1?'s':''}`;
+  if(rb){
+    const counts=[5,4,3,2,1].map(s=>rv.filter(r=>r.rating===s).length);
+    rb.innerHTML=[5,4,3,2,1].map((s,i)=>`<div class="rating-bar-row"><div class="rating-bar-label">${s}⭐</div><div class="rating-bar-track"><div class="rating-bar-fill" style="width:${rv.length?counts[i]/rv.length*100:0}%"></div></div><div class="rating-bar-count">${counts[i]}</div></div>`).join('');
+  }
 }
-function updateRatingDisplay(reviews){
-  if(!reviews.length){document.getElementById('detStars').innerHTML=starsHtml(0);document.getElementById('detRatingNum').textContent='0.0';document.getElementById('detRatingCount').textContent='(0 reviews)';return;}
-  const avg=reviews.reduce((s,r)=>s+r.rating,0)/reviews.length;
-  document.getElementById('detStars').innerHTML=starsHtml(avg);
-  document.getElementById('detRatingNum').textContent=(Math.round(avg*10)/10).toFixed(1);
-  document.getElementById('detRatingCount').textContent=`(${reviews.length} review${reviews.length!==1?'s':''})`;
+function _updateRatingDisplay(rv){
+  const ds=$('detStars'),dn=$('detRatingNum'),dc=$('detRatingCount');
+  if(!rv.length){if(ds)ds.innerHTML=_starsHtml(0);if(dn)dn.textContent='0.0';if(dc)dc.textContent='(0 reviews)';return;}
+  const avg=rv.reduce((s,r)=>s+(r.rating||5),0)/rv.length;
+  if(ds)ds.innerHTML=_starsHtml(avg);
+  if(dn)dn.textContent=(Math.round(avg*10)/10).toFixed(1);
+  if(dc)dc.textContent=`(${rv.length} review${rv.length!==1?'s':''})`;
 }
 
-// Star selector
-const starLabels=['','Terrible 😞','Poor 😕','Okay 😐','Good 😊','Excellent! 🤩'];
+// Star picker
+const _starLabels=['','Terrible 😞','Poor 😕','Okay 😐','Good 😊','Excellent! 🤩'];
 window.selectStar=rating=>{
-  selectedStarRating=rating;
-  document.querySelectorAll('.star-btn').forEach((btn,i)=>btn.textContent=i<rating?'⭐':'☆');
-  document.getElementById('starLabel').textContent=starLabels[rating]||'';
+  _starRating=rating;
+  document.querySelectorAll('.star-btn').forEach((b,i)=>b.textContent=i<rating?'⭐':'☆');
+  const sl=$('starLabel');if(sl)sl.textContent=_starLabels[rating]||'';
 };
 
-// Submit review
+// Submit review via REST
 window.submitReview=async()=>{
-  const name=document.getElementById('rvName').value.trim();
-  const text=document.getElementById('rvText').value.trim();
-  if(!selectedStarRating){toast('⚠️ Please select a star rating');return;}
+  const name=($('rvName').value||'').trim(), text=($('rvText').value||'').trim();
+  if(!_starRating){toast('⚠️ Please select a star rating');return;}
   if(!name){toast('⚠️ Please enter your name');return;}
   if(!text){toast('⚠️ Please write your review');return;}
   const btn=document.querySelector('.submit-review-btn');
-  btn.textContent='Submitting…';btn.disabled=true;
+  if(btn){btn.textContent='Submitting…';btn.disabled=true;}
   try{
-    await addDoc(collection(db,'reviews'),{productId,name,phone:document.getElementById('rvPhone').value.trim(),rating:selectedStarRating,text,createdAt:serverTimestamp()});
-    toast('✅ Thank you for your review! 🌸');
-    document.getElementById('rvText').value='';selectedStarRating=0;
-    document.querySelectorAll('.star-btn').forEach(b=>b.textContent='☆');
-    document.getElementById('starLabel').textContent='';
-  }catch(e){toast('❌ Error. Please try again!');}
-  btn.textContent='Submit Review ✨';btn.disabled=false;
+    const body={fields:{
+      productId:{stringValue:_pid},
+      name:{stringValue:name},
+      phone:{stringValue:($('rvPhone').value||'').trim()},
+      rating:{integerValue:String(_starRating)},
+      text:{stringValue:text}
+    }};
+    const res=await fetch(`${_FB_BASE}/reviews?key=${_FB_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(res.ok){
+      toast('✅ Thank you for your review! 🌸');
+      if($('rvText'))$('rvText').value='';
+      _starRating=0;
+      document.querySelectorAll('.star-btn').forEach(b=>b.textContent='☆');
+      const sl=$('starLabel');if(sl)sl.textContent='';
+      setTimeout(()=>_loadReviews(_pid),800);
+    }else{ toast('❌ Could not submit. Please try again.'); }
+  }catch(e){toast('❌ Network error. Please try again.');}
+  if(btn){btn.textContent='Submit Review ✨';btn.disabled=false;}
 };
 
-// Related products
-async function loadRelated(category, excludeId){
+// ── Related products via REST ──
+async function _loadRelated(category, excludeId){
   try{
-    const q=query(collection(db,'products'),where('category','==',category||''),limit(8));
-    const snap=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m=>m.getDocs(q));
-    let products=snap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.id!==excludeId);
-    if(products.length<2){
-      const allQ=query(collection(db,'products'),orderBy('createdAt','desc'),limit(8));
-      const allSnap=await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(m=>m.getDocs(allQ));
-      products=allSnap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.id!==excludeId).slice(0,4);
-    }
-    if(products.length){
-      renderRelated('pairedGrid','pairedSection',products.slice(0,4));
-      renderRelated('similarGrid','similarSection',products.slice(0,4));
-    }
-  }catch(e){console.error('Related products error:',e);}
+    const url=`${_FB_BASE}/products?key=${_FB_KEY}&pageSize=20`;
+    const res=await fetch(url); if(!res.ok)return;
+    const json=await res.json();
+    let prods=(json.documents||[])
+      .map(d=>({id:d.name.split('/').pop(),..._parseDoc(d.fields||{})}))
+      .filter(p=>p.id!==excludeId);
+    // prefer same category
+    const sameCat=prods.filter(p=>p.category===category);
+    const shown=(sameCat.length>=2?sameCat:prods).slice(0,4);
+    if(shown.length){ _renderRelated('pairedGrid','pairedSection',shown); _renderRelated('similarGrid','similarSection',shown); }
+  }catch(e){console.warn('related:',e);}
 }
-
-function renderRelated(gridId, sectionId, products){
-  const section=document.getElementById(sectionId);
-  const grid=document.getElementById(gridId);
-  if(!section||!grid||!products.length)return;
-  grid.innerHTML=products.map(p=>{
-    const imgs=p.images&&p.images.length?p.images:[];
-    const disc=Number(p.discount)||0;
-    const effPrice=disc>0?Math.round(Number(p.price)*(1-disc/100)):Number(p.price);
-    const imgHtml=imgs.length?`<img src="${imgs[0]}" alt="${p.name}" loading="lazy"/>`:`<div class="mini-img-emoji">${p.emoji||'🎁'}</div>`;
-    return `<div class="mini-card" onclick="window.location='product.html?id=${p.id}'">
-      <div class="mini-img">
-        ${disc>0?`<div class="mini-disc">${disc}% OFF</div>`:''}
-        ${imgHtml}
-      </div>
+function _renderRelated(gridId,secId,prods){
+  const sec=$(secId),grid=$(gridId); if(!sec||!grid||!prods.length)return;
+  grid.innerHTML=prods.map(p=>{
+    const imgs=Array.isArray(p.images)&&p.images.length?p.images:[];
+    const disc=Number(p.discount)||0, eff=disc>0?Math.round(Number(p.price)*(1-disc/100)):Number(p.price);
+    const imgH=imgs.length?`<img src="${imgs[0]}" alt="${p.name||''}" loading="lazy"/>`:`<div class="mini-img-emoji">${p.emoji||'🎁'}</div>`;
+    return `<div class="mini-card" onclick="location.href='product.html?id=${p.id}'">
+      <div class="mini-img">${disc>0?`<div class="mini-disc">${disc}% OFF</div>`:''}${imgH}</div>
       <div class="mini-body">
-        <div class="mini-name">${p.name}</div>
+        <div class="mini-name">${p.name||''}</div>
         <div class="mini-price-row">
-          <span class="mini-price">₹${effPrice.toLocaleString()}</span>
-          ${disc>0?`<span class="mini-orig">₹${Number(p.price).toLocaleString()}</span>`:''}
+          <span class="mini-price">₹${eff.toLocaleString('en-IN')}</span>
+          ${disc>0?`<span class="mini-orig">₹${Number(p.price).toLocaleString('en-IN')}</span>`:''}
         </div>
       </div>
     </div>`;
   }).join('');
-  section.style.display='block';
+  sec.style.display='block';
 }
 </script>
 <script src="mobilenav.js"></script>
+<script src="bottomnav.js"></script>
 </body>
 </html>

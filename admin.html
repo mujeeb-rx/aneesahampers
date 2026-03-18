@@ -577,10 +577,44 @@ textarea.fi{resize:vertical;min-height:80px;}
       <label class="fl">Cover Photo (replaces emoji on site)</label>
       <div style="display:flex;gap:8px;align-items:flex-start;">
         <div style="flex:1;">
-          <input class="fi" id="catCoverUrl" placeholder="Paste image URL or upload →" style="margin-bottom:6px;"/>
+          <input class="fi" id="catCoverUrl" placeholder="Paste image URL or upload →" style="margin-bottom:6px;" oninput="previewCatCover(this.value)"/>
+          <!-- Preview + Position Adjuster -->
           <div id="catCoverPreviewWrap" style="display:none;">
-            <img id="catCoverPreview" style="width:100%;max-height:120px;object-fit:cover;border-radius:10px;border:1.5px solid rgba(192,100,122,.2);"/>
-            <button onclick="clearCatCover()" style="margin-top:6px;font-size:.68rem;color:rgba(200,60,60,.7);background:none;border:none;cursor:pointer;">✕ Remove photo</button>
+            <!-- Live preview of how it looks on site -->
+            <div style="margin-bottom:8px;">
+              <div style="font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;opacity:.45;margin-bottom:6px;font-weight:600;">Preview (as seen on site)</div>
+              <div id="catCoverPreviewBox" style="width:100%;height:130px;border-radius:12px;overflow:hidden;border:1.5px solid rgba(192,100,122,.2);position:relative;background:var(--blush);">
+                <img id="catCoverPreview" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;transition:object-position .2s;"/>
+              </div>
+            </div>
+            <!-- Position controls -->
+            <div style="background:rgba(192,100,122,.06);border-radius:10px;padding:12px;border:1px solid rgba(192,100,122,.12);">
+              <div style="font-size:.62rem;letter-spacing:1.5px;text-transform:uppercase;opacity:.45;margin-bottom:10px;font-weight:600;">🎯 Adjust Photo Position</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+                <div>
+                  <label style="font-size:.6rem;opacity:.45;display:block;margin-bottom:3px;">Horizontal</label>
+                  <input type="range" id="catPosX" min="0" max="100" value="50" style="width:100%;accent-color:var(--deep-rose);" oninput="updateCoverPos()"/>
+                  <div style="display:flex;justify-content:space-between;font-size:.58rem;opacity:.3;margin-top:1px;"><span>Left</span><span>Right</span></div>
+                </div>
+                <div>
+                  <label style="font-size:.6rem;opacity:.45;display:block;margin-bottom:3px;">Vertical</label>
+                  <input type="range" id="catPosY" min="0" max="100" value="50" style="width:100%;accent-color:var(--deep-rose);" oninput="updateCoverPos()"/>
+                  <div style="display:flex;justify-content:space-between;font-size:.58rem;opacity:.3;margin-top:1px;"><span>Top</span><span>Bottom</span></div>
+                </div>
+              </div>
+              <!-- Quick position presets -->
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <button onclick="setCoverPos(50,0)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">⬆ Top</button>
+                <button onclick="setCoverPos(50,50)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">🎯 Center</button>
+                <button onclick="setCoverPos(50,100)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">⬇ Bottom</button>
+                <button onclick="setCoverPos(0,50)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">◀ Left</button>
+                <button onclick="setCoverPos(100,50)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">▶ Right</button>
+                <button onclick="setCoverPos(100,0)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">↗ Top-Right</button>
+                <button onclick="setCoverPos(0,0)" style="padding:4px 9px;font-size:.6rem;background:var(--blush);border:1px solid rgba(192,100,122,.2);border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;">↖ Top-Left</button>
+              </div>
+              <div style="font-size:.62rem;opacity:.35;margin-top:6px;">Adjust until the most important part of your photo is visible in the box above.</div>
+            </div>
+            <button onclick="clearCatCover()" style="margin-top:8px;font-size:.68rem;color:rgba(200,60,60,.7);background:none;border:none;cursor:pointer;">✕ Remove photo</button>
           </div>
         </div>
         <label style="display:flex;align-items:center;gap:5px;background:var(--burgundy);color:white;border-radius:9px;padding:10px 14px;font-size:.68rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;flex-shrink:0;height:40px;">
@@ -1137,6 +1171,10 @@ window.openAddCat = function() {
   document.getElementById('catSaveBtn').textContent='Save Category ✓';
   ['catName','catSlug','catDesc','catCoverUrl'].forEach(id=>document.getElementById(id).value='');
   const _pw=document.getElementById('catCoverPreviewWrap');if(_pw)_pw.style.display='none';
+  // Reset position sliders
+  const _px=document.getElementById('catPosX'),_py=document.getElementById('catPosY');
+  if(_px)_px.value=50; if(_py)_py.value=50;
+  const _hf=document.getElementById('catCoverPos'); if(_hf)_hf.value='50% 50%';
   document.getElementById('catEmoji').value='';
   document.getElementById('catColor').value='#f9e4e9';
   document.getElementById('catColorHex').value='#f9e4e9';
@@ -1157,13 +1195,23 @@ window.openEditCat = function(id) {
   document.getElementById('catColor').value=col;
   document.getElementById('catColorHex').value=col;
   document.getElementById('catVisible').value=(c.visible!==false)?'true':'false';
-  // Cover photo
+  // Cover photo + position
   const coverUrl=c.coverImage||'';
   document.getElementById('catCoverUrl').value=coverUrl;
-  const pw=document.getElementById('catCoverPreviewWrap');
-  const pi=document.getElementById('catCoverPreview');
-  if(coverUrl&&pw&&pi){pw.style.display='block';pi.src=coverUrl;}
-  else if(pw){pw.style.display='none';}
+  if(coverUrl){ showCoverPreview(coverUrl); }
+  else { const pw=document.getElementById('catCoverPreviewWrap'); if(pw) pw.style.display='none'; }
+  // Restore position sliders
+  if(c.coverPosition){
+    const parts=c.coverPosition.split(' ');
+    const px=document.getElementById('catPosX'), py=document.getElementById('catPosY');
+    if(px) px.value=parseInt(parts[0])||50;
+    if(py) py.value=parseInt(parts[1])||50;
+    // Update hidden field
+    let hf=document.getElementById('catCoverPos');
+    if(!hf){hf=document.createElement('input');hf.type='hidden';hf.id='catCoverPos';document.body.appendChild(hf);}
+    hf.value=c.coverPosition;
+    updateCoverPos();
+  }
   document.getElementById('catModal').classList.add('open');
 };
 window.saveCat = async function() {
@@ -1177,7 +1225,8 @@ window.saveCat = async function() {
     desc:document.getElementById('catDesc').value.trim(),
     visible:document.getElementById('catVisible').value==='true',
     order:_catEditMode?(_cats.find(c=>c.id===document.getElementById('catEditId').value)||{}).order||99:_cats.length,
-    coverImage:document.getElementById('catCoverUrl').value.trim()||null
+    coverImage:document.getElementById('catCoverUrl').value.trim()||null,
+    coverPosition:(document.getElementById('catCoverPos')?.value)||'50% 50%'
   };
   try {
     if(_catEditMode){
@@ -1302,39 +1351,72 @@ window.saveFlash = async function() {
 };
 
 // ═══════════════════════════════════════════════
-// CATEGORY COVER PHOTO UPLOAD
+// CATEGORY COVER PHOTO — UPLOAD + POSITION ADJUSTER
 // ═══════════════════════════════════════════════
 window.uploadCatCover = async function(input) {
   const file = input.files[0]; if(!file) return;
   const statusEl = document.getElementById('catCoverStatus');
   const prevWrap = document.getElementById('catCoverPreviewWrap');
   const prevImg  = document.getElementById('catCoverPreview');
-  if(statusEl) statusEl.textContent = '⏳ Uploading…';
+  if(statusEl) statusEl.textContent = '⏳ Uploading cover photo…';
   try {
-    const url = await uploadImage(file, p => {});
+    if(file.size > 10*1024*1024) throw new Error('File too large. Max 10MB.');
+    const url = await uploadToImgbb(file, p => {
+      if(statusEl) statusEl.textContent = '⏳ Uploading… ' + Math.round(p) + '%';
+    });
     document.getElementById('catCoverUrl').value = url;
-    if(prevImg)  prevImg.src = url;
-    if(prevWrap) prevWrap.style.display = 'block';
-    if(statusEl) statusEl.textContent = '✅ Cover photo uploaded!';
-    setTimeout(()=>{ if(statusEl) statusEl.textContent=''; }, 2500);
+    showCoverPreview(url);
+    if(statusEl) statusEl.textContent = '✅ Cover photo uploaded! Adjust position below.';
+    setTimeout(()=>{ if(statusEl) statusEl.textContent=''; }, 4000);
   } catch(e) {
     if(statusEl) statusEl.textContent = '❌ Upload failed: ' + e.message;
+    console.error('uploadCatCover:', e);
   }
   input.value = '';
 };
+
+window.previewCatCover = function(url) {
+  if(url && url.startsWith('http')) { showCoverPreview(url); }
+  else { const pw=document.getElementById('catCoverPreviewWrap'); if(pw) pw.style.display='none'; }
+};
+
+function showCoverPreview(url) {
+  const pw = document.getElementById('catCoverPreviewWrap');
+  const pi = document.getElementById('catCoverPreview');
+  if(pw) pw.style.display = 'block';
+  if(pi) { pi.src = url; }
+  // Reset sliders to center when new image loaded
+  const px = document.getElementById('catPosX'), py = document.getElementById('catPosY');
+  if(px) px.value = 50;
+  if(py) py.value = 50;
+  updateCoverPos();
+}
+
+window.updateCoverPos = function() {
+  const px = parseInt(document.getElementById('catPosX')?.value || 50);
+  const py = parseInt(document.getElementById('catPosY')?.value || 50);
+  const pi = document.getElementById('catCoverPreview');
+  if(pi) pi.style.objectPosition = px + '% ' + py + '%';
+  // Store position in a hidden field for saving
+  let hf = document.getElementById('catCoverPos');
+  if(!hf){ hf=document.createElement('input'); hf.type='hidden'; hf.id='catCoverPos'; document.body.appendChild(hf); }
+  hf.value = px + '% ' + py + '%';
+};
+
+window.setCoverPos = function(x, y) {
+  const px = document.getElementById('catPosX'), py = document.getElementById('catPosY');
+  if(px) px.value = x;
+  if(py) py.value = y;
+  updateCoverPos();
+};
+
 window.clearCatCover = function() {
   document.getElementById('catCoverUrl').value = '';
   const pw = document.getElementById('catCoverPreviewWrap');
   if(pw) pw.style.display = 'none';
+  const hf = document.getElementById('catCoverPos');
+  if(hf) hf.value = '';
 };
-// Live preview when URL pasted
-document.getElementById('catCoverUrl').addEventListener('input', function(){
-  const url = this.value.trim();
-  const pw = document.getElementById('catCoverPreviewWrap');
-  const pi = document.getElementById('catCoverPreview');
-  if(url && pw && pi){ pw.style.display='block'; pi.src=url; }
-  else if(pw){ pw.style.display='none'; }
-});
 
 // ═══════════════════════════════════════════════
 // HERO TEXT SAVE/LOAD
@@ -1464,7 +1546,7 @@ window.addGalleryItem = async function() {
     for(const file of files) {
       toast('⏳ Uploading…');
       try {
-        const url = await uploadImage(file, ()=>{});
+        const url = await uploadToImgbb(file, ()=>{});
         _adminGallery.push({ image: url, caption: '', link: '' });
         toast('✅ Image added!');
       } catch(e) { toast('❌ Upload failed', 'err'); }
@@ -1478,7 +1560,7 @@ window.uploadGalleryItem = async function(input, idx) {
   const file = input.files[0]; if(!file) return;
   toast('⏳ Uploading…');
   try {
-    const url = await uploadImage(file, ()=>{});
+    const url = await uploadToImgbb(file, ()=>{});
     _adminGallery[idx].image = url;
     toast('✅ Replaced!');
     renderGalleryEditor();

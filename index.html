@@ -146,7 +146,7 @@ a{text-decoration:none;}
 .prod-card{background:white;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s;}
 .prod-card:hover{transform:translateY(-5px);box-shadow:0 16px 44px rgba(192,100,122,.18);}
 .prod-thumb{height:196px;position:relative;overflow:hidden;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:3.5rem;}
-.prod-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;}
+.prod-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;padding:8px;background:white;}
 .tag-badge{position:absolute;top:10px;left:10px;background:var(--burgundy);color:white;font-size:.57rem;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;font-weight:600;z-index:1;}
 .disc-badge{position:absolute;top:10px;right:10px;background:var(--deep-rose);color:white;font-size:.57rem;letter-spacing:1px;text-transform:uppercase;padding:4px 9px;border-radius:20px;font-weight:600;z-index:1;}
 .prod-info{padding:14px 16px 16px;}
@@ -254,14 +254,16 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
 .popup-field input::placeholder{color:rgba(59,13,26,.3);}
 .popup-phone-wrap{display:flex;gap:8px;}
 .popup-flag-sel{
-  width:90px;flex-shrink:0;padding:12px 10px;border:1.5px solid rgba(192,100,122,.18);
-  border-radius:12px;font-family:'Jost',sans-serif;font-size:.82rem;
+  width:72px;flex-shrink:0;padding:12px 6px 12px 10px;border:1.5px solid rgba(192,100,122,.18);
+  border-radius:12px;font-family:'Jost',sans-serif;font-size:.75rem;
   color:#3b0d1a;background:#fdf6f0;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23c0647a'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 8px center;padding-right:22px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23c0647a'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 4px center;padding-right:16px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
-.popup-flag-sel:focus{border-color:#c0647a;}
-.popup-phone-input{flex:1;}
+.popup-flag-sel:focus{border-color:#c0647a;box-shadow:0 0 0 3px rgba(192,100,122,.1);}
+.popup-phone-input{flex:1;min-width:0;}
+.popup-phone-input input,.popup-field input.popup-phone-input{width:100%;}
 .popup-dob-row{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px;}
 .popup-submit-btn{
   width:100%;padding:15px;background:linear-gradient(135deg,#3b0d1a,#7a2040);
@@ -1154,34 +1156,62 @@ footer{background:#0e0408;color:rgba(255,255,255,.55);padding:56px 52px 30px;}
   </div>
 </div>
 
-<!-- TESTIMONIALS -->
-<section class="sec-wrap alt">
+<!-- TESTIMONIALS — Dynamic from Firestore -->
+<section class="sec-wrap alt" id="reviewsSection">
   <div class="sec-head reveal">
     <div class="sec-eyebrow">Happy Customers</div>
     <h2 class="sec-title">What People <em>Are Saying</em></h2>
     <p class="sec-sub">Real reviews from real customers who trusted us with their most special moments.</p>
   </div>
-  <div class="test-grid">
-    <div class="test-card reveal">
-      <div class="test-badge">Verified ✓</div>
-      <div class="test-stars">★★★★★</div>
-      <p class="test-text">Ordered a wedding hamper and I was genuinely blown away. The packaging was stunning, every item was premium quality, and it arrived exactly on time. Will definitely order again!</p>
-      <div class="test-author"><div class="test-avatar">👩</div><div><div class="test-name">Priya Reddy</div><div class="test-loc">Kadapa, AP</div></div></div>
-    </div>
-    <div class="test-card reveal">
-      <div class="test-badge">Verified ✓</div>
-      <div class="test-stars">★★★★★</div>
-      <p class="test-text">The birthday hamper for my mom was so beautifully wrapped. She absolutely loved it! Same day delivery in Kadapa really saved me — they came through in just 3 hours.</p>
-      <div class="test-author"><div class="test-avatar">👨</div><div><div class="test-name">Arjun Kumar</div><div class="test-loc">Kadapa, AP</div></div></div>
-    </div>
-    <div class="test-card reveal">
-      <div class="test-badge">Verified ✓</div>
-      <div class="test-stars">★★★★★</div>
-      <p class="test-text">Best gifting shop in Kadapa, no question. The resin décor pieces are so unique, and the custom hamper for our anniversary was just magical. Thank you Aneesa Hampers!</p>
-      <div class="test-author"><div class="test-avatar">👩</div><div><div class="test-name">Fatima Begum</div><div class="test-loc">Kadapa, AP</div></div></div>
-    </div>
+  <!-- Stars summary -->
+  <div id="reviewsSummary" style="display:none;text-align:center;margin-bottom:28px;">
+    <div style="font-size:2.2rem;font-weight:700;color:var(--burgundy);font-family:'Cormorant Garamond',serif;" id="reviewsAvgNum">5.0</div>
+    <div style="font-size:1.3rem;color:#f5a623;letter-spacing:3px;" id="reviewsAvgStars">★★★★★</div>
+    <div style="font-size:.75rem;opacity:.45;margin-top:3px;" id="reviewsCount">0 reviews</div>
+  </div>
+  <div class="test-grid" id="reviewsGrid">
+    <div style="grid-column:1/-1;text-align:center;padding:30px;opacity:.35;">Loading reviews…</div>
+  </div>
+  <!-- Write a Review Button -->
+  <div style="text-align:center;margin-top:32px;" id="writeReviewWrap">
+    <button onclick="openReviewModal()" style="padding:13px 32px;background:var(--burgundy);color:white;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.74rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='var(--deep-rose)'" onmouseout="this.style.background='var(--burgundy)'">✍️ Write a Review</button>
   </div>
 </section>
+
+<!-- REVIEW MODAL -->
+<div id="reviewModal" style="display:none;position:fixed;inset:0;background:rgba(30,6,16,.6);backdrop-filter:blur(6px);z-index:60000;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:white;border-radius:22px;width:100%;max-width:460px;padding:32px 28px;position:relative;box-shadow:0 24px 70px rgba(59,13,26,.25);max-height:90vh;overflow-y:auto;">
+    <button onclick="closeReviewModal()" style="position:absolute;top:14px;right:14px;width:32px;height:32px;background:var(--blush);border:none;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;">✕</button>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:1.7rem;margin-bottom:4px;">Share Your <em style="font-style:italic;color:var(--deep-rose)">Experience</em></div>
+    <div style="font-size:.78rem;opacity:.45;margin-bottom:22px;">Your real review helps others make better choices 🌸</div>
+    <!-- Star rating picker -->
+    <div style="margin-bottom:16px;">
+      <div style="font-size:.62rem;letter-spacing:2px;text-transform:uppercase;opacity:.45;margin-bottom:8px;">Your Rating *</div>
+      <div id="starPicker" style="display:flex;gap:8px;font-size:1.9rem;cursor:pointer;">
+        <span onclick="setReviewStar(1)" style="transition:transform .15s" title="1 star">☆</span>
+        <span onclick="setReviewStar(2)" style="transition:transform .15s" title="2 stars">☆</span>
+        <span onclick="setReviewStar(3)" style="transition:transform .15s" title="3 stars">☆</span>
+        <span onclick="setReviewStar(4)" style="transition:transform .15s" title="4 stars">☆</span>
+        <span onclick="setReviewStar(5)" style="transition:transform .15s" title="5 stars">☆</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:13px;">
+      <div>
+        <div style="font-size:.62rem;letter-spacing:2px;text-transform:uppercase;opacity:.45;margin-bottom:5px;">Your Name *</div>
+        <input id="rv-name" type="text" placeholder="e.g. Priya S." style="width:100%;padding:11px 14px;border:1.5px solid rgba(192,100,122,.2);border-radius:11px;font-family:'Jost',sans-serif;font-size:.85rem;color:var(--burgundy);background:var(--cream);outline:none;" onfocus="this.style.borderColor='#c0647a'" onblur="this.style.borderColor='rgba(192,100,122,.2)'"/>
+      </div>
+      <div>
+        <div style="font-size:.62rem;letter-spacing:2px;text-transform:uppercase;opacity:.45;margin-bottom:5px;">Location (optional)</div>
+        <input id="rv-loc" type="text" placeholder="e.g. Kadapa, AP" style="width:100%;padding:11px 14px;border:1.5px solid rgba(192,100,122,.2);border-radius:11px;font-family:'Jost',sans-serif;font-size:.85rem;color:var(--burgundy);background:var(--cream);outline:none;" onfocus="this.style.borderColor='#c0647a'" onblur="this.style.borderColor='rgba(192,100,122,.2)'"/>
+      </div>
+      <div>
+        <div style="font-size:.62rem;letter-spacing:2px;text-transform:uppercase;opacity:.45;margin-bottom:5px;">Your Review *</div>
+        <textarea id="rv-text" rows="4" placeholder="Tell others about your experience with Aneesa Hampers…" style="width:100%;padding:11px 14px;border:1.5px solid rgba(192,100,122,.2);border-radius:11px;font-family:'Jost',sans-serif;font-size:.85rem;color:var(--burgundy);background:var(--cream);outline:none;resize:vertical;" onfocus="this.style.borderColor='#c0647a'" onblur="this.style.borderColor='rgba(192,100,122,.2)'"></textarea>
+      </div>
+      <button onclick="submitReview()" id="rv-submit-btn" style="padding:14px;background:var(--burgundy);color:white;border:none;border-radius:50px;font-family:'Jost',sans-serif;font-size:.76rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='var(--deep-rose)'" onmouseout="this.style.background='var(--burgundy)'">Submit Review 🌸</button>
+    </div>
+  </div>
+</div>
 
 <!-- FAQ -->
 <section class="sec-wrap">
@@ -1508,7 +1538,7 @@ onSnapshot(query(collection(db,'categories'),orderBy('order','asc')), snap => {
     const bg=c.color||'#f9e4e9';
     // Support cover photo
     const imgContent=c.coverImage
-      ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;display:block;"/>`
+      ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;object-position:${c.coverPosition||'50% 50%'};display:block;"/>`
       : (c.emoji||'🎁');
     return `<a href="products.html?cat=${c.slug||c.id}" class="cat-card ${span} reveal">
       <div class="cat-img" style="background:linear-gradient(135deg,${bg},${bg}dd)">${imgContent}</div>
@@ -1523,7 +1553,7 @@ onSnapshot(query(collection(db,'categories'),orderBy('order','asc')), snap => {
     scroll.innerHTML=cats.map(c=>{
       const bg=c.color||'#f9e4e9';
       const inner=c.coverImage
-        ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"/>`
+        ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;object-position:${c.coverPosition||'50% 50%'};border-radius:50%;display:block;"/>`
         : `<span>${c.emoji||'🎁'}</span>`;
       return `<a href="products.html?cat=${c.slug||c.id}" class="cat-circle-item">
         <div class="cat-circle-img" style="background:linear-gradient(135deg,${bg},${bg}cc)">${inner}</div>
@@ -1716,18 +1746,46 @@ setTimeout(()=>document.getElementById('loader').classList.add('done'),4000);
 // DELIVERY BAR
 // ═══════════════════════════════════════════════
 (function(){
-  function getDeliveryDate(){
-    var d = new Date(); d.setDate(d.getDate()+1);
-    return d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+  // Estimate delivery days based on Indian pincode
+  function estimateDeliveryDays(pin){
+    if(!pin || pin.length < 6) return 1;
+    var p = pin.toString();
+    var first2 = parseInt(p.substring(0,2));
+    // Kadapa & nearby (516xxx) = same/next day
+    if(p.startsWith('516')) return 0; // same day
+    // Andhra Pradesh (500-535) = 1 day
+    if(first2 >= 50 && first2 <= 53) return 1;
+    // Karnataka, TN, Telangana = 1-2 days
+    if((first2 >= 56 && first2 <= 59) || (first2 >= 60 && first2 <= 64)) return 2;
+    // South India (Kerala, etc) = 2 days
+    if(first2 >= 67 && first2 <= 69) return 2;
+    // North India = 3-4 days
+    if(first2 >= 10 && first2 <= 25) return 4;
+    if(first2 >= 30 && first2 <= 49) return 3;
+    // East India
+    if(first2 >= 70 && first2 <= 74) return 4;
+    // West India
+    if(first2 >= 40 && first2 <= 42) return 3;
+    return 2; // default
   }
-  var dlvDate = document.getElementById('dlv-date');
-  if(dlvDate) dlvDate.textContent = getDeliveryDate();
+
+  function getDeliveryDateForPin(pin){
+    var days = estimateDeliveryDays(pin);
+    if(days === 0) return 'Today (Same Day)';
+    var d = new Date();
+    d.setDate(d.getDate() + days);
+    var label = d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+    if(days === 1) return 'Tomorrow, ' + label;
+    return label + ' (' + days + '-day delivery)';
+  }
 
   var savedPin = localStorage.getItem('ah_pincode') || '516001';
   var pinDisp = document.getElementById('dlv-pin-display');
   var esbPin = document.getElementById('esb-pin-lbl');
+  var dlvDate = document.getElementById('dlv-date');
   if(pinDisp) pinDisp.textContent = savedPin;
   if(esbPin) esbPin.textContent = savedPin;
+  if(dlvDate) dlvDate.textContent = getDeliveryDateForPin(savedPin);
 
   window.togglePinPopup = function(e){
     if(e) e.stopPropagation();
@@ -1745,9 +1803,11 @@ setTimeout(()=>document.getElementById('loader').classList.add('done'),4000);
     localStorage.setItem('ah_pincode', val);
     if(pinDisp) pinDisp.textContent = val;
     if(esbPin) esbPin.textContent = val;
+    var newDate = getDeliveryDateForPin(val);
+    if(dlvDate) dlvDate.textContent = newDate;
     var pp = document.getElementById('pin-popup');
     if(pp) pp.classList.remove('show');
-    toast('📍 Pincode updated to ' + val);
+    toast('📍 Delivery to ' + val + ' — ' + newDate);
   };
 })();
 
@@ -1932,6 +1992,173 @@ window.addEventListener('scroll',()=>{
 },{passive:true});
 
 // Stats animation handled inside siteSettings listener
+
+// ═══════════════════════════════════════════════
+// DYNAMIC REVIEWS — Real-time from Firestore
+// ═══════════════════════════════════════════════
+(function(){
+  let _reviewStar = 5;
+
+  // Load reviews real-time
+  const { onSnapshot: _onSnap, collection: _col, query: _q, orderBy: _ob, addDoc: _add, serverTimestamp: _ts } = window._firestore || {};
+
+  function loadReviews(){
+    try {
+      const dbRef = window._ahFirebase && window._ahFirebase.db;
+      if(!dbRef) { setTimeout(loadReviews, 800); return; }
+      import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(function(m){
+        const q = m.query(m.collection(dbRef,'reviews'), m.orderBy('createdAt','desc'), m.limit(9));
+        m.onSnapshot(q, function(snap){
+          const reviews = snap.docs.map(function(d){ return Object.assign({id:d.id},d.data()); });
+          renderReviews(reviews);
+        });
+      });
+    } catch(e){ console.warn('Reviews load error:',e); }
+  }
+
+  function renderReviews(reviews){
+    const grid = document.getElementById('reviewsGrid');
+    const summary = document.getElementById('reviewsSummary');
+    if(!grid) return;
+
+    if(!reviews.length){
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;opacity:.4;font-size:.85rem;">No reviews yet — be the first! 🌸</div>';
+      return;
+    }
+
+    // Compute average
+    const avg = reviews.reduce(function(s,r){ return s+(r.rating||5); },0) / reviews.length;
+    const stars = '★'.repeat(Math.round(avg)) + '☆'.repeat(5-Math.round(avg));
+    if(summary){
+      summary.style.display='block';
+      document.getElementById('reviewsAvgNum').textContent = avg.toFixed(1);
+      document.getElementById('reviewsAvgStars').textContent = stars;
+      document.getElementById('reviewsCount').textContent = reviews.length + ' verified review' + (reviews.length>1?'s':'');
+    }
+
+    const avatarEmojis = ['👩','👨','👩‍🦱','👨‍🦰','👩‍🦳','🧑','👩‍🦲','🧕','👩‍💼','👨‍💼'];
+
+    grid.innerHTML = reviews.map(function(r){
+      const rating = r.rating || 5;
+      const starStr = '★'.repeat(rating) + '☆'.repeat(5-rating);
+      const name = (r.name||'Anonymous').trim();
+      const initials = name.charAt(0).toUpperCase();
+      const loc = r.location || r.loc || '';
+      const text = (r.text||r.review||'').trim();
+      const avatar = r.photoURL
+        ? '<img src="'+r.photoURL+'" style="width:38px;height:38px;border-radius:50%;object-fit:cover;"/>'
+        : '<div style="width:38px;height:38px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:600;color:var(--deep-rose);">'+initials+'</div>';
+      const timeAgo = r.createdAt ? timeAgoStr(r.createdAt) : '';
+      return '<div class="test-card reveal">'
+        +'<div class="test-badge">Verified ✓</div>'
+        +'<div class="test-stars" style="color:#f5a623;font-size:.9rem;letter-spacing:1px;">'+starStr+'</div>'
+        +'<p class="test-text">'+escHtml(text)+'</p>'
+        +'<div class="test-author">'
+          +'<div class="test-avatar" style="padding:0;overflow:hidden;">'+avatar+'</div>'
+          +'<div>'
+            +'<div class="test-name">'+escHtml(name)+'</div>'
+            +(loc?'<div class="test-loc">'+escHtml(loc)+'</div>':'')
+            +(timeAgo?'<div style="font-size:.64rem;opacity:.3;margin-top:1px;">'+timeAgo+'</div>':'')
+          +'</div>'
+        +'</div>'
+      +'</div>';
+    }).join('');
+
+    // re-observe reveals
+    document.querySelectorAll('#reviewsGrid .reveal').forEach(function(el){ obs.observe(el); });
+  }
+
+  function timeAgoStr(ts){
+    try {
+      const ms = ts.toMillis ? ts.toMillis() : new Date(ts).getTime();
+      const diff = Date.now() - ms;
+      const d = Math.floor(diff/86400000);
+      if(d<1) return 'Today';
+      if(d<7) return d+' days ago';
+      if(d<30) return Math.floor(d/7)+' weeks ago';
+      if(d<365) return Math.floor(d/30)+' months ago';
+      return Math.floor(d/365)+' years ago';
+    } catch(e){ return ''; }
+  }
+
+  function escHtml(s){
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  window.setReviewStar = function(n){
+    _reviewStar = n;
+    const stars = document.querySelectorAll('#starPicker span');
+    stars.forEach(function(s,i){
+      s.textContent = i<n ? '★' : '☆';
+      s.style.color = i<n ? '#f5a623' : 'rgba(59,13,26,.3)';
+      s.style.transform = i<n ? 'scale(1.1)' : 'scale(1)';
+    });
+  };
+  // Init stars to 5
+  setTimeout(function(){ window.setReviewStar(5); }, 100);
+
+  window.openReviewModal = function(){
+    var modal = document.getElementById('reviewModal');
+    if(modal){ modal.style.display='flex'; document.body.style.overflow='hidden'; }
+    // Pre-fill name if logged in
+    try {
+      var u = JSON.parse(localStorage.getItem('ah_user')||'null');
+      if(u&&u.name){ var el=document.getElementById('rv-name'); if(el) el.value=u.name; }
+    } catch(e){}
+  };
+  window.closeReviewModal = function(){
+    var modal = document.getElementById('reviewModal');
+    if(modal){ modal.style.display='none'; document.body.style.overflow=''; }
+  };
+  document.getElementById('reviewModal').addEventListener('click', function(e){
+    if(e.target===this) window.closeReviewModal();
+  });
+
+  window.submitReview = async function(){
+    var name = (document.getElementById('rv-name').value||'').trim();
+    var text = (document.getElementById('rv-text').value||'').trim();
+    var loc  = (document.getElementById('rv-loc').value||'').trim();
+    if(!name){ toast('⚠️ Please enter your name'); return; }
+    if(!text || text.length < 10){ toast('⚠️ Please write a review (at least 10 characters)'); return; }
+
+    var btn = document.getElementById('rv-submit-btn');
+    btn.disabled=true; btn.textContent='Submitting…';
+
+    try {
+      const dbRef = window._ahFirebase && window._ahFirebase.db;
+      if(!dbRef) throw new Error('DB not ready');
+      const m = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+
+      // Get user info if logged in
+      var u = null;
+      try { u = JSON.parse(localStorage.getItem('ah_user')||'null'); } catch(e){}
+
+      await m.addDoc(m.collection(dbRef,'reviews'), {
+        name: name,
+        text: text,
+        location: loc,
+        rating: _reviewStar,
+        uid: u ? u.uid : null,
+        photoURL: u ? (u.photoURL||null) : null,
+        createdAt: m.serverTimestamp(),
+        approved: true  // auto-approve; admin can add moderation later
+      });
+
+      toast('🌸 Thank you! Your review has been posted.');
+      window.closeReviewModal();
+      // Reset form
+      document.getElementById('rv-name').value='';
+      document.getElementById('rv-text').value='';
+      document.getElementById('rv-loc').value='';
+      window.setReviewStar(5);
+    } catch(e){
+      toast('❌ Error: '+e.message);
+    }
+    btn.disabled=false; btn.textContent='Submit Review 🌸';
+  };
+
+  loadReviews();
+})();
 </script>
 <script src="mobilenav.js"></script>
 <script src="bottomnav.js"></script>
