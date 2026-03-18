@@ -243,65 +243,26 @@ textarea.fi{resize:vertical;min-height:80px;}
 <!-- ═══ LOGIN GATE ═══ -->
 <div id="adminGate">
   <div class="gate-box">
-    <div style="font-size:2rem;margin-bottom:8px;">🔐</div>
+    <div style="font-size:2.4rem;margin-bottom:10px;">🔐</div>
     <div class="gate-logo"><span>Aneesa</span> Hampers</div>
     <div class="gate-sub">Admin Panel — Restricted Access</div>
 
-    <!-- Tabs -->
-    <div style="display:flex;background:rgba(59,13,26,.08);border-radius:30px;padding:4px;margin:16px 0 18px;gap:4px;">
-      <button id="tabSignin" onclick="gateTab('signin')" style="flex:1;padding:8px;border:none;border-radius:26px;background:var(--burgundy);color:white;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;cursor:pointer;transition:all .2s;">Sign In</button>
-      <button id="tabSignup" onclick="gateTab('signup')" style="flex:1;padding:8px;border:none;border-radius:26px;background:transparent;color:rgba(59,13,26,.45);font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:400;cursor:pointer;transition:all .2s;">Create Account</button>
-    </div>
+    <div class="gate-title" style="margin-top:22px;">Admin Sign In</div>
+    <div class="gate-desc">Enter your password to access the dashboard</div>
 
-    <!-- SIGN IN PANE -->
-    <div id="paneSignin">
-      <div style="background:rgba(59,13,26,.05);border-radius:10px;padding:11px 14px;margin-bottom:14px;border:1px solid rgba(192,100,122,.15);text-align:left;">
-        <div style="font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:rgba(59,13,26,.4);margin-bottom:5px;font-weight:600;">Quick Access Credentials</div>
-        <div style="font-size:.75rem;color:var(--burgundy);line-height:1.9;">
-          📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9afbf4ffffe9fbf2fbf7eaffe8dafdf7fbf3f6b4f9f5f7">[email&#160;protected]</a><br/>
-          🔑 <strong style="color:var(--deep-rose);">Aneesa@Admin2024</strong>
-        </div>
-        <div style="font-size:.62rem;color:rgba(59,13,26,.35);margin-top:4px;">Enter the password above — email is pre-filled.</div>
-      </div>
-      <div class="g-field">
-        <label class="g-label">Email Address</label>
-        <input class="g-input" id="gEmail" type="email" placeholder="aneesahamper@gmail.com" value="aneesahamper@gmail.com" autocomplete="email" onkeydown="if(event.key==='Enter')doLogin()"/>
-      </div>
-      <div class="g-field">
-        <label class="g-label">Password</label>
-        <div class="g-pw">
-          <input class="g-input" id="gPass" type="password" placeholder="Aneesa@Admin2024" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
-          <button class="g-eye" type="button" onclick="togglePw()">👁</button>
-        </div>
-      </div>
-      <div class="g-err" id="gErr"></div>
-      <button class="g-btn" id="gBtn" onclick="doLogin()">Sign In to Dashboard →</button>
-      <div style="text-align:center;margin-top:10px;">
-        <button onclick="doForgotPw()" style="background:none;border:none;color:rgba(59,13,26,.4);font-family:'Jost',sans-serif;font-size:.72rem;cursor:pointer;transition:color .2s;" onmouseover="this.style.color='var(--deep-rose)'" onmouseout="this.style.color='rgba(59,13,26,.4)'">Forgot password? Send reset email</button>
+    <div class="g-field" style="margin-top:18px;">
+      <label class="g-label">Password</label>
+      <div class="g-pw">
+        <input class="g-input" id="gPass" type="password" placeholder="Enter admin password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <button class="g-eye" type="button" onclick="togglePw()">👁</button>
       </div>
     </div>
+    <div class="g-err" id="gErr"></div>
+    <button class="g-btn" id="gBtn" onclick="doLogin()">Access Dashboard →</button>
 
-    <!-- CREATE ACCOUNT PANE -->
-    <div id="paneSignup" style="display:none;">
-      <div class="g-field"><label class="g-label">Full Name</label><input class="g-input" id="suName" type="text" placeholder="Your name"/></div>
-      <div class="g-field"><label class="g-label">Email (must be admin email)</label><input class="g-input" id="suEmail" type="email" placeholder="aneesahamper@gmail.com"/></div>
-      <div class="g-field">
-        <label class="g-label">Password (min 6 characters)</label>
-        <div class="g-pw"><input class="g-input" id="suPass" type="password" placeholder="Create a strong password"/><button class="g-eye" type="button" onclick="document.getElementById('suPass').type=document.getElementById('suPass').type==='password'?'text':'password'">👁</button></div>
-      </div>
-      <div class="g-field">
-        <label class="g-label">Admin Secret Key</label>
-        <input class="g-input" id="suSecret" type="password" placeholder="Enter secret key"/>
-        <div style="font-size:.62rem;color:rgba(59,13,26,.38);margin-top:3px;">Secret key: <strong>aneesa2024admin</strong></div>
-      </div>
-      <div class="g-err" id="suErr"></div>
-      <button class="g-btn" id="suBtn" onclick="doSignup()">Create Admin Account →</button>
-    </div>
-
-    <div style="margin-top:16px;font-size:.62rem;opacity:.25;text-align:center;">🔒 Authorised personnel only</div>
+    <div style="margin-top:22px;font-size:.62rem;opacity:.22;text-align:center;">🔒 Authorised personnel only</div>
   </div>
 </div>
-
 <!-- ═══ DASHBOARD ═══ -->
 <div id="adminDash" style="display:none;width:100%;display:none;">
 
@@ -339,7 +300,7 @@ textarea.fi{resize:vertical;min-height:80px;}
   <div class="sb-foot">
     <div class="sb-profile">
       <div class="sb-av">👑</div>
-      <div><div class="sb-name">Aneesa</div><div class="sb-role">Owner</div></div>
+      <div><div class="sb-name">Admin</div><div class="sb-role">Owner</div></div>
     </div>
     <button class="logout-btn" onclick="doAdminLogout()">🔒 Sign Out</button>
   </div>
@@ -795,7 +756,7 @@ const FB = {
 const app  = initializeApp(FB);
 const db   = getFirestore(app);
 const auth = getAuth(app);
-const ADMIN_EMAIL = "aneesahamper@gmail.com";
+const ADMIN_EMAIL = "phatanmujeebkhan64@gmail.com";
 const IMGBB = "9f8a4bb8beff4d9e610a52d2962f2a3e";
 
 // ── CURSOR ──
@@ -803,100 +764,71 @@ const C=document.getElementById('cursor'),R=document.getElementById('cursorRing'
 if(C&&matchMedia('(pointer:fine)').matches){document.addEventListener('mousemove',e=>{C.style.left=e.clientX+'px';C.style.top=e.clientY+'px';setTimeout(()=>{R.style.left=e.clientX+'px';R.style.top=e.clientY+'px';},80)});}
 
 // ── AUTH ──
-// ── MASTER PASSWORD (works without Firebase account) ──
-const MASTER_PWD    = 'Aneesa@Admin2024';
-const ADMIN_SECRET  = 'aneesa2024admin';
+let _dashInited = false;
+const ADMIN_PWD = "1Mujeebkhan123@";
 
-function showGate()  { document.getElementById('adminGate').style.display='flex'; document.getElementById('adminDash').style.display='none'; }
-function showDash()  { document.getElementById('adminGate').style.display='none'; document.getElementById('adminDash').style.display='flex'; init(); }
+function showGate() {
+  document.getElementById('adminGate').style.display = 'flex';
+  document.getElementById('adminDash').style.display = 'none';
+}
+function showDash() {
+  document.getElementById('adminGate').style.display = 'none';
+  document.getElementById('adminDash').style.display = 'flex';
+  if (!_dashInited) { _dashInited = true; init(); }
+}
 
+// Auto-login if Firebase session already exists
 onAuthStateChanged(auth, user => {
-  if (user && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) { showDash(); }
-  else if (user) { signOut(auth); setErr('⚠️ No admin access for this account.'); }
-  else { showGate(); }
+  if (user && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+    showDash();
+  }
+  // else stay on gate — don't call showGate() here to avoid flicker
 });
 
-// Tab switching
-window.gateTab = function(tab) {
-  const isIn = tab === 'signin';
-  document.getElementById('paneSignin').style.display = isIn ? 'block' : 'none';
-  document.getElementById('paneSignup').style.display = isIn ? 'none'  : 'block';
-  const ts=document.getElementById('tabSignin'), tu=document.getElementById('tabSignup');
-  if(ts){ ts.style.background=isIn?'var(--burgundy)':'transparent'; ts.style.color=isIn?'white':'rgba(59,13,26,.45)'; ts.style.fontWeight=isIn?'600':'400'; }
-  if(tu){ tu.style.background=!isIn?'var(--burgundy)':'transparent'; tu.style.color=!isIn?'white':'rgba(59,13,26,.45)'; tu.style.fontWeight=!isIn?'600':'400'; }
-  setErr(''); const se=document.getElementById('suErr'); if(se) se.textContent='';
-};
-
-// Sign In
 window.doLogin = async function() {
-  const e = (document.getElementById('gEmail').value||'').trim();
-  const p = document.getElementById('gPass').value||'';
+  const p = (document.getElementById('gPass').value || '');
   const btn = document.getElementById('gBtn');
   setErr('');
-  if(!p){ setErr('Please enter your password.'); return; }
-  btn.textContent='Signing in…'; btn.disabled=true;
-  // Master password — bypasses Firebase
-  if(p === MASTER_PWD){ showDash(); btn.textContent='Sign In to Dashboard →'; btn.disabled=false; return; }
-  // Firebase Auth
-  if(!e){ setErr('Please enter your email address.'); btn.textContent='Sign In to Dashboard →'; btn.disabled=false; return; }
+
+  // Step 1: Check password locally — this is the real gate
+  if (!p) { setErr('Please enter your password.'); return; }
+  if (p !== ADMIN_PWD) { setErr('❌ Wrong password. Try again.'); return; }
+
+  // Step 2: Password correct — show dashboard immediately
+  btn.textContent = 'Opening…'; btn.disabled = true;
+  showDash();
+
+  // Step 3: Sync Firebase in background (for session persistence)
   try {
-    const r = await signInWithEmailAndPassword(auth, e, p);
-    if(r.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){ await signOut(auth); setErr('❌ This account has no admin access.'); }
-  } catch(err) {
-    const m = {
-      'auth/user-not-found':'No account found. Use Create Account tab or use master password.',
-      'auth/wrong-password':'Wrong password. Try master password: Aneesa@Admin2024',
-      'auth/invalid-credential':'Wrong email or password.',
-      'auth/invalid-email':'Invalid email address.',
-      'auth/too-many-requests':'Too many attempts. Try master password: Aneesa@Admin2024',
-      'auth/network-request-failed':'Network error. Check your connection.'
-    };
-    setErr('❌ ' + (m[err.code]||err.message));
+    await signInWithEmailAndPassword(auth, ADMIN_EMAIL, p);
+  } catch(e1) {
+    try {
+      const r = await createUserWithEmailAndPassword(auth, ADMIN_EMAIL, p);
+      await updateProfile(r.user, { displayName: 'Admin' });
+    } catch(e2) {
+      // Firebase sync failed — dashboard is already open, ignore silently
+      console.warn('Firebase sync:', e2.message);
+    }
   }
-  btn.textContent='Sign In to Dashboard →'; btn.disabled=false;
 };
 
-// Create Account
-window.doSignup = async function() {
-  const name   = (document.getElementById('suName')?.value||'').trim();
-  const email  = (document.getElementById('suEmail')?.value||'').trim();
-  const pass   = document.getElementById('suPass')?.value||'';
-  const secret = (document.getElementById('suSecret')?.value||'').trim();
-  const errEl  = document.getElementById('suErr');
-  const btn    = document.getElementById('suBtn');
-  if(errEl) errEl.textContent='';
-  if(!name){ if(errEl)errEl.textContent='Please enter your name.'; return; }
-  if(!email){ if(errEl)errEl.textContent='Please enter email.'; return; }
-  if(pass.length<6){ if(errEl)errEl.textContent='Password must be at least 6 characters.'; return; }
-  if(secret!==ADMIN_SECRET){ if(errEl)errEl.textContent='❌ Wrong secret key.'; return; }
-  btn.textContent='Creating…'; btn.disabled=true;
-  try {
-    const r = await createUserWithEmailAndPassword(auth, email, pass);
-    await updateProfile(r.user,{displayName:name});
-    if(r.user.email.toLowerCase()!==ADMIN_EMAIL.toLowerCase()){ await signOut(auth); if(errEl){errEl.style.color='#e05050';errEl.textContent='Account created but "'+email+'" is not the admin email. Login with '+ADMIN_EMAIL;} }
-    // onAuthStateChanged handles redirect
-  } catch(err) {
-    const m={'auth/email-already-in-use':'Account exists. Use Sign In tab.','auth/invalid-email':'Invalid email.','auth/weak-password':'Password too weak.'};
-    if(errEl) errEl.textContent = '❌ '+(m[err.code]||err.message);
-  }
-  btn.textContent='Create Admin Account →'; btn.disabled=false;
+function setErr(msg) {
+  const el = document.getElementById('gErr');
+  if (el) { el.style.color = '#e05050'; el.textContent = msg; }
+}
+window.togglePw = () => {
+  const i = document.getElementById('gPass');
+  if (i) i.type = i.type === 'password' ? 'text' : 'password';
 };
-
-// Forgot Password
-window.doForgotPw = async function() {
-  const email=(document.getElementById('gEmail')?.value||'').trim();
-  if(!email){ setErr('Enter your email above first.'); return; }
-  try {
-    await sendPasswordResetEmail(auth,email);
-    const el=document.getElementById('gErr');
-    if(el){el.style.color='#25D366';el.textContent='✅ Reset email sent to '+email+'. Check your inbox.';}
-  } catch(err){ setErr('❌ '+err.message); }
+window.doAdminLogout = async () => {
+  if (!confirm('Sign out?')) return;
+  _dashInited = false;
+  try { await signOut(auth); } catch(e) {}
+  showGate();
+  document.getElementById('gPass').value = '';
+  document.getElementById('gBtn').textContent = 'Access Dashboard →';
+  document.getElementById('gBtn').disabled = false;
 };
-
-function setErr(msg){ const el=document.getElementById('gErr'); if(el){el.style.color='#e05050';el.textContent=msg;} }
-window.togglePw=()=>{const i=document.getElementById('gPass');if(i)i.type=i.type==='password'?'text':'password';};
-window.toggleSuPw=()=>{const i=document.getElementById('suPass');if(i)i.type=i.type==='password'?'text':'password';};
-window.doAdminLogout=async()=>{if(!confirm('Sign out?'))return;await signOut(auth);showGate();};
 
 // ── MOBILE SIDEBAR ──
 window.sbToggle = () => { const s=document.getElementById('sidebar'); s.classList.contains('mob-open') ? sbClose() : sbOpen(); };
@@ -1266,11 +1198,13 @@ function refreshCatDropdowns() {
 function renderCats() {
   const grid = document.getElementById('catGrid');
   if (!_cats.length) { grid.innerHTML='<div style="opacity:.4;padding:40px;text-align:center;grid-column:1/-1">No categories</div>'; return; }
-  grid.innerHTML = _cats.map((c,i) => `<div class="cat-item">
-    <div class="cat-top" style="background:${c.color||'#f9e4e9'}">
-      ${c.emoji||'🎁'}
-      <span class="cat-order-badge">#${i+1}</span>
-      ${c.visible===false?'<span class="cat-hidden">Hidden</span>':''}
+  grid.innerHTML = _cats.map((c,i) => {
+    const topContent = c.coverImage
+      ? `<img src="${c.coverImage}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:${c.coverPosition||'50% 50%'};display:block;"/><span class="cat-order-badge">#${i+1}</span>${c.visible===false?'<span class="cat-hidden">Hidden</span>':''}`
+      : `${c.emoji||'🎁'}<span class="cat-order-badge">#${i+1}</span>${c.visible===false?'<span class="cat-hidden">Hidden</span>':''}`;
+    return `<div class="cat-item">
+    <div class="cat-top" style="background:${c.color||'#f9e4e9'};position:relative;overflow:hidden;">
+      ${topContent}
     </div>
     <div class="cat-body">
       <div class="cat-name">${c.name}</div>
@@ -1283,7 +1217,8 @@ function renderCats() {
         <button class="btn ${c.visible!==false?'btn-del':'btn-green'} btn-sm" onclick="toggleCatVis('${c.id}',${c.visible!==false})">${c.visible!==false?'🚫':'✅'}</button>
       </div>
     </div>
-  </div>`).join('');
+  </div>`;
+  }).join('');
 }
 
 async function seedCats() {
