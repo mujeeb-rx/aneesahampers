@@ -258,7 +258,7 @@ textarea.fi{resize:vertical;min-height:80px;}
       <div style="background:rgba(59,13,26,.05);border-radius:10px;padding:11px 14px;margin-bottom:14px;border:1px solid rgba(192,100,122,.15);text-align:left;">
         <div style="font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:rgba(59,13,26,.4);margin-bottom:5px;font-weight:600;">Quick Access Credentials</div>
         <div style="font-size:.75rem;color:var(--burgundy);line-height:1.9;">
-          📧 aneesahamper@gmail.com<br/>
+          📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9afbf4ffffe9fbf2fbf7eaffe8dafdf7fbf3f6b4f9f5f7">[email&#160;protected]</a><br/>
           🔑 <strong style="color:var(--deep-rose);">Aneesa@Admin2024</strong>
         </div>
         <div style="font-size:.62rem;color:rgba(59,13,26,.35);margin-top:4px;">Enter the password above — email is pre-filled.</div>
@@ -711,6 +711,8 @@ textarea.fi{resize:vertical;min-height:80px;}
         </label>
       </div>
       <div id="catCoverStatus" style="font-size:.7rem;opacity:.45;margin-top:4px;min-height:14px;"></div>
+      <!-- Hidden field stores cover position — pre-placed so JS can always find it -->
+      <input type="hidden" id="catCoverPos" value="50% 50%"/>
     </div>
     <button class="btn btn-primary" style="width:100%;padding:12px;margin-top:4px" onclick="saveCat()" id="catSaveBtn">Save Category ✓</button>
   </div>
@@ -733,20 +735,6 @@ textarea.fi{resize:vertical;min-height:80px;}
 
     <div id="orderDetailBody" style="font-size:.84rem;line-height:1.85;margin-bottom:16px;background:var(--blush);border-radius:12px;padding:16px;"></div>
 
-    <!-- Payment Screenshot Viewer -->
-    <div id="screenshotSection" style="display:none;margin-bottom:14px;">
-      <div style="font-size:.6rem;letter-spacing:2px;text-transform:uppercase;opacity:.44;margin-bottom:8px;">&#128247; Payment Screenshot</div>
-      <div style="background:#fff;border-radius:12px;border:1.5px solid rgba(192,100,122,.18);overflow:hidden;">
-        <a id="screenshotLink" href="#" target="_blank">
-          <img id="screenshotImg" src="" alt="Payment screenshot" style="width:100%;max-height:220px;object-fit:contain;display:block;background:#fdf0f3;cursor:zoom-in;"/>
-        </a>
-        <div style="padding:8px 12px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(192,100,122,.1);">
-          <span style="font-size:.7rem;opacity:.5;">Tap to view full size</span>
-          <button onclick="verifyAndConfirm()" style="background:linear-gradient(135deg,#2d7a4f,#1a5e3a);color:white;border:none;border-radius:8px;padding:7px 16px;font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-weight:600;transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">&#9989; Verify &amp; Confirm</button>
-        </div>
-      </div>
-    </div>
-
     <!-- Status buttons — visual selector -->
     <div style="margin-bottom:14px">
       <div style="font-size:.6rem;letter-spacing:2px;text-transform:uppercase;opacity:.44;margin-bottom:10px">Update Status</div>
@@ -762,8 +750,7 @@ textarea.fi{resize:vertical;min-height:80px;}
 
     <input type="hidden" id="newStatus"/>
     <input type="hidden" id="editOrderId"/>
-    <button class="btn btn-primary" style="width:100%;padding:12px" onclick="saveOrderStatus()">&#128190; Save Status Update</button>
-    <button id="verifyPayBtn" onclick="verifyAndConfirm()" style="display:none;width:100%;padding:12px;margin-top:8px;background:linear-gradient(135deg,#2d7a4f,#1a5e3a);color:white;border:none;border-radius:10px;font-family:'Jost',sans-serif;font-size:.76rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-weight:700;transition:opacity .2s;">&#9989; Verify Payment &amp; Confirm Order</button>
+    <button class="btn btn-primary" style="width:100%;padding:12px" onclick="saveOrderStatus()">💾 Save Status Update</button>
   </div>
 </div>
 
@@ -786,7 +773,7 @@ textarea.fi{resize:vertical;min-height:80px;}
 
 <div class="adm-toast" id="admToast"></div>
 
-<script type="module">
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getFirestore, collection, query, orderBy, onSnapshot, where,
@@ -1092,7 +1079,7 @@ window.openOrder = function(id) {
   });
 
   const items = (o.items||[]).map(i=>`• ${i.name} ×${i.qty} = ₹${(i.price*i.qty).toLocaleString('en-IN')}`).join('<br>') || (o.productName||'—');
-  const addr  = [o.address, o.city, o.state, o.pincode||o.zipCode].filter(Boolean).join(', ');
+  const addr  = [o.address, o.city, o.state, o.pincode].filter(Boolean).join(', ');
   document.getElementById('orderDetailBody').innerHTML = `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px">
       <div><b>Order ID</b><br>#${o.id.slice(-6).toUpperCase()}</div>
@@ -1104,25 +1091,7 @@ window.openOrder = function(id) {
       <div><b>Total</b><br>₹${Number(o.total||0).toLocaleString('en-IN')}</div>
       <div><b>Delivery</b><br>${o.deliveryType||o.delivery||'—'}</div>
       ${o.giftMessage?`<div style="grid-column:1/-1"><b>Gift Message</b><br>${o.giftMessage}</div>`:''}
-      <div style="grid-column:1/-1"><b>Payment</b><br>${o.paymentMethod||'UPI'} — ${o.upiId||''}</div>
     </div>`;
-
-  // Show / hide screenshot viewer
-  const ssSection = document.getElementById('screenshotSection');
-  const ssImg     = document.getElementById('screenshotImg');
-  const ssLink    = document.getElementById('screenshotLink');
-  const verifyBtn = document.getElementById('verifyPayBtn');
-  if (o.screenshotUrl && o.screenshotUrl.length > 10) {
-    ssImg.src           = o.screenshotUrl;
-    ssLink.href         = o.screenshotUrl;
-    ssSection.style.display = 'block';
-    // Only show the big Verify button if not already confirmed
-    verifyBtn.style.display = (o.status !== 'confirmed' && o.status !== 'delivered') ? 'block' : 'none';
-  } else {
-    ssSection.style.display = 'none';
-    verifyBtn.style.display = 'none';
-  }
-
   document.getElementById('orderModal').classList.add('open');
 };
 
@@ -1164,32 +1133,6 @@ window.saveOrderStatus = async function() {
       }
     } else {
       toast(`✅ Order #${id.slice(-6).toUpperCase()} → "${st}"`);
-    }
-    closeModal('orderModal');
-  } catch(e) { toast('❌ Error: '+e.message, 'err'); }
-};
-
-// ── VERIFY PAYMENT & CONFIRM ORDER ──
-window.verifyAndConfirm = async function() {
-  const id = document.getElementById('editOrderId').value;
-  if (!id) return;
-  if (!confirm('Mark this order as CONFIRMED?\nThis will notify the customer via WhatsApp.')) return;
-  try {
-    await updateDoc(doc(db,'orders',id), {
-      status: 'confirmed',
-      paymentVerified: true,
-      verifiedAt: serverTimestamp()
-    });
-    const o = _orders.find(x => x.id===id);
-    const trackId = (o && o.trackingId) ? o.trackingId : ('#'+id.slice(-6).toUpperCase());
-    const name    = o ? (o.customerName||o.name||'Customer') : 'Customer';
-    const phone   = o ? (o.phone||o.customerPhone||'') : '';
-    toast('✅ Payment verified! Order confirmed.');
-    // WhatsApp notification
-    if (phone) {
-      const msg = `✅ Hi ${name}! Great news! Your Aneesa Hampers payment has been verified and your order is now *CONFIRMED* 🎀\n\nTracking ID: *${trackId}*\n\nWe’ll update you once it’s shipped! 🚚`;
-      const cleanPhone = '91' + phone.replace(/\D/g,'').slice(-10);
-      window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
     closeModal('orderModal');
   } catch(e) { toast('❌ Error: '+e.message, 'err'); }
@@ -1398,22 +1341,24 @@ window.openEditCat = function(id) {
   document.getElementById('catColor').value=col;
   document.getElementById('catColorHex').value=col;
   document.getElementById('catVisible').value=(c.visible!==false)?'true':'false';
-  // Cover photo + position
-  const coverUrl=c.coverImage||'';
-  document.getElementById('catCoverUrl').value=coverUrl;
-  if(coverUrl){ showCoverPreview(coverUrl); }
-  else { const pw=document.getElementById('catCoverPreviewWrap'); if(pw) pw.style.display='none'; }
-  // Restore position sliders
-  if(c.coverPosition){
-    const parts=c.coverPosition.split(' ');
-    const px=document.getElementById('catPosX'), py=document.getElementById('catPosY');
-    if(px) px.value=parseInt(parts[0])||50;
-    if(py) py.value=parseInt(parts[1])||50;
-    // Update hidden field
-    let hf=document.getElementById('catCoverPos');
-    if(!hf){hf=document.createElement('input');hf.type='hidden';hf.id='catCoverPos';document.body.appendChild(hf);}
-    hf.value=c.coverPosition;
-    updateCoverPos();
+  // Cover photo + position — restore from saved data
+  const coverUrl = c.coverImage || '';
+  document.getElementById('catCoverUrl').value = coverUrl;
+  if (coverUrl) {
+    const hf = document.getElementById('catCoverPos');
+    if (hf) hf.value = c.coverPosition || '50% 50%';
+    // Set sliders from saved position BEFORE showing preview (don't reset them)
+    const parts = (c.coverPosition || '50% 50%').split(' ');
+    const pxEl = document.getElementById('catPosX');
+    const pyEl = document.getElementById('catPosY');
+    if (pxEl) pxEl.value = parseInt(parts[0]) || 50;
+    if (pyEl) pyEl.value = parseInt(parts[1]) || 50;
+    _showCatCoverPreview(coverUrl, false); // false = don't reset sliders
+  } else {
+    const pw = document.getElementById('catCoverPreviewWrap');
+    if (pw) pw.style.display = 'none';
+    const hf = document.getElementById('catCoverPos');
+    if (hf) hf.value = '50% 50%';
   }
   document.getElementById('catModal').classList.add('open');
 };
@@ -1631,69 +1576,91 @@ window.savePopupSettings = async function() {
 // ═══════════════════════════════════════════════
 // CATEGORY COVER PHOTO — UPLOAD + POSITION ADJUSTER
 // ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// CATEGORY COVER PHOTO — UPLOAD + POSITION
+// ═══════════════════════════════════════════════
 window.uploadCatCover = async function(input) {
-  const file = input.files[0]; if(!file) return;
+  const file = input.files[0]; if (!file) return;
   const statusEl = document.getElementById('catCoverStatus');
-  const prevWrap = document.getElementById('catCoverPreviewWrap');
-  const prevImg  = document.getElementById('catCoverPreview');
-  if(statusEl) statusEl.textContent = '⏳ Uploading cover photo…';
+  if (statusEl) { statusEl.style.color=''; statusEl.textContent = '⏳ Uploading photo…'; }
   try {
-    if(file.size > 10*1024*1024) throw new Error('File too large. Max 10MB.');
+    if (file.size > 10*1024*1024) throw new Error('File too large. Max 10MB.');
     const url = await uploadToImgbb(file, p => {
-      if(statusEl) statusEl.textContent = '⏳ Uploading… ' + Math.round(p) + '%';
+      if (statusEl) statusEl.textContent = '⏳ ' + Math.round(p) + '% uploaded…';
     });
-    document.getElementById('catCoverUrl').value = url;
-    showCoverPreview(url);
-    if(statusEl) statusEl.textContent = '✅ Cover photo uploaded! Adjust position below.';
-    setTimeout(()=>{ if(statusEl) statusEl.textContent=''; }, 4000);
+    // Put URL into input field
+    const urlInput = document.getElementById('catCoverUrl');
+    if (urlInput) urlInput.value = url;
+    // Show preview + reset position
+    _showCatCoverPreview(url, true);
+    if (statusEl) { statusEl.style.color='#2d7a4f'; statusEl.textContent = '✅ Photo uploaded! Adjust position using sliders below.'; }
+    setTimeout(()=>{ if(statusEl) statusEl.textContent=''; }, 5000);
   } catch(e) {
-    if(statusEl) statusEl.textContent = '❌ Upload failed: ' + e.message;
-    console.error('uploadCatCover:', e);
+    if (statusEl) { statusEl.style.color='#e05050'; statusEl.textContent = '❌ Upload failed: ' + e.message; }
+    console.error('uploadCatCover error:', e);
   }
   input.value = '';
 };
 
+// Called when URL is typed/pasted into the URL field
 window.previewCatCover = function(url) {
-  if(url && url.startsWith('http')) { showCoverPreview(url); }
-  else { const pw=document.getElementById('catCoverPreviewWrap'); if(pw) pw.style.display='none'; }
+  if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+    _showCatCoverPreview(url, true);
+  } else {
+    const pw = document.getElementById('catCoverPreviewWrap');
+    if (pw) pw.style.display = 'none';
+  }
 };
 
-function showCoverPreview(url) {
+// Core function — shows preview + optionally resets sliders
+function _showCatCoverPreview(url, resetSliders) {
   const pw = document.getElementById('catCoverPreviewWrap');
   const pi = document.getElementById('catCoverPreview');
-  if(pw) pw.style.display = 'block';
-  if(pi) { pi.src = url; }
-  // Reset sliders to center when new image loaded
-  const px = document.getElementById('catPosX'), py = document.getElementById('catPosY');
-  if(px) px.value = 50;
-  if(py) py.value = 50;
-  updateCoverPos();
+  if (pw) pw.style.display = 'block';
+  if (pi) {
+    pi.src = url;
+    pi.onerror = function() { pi.src = ''; if(pw) pw.style.display='none'; };
+  }
+  if (resetSliders) {
+    const px = document.getElementById('catPosX');
+    const py = document.getElementById('catPosY');
+    if (px) px.value = 50;
+    if (py) py.value = 50;
+    _saveCoverPos(50, 50);
+  }
+  window.updateCoverPos();
+}
+// Keep showCoverPreview as alias for backward compat
+window.showCoverPreview = function(url) { _showCatCoverPreview(url, false); };
+
+function _saveCoverPos(x, y) {
+  const hf = document.getElementById('catCoverPos');
+  if (hf) hf.value = x + '% ' + y + '%';
 }
 
 window.updateCoverPos = function() {
-  const px = parseInt(document.getElementById('catPosX')?.value || 50);
-  const py = parseInt(document.getElementById('catPosY')?.value || 50);
+  const px = parseInt((document.getElementById('catPosX') || {}).value || 50);
+  const py = parseInt((document.getElementById('catPosY') || {}).value || 50);
   const pi = document.getElementById('catCoverPreview');
-  if(pi) pi.style.objectPosition = px + '% ' + py + '%';
-  // Store position in a hidden field for saving
-  let hf = document.getElementById('catCoverPos');
-  if(!hf){ hf=document.createElement('input'); hf.type='hidden'; hf.id='catCoverPos'; document.body.appendChild(hf); }
-  hf.value = px + '% ' + py + '%';
+  if (pi) pi.style.objectPosition = px + '% ' + py + '%';
+  _saveCoverPos(px, py);
 };
 
 window.setCoverPos = function(x, y) {
-  const px = document.getElementById('catPosX'), py = document.getElementById('catPosY');
-  if(px) px.value = x;
-  if(py) py.value = y;
-  updateCoverPos();
+  const px = document.getElementById('catPosX');
+  const py = document.getElementById('catPosY');
+  if (px) px.value = x;
+  if (py) py.value = y;
+  window.updateCoverPos();
 };
 
 window.clearCatCover = function() {
-  document.getElementById('catCoverUrl').value = '';
+  const ui = document.getElementById('catCoverUrl');
+  if (ui) ui.value = '';
   const pw = document.getElementById('catCoverPreviewWrap');
-  if(pw) pw.style.display = 'none';
+  if (pw) pw.style.display = 'none';
   const hf = document.getElementById('catCoverPos');
-  if(hf) hf.value = '';
+  if (hf) hf.value = '50% 50%';
 };
 
 // ═══════════════════════════════════════════════
@@ -1888,12 +1855,4 @@ onSnapshot(doc(db,'siteSettings','config'), snap => {
     const g = cfg.gallery;
     if(g.eyebrow) document.getElementById('galEyebrow').value = g.eyebrow;
     if(g.title)   document.getElementById('galTitle').value = g.title;
-    if(g.subtitle)document.getElementById('galSub').value = g.subtitle;
-    if(g.handle)  document.getElementById('galHandle').value = g.handle;
-    if(g.items)   { _adminGallery = g.items.map(i=>({...i})); renderGalleryEditor(); }
-  }
-});
-
-</script>
-</body>
-</html>
+    if(g.subtitle)document.getElem
