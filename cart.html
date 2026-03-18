@@ -8,9 +8,9 @@
 <style>
 :root{--blush:#f9e4e9;--rose:#e8a0b0;--deep-rose:#c0647a;--burgundy:#3b0d1a;--cream:#fdf6f0;--gold:#c9a96e;--white:#fff;--green:#25D366;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);overflow-x:hidden;}
-@media(pointer:fine){body{cursor:none;}.cursor{width:8px;height:8px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}.cursor-ring{width:28px;height:28px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:left .08s,top .08s;opacity:.4;}}
-@media(pointer:coarse){.cursor,.cursor-ring{display:none;}body{cursor:auto;}button,a,input,select,textarea{cursor:pointer;}}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--burgundy);cursor:none;}
+.cursor{width:8px;height:8px;background:var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);}
+.cursor-ring{width:28px;height:28px;border:1.5px solid var(--deep-rose);border-radius:50%;position:fixed;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:left .08s,top .08s;opacity:.4;}
 #ah-toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--burgundy);color:white;padding:11px 24px;border-radius:30px;font-size:.76rem;z-index:9999;display:none;white-space:nowrap;box-shadow:0 6px 24px rgba(59,13,26,.3);}
 
 /* NAV */
@@ -103,9 +103,9 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
 .field-note{font-size:.7rem;color:#e05050;min-height:15px;margin-top:2px;}
 
 /* PHONE WITH COUNTRY CODE */
-.phone-row{display:flex;gap:8px;}
+.phone-row{display:flex;gap:8px;width:100%;overflow:hidden;}
 .country-code-wrap{position:relative;flex-shrink:0;}
-.cc-btn{display:flex;align-items:center;gap:6px;padding:11px 12px;border:1.5px solid rgba(192,100,122,.2);border-radius:11px;background:var(--white);cursor:pointer;font-family:'Jost',sans-serif;font-size:.83rem;color:var(--burgundy);white-space:nowrap;min-width:100px;transition:border-color .25s;}
+.cc-btn{display:flex;align-items:center;gap:5px;padding:11px 10px;border:1.5px solid rgba(192,100,122,.2);border-radius:11px;background:var(--white);cursor:pointer;font-family:'Jost',sans-serif;font-size:.82rem;color:var(--burgundy);white-space:nowrap;min-width:90px;max-width:115px;transition:border-color .25s;box-sizing:border-box;}
 .cc-btn:hover,.cc-btn.open{border-color:var(--deep-rose);}
 .cc-flag{font-size:1.1rem;}
 .cc-code{font-weight:600;font-size:.82rem;}
@@ -119,11 +119,12 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
 .cc-item .flag{font-size:1.1rem;flex-shrink:0;}
 .cc-item .name{flex:1;font-size:.8rem;}
 .cc-item .dial{font-size:.75rem;opacity:.5;font-weight:600;}
-.phone-input-wrap{flex:1;}
+.phone-input-wrap{flex:1;min-width:0;overflow:hidden;}
 
 /* ZIP AUTO-DETECT */
-.zip-row{position:relative;}
-.zip-detecting{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:.7rem;color:var(--deep-rose);display:none;}
+.zip-row{position:relative;width:100%;}
+.zip-row .form-input{width:100%;padding-right:110px;box-sizing:border-box;}
+.zip-detecting{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.68rem;color:var(--deep-rose);display:none;white-space:nowrap;pointer-events:none;}
 .zip-result{margin-top:4px;font-size:.74rem;display:flex;align-items:center;gap:6px;min-height:16px;}
 .zip-result .loc-badge{background:var(--blush);color:var(--burgundy);border-radius:20px;padding:3px 10px;font-size:.7rem;font-weight:500;}
 .zip-result .loc-flag{font-size:1rem;}
@@ -213,18 +214,72 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
 .paid-btn{width:100%;padding:13px;background:var(--green);color:white;border:none;border-radius:11px;font-family:'Jost',sans-serif;font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:opacity .25s;}
 .paid-btn:hover{opacity:.88;}
 
-/* SUCCESS */
-.success-screen{display:none;text-align:center;padding:60px 30px;}
+/* ══ SCREENSHOT UPLOAD + ORDER CONFIRM FLOW ══ */
+.success-screen{display:none;padding:20px 0 40px;}
 .success-screen.show{display:block;}
-.success-icon{font-size:3.8rem;margin-bottom:18px;animation:bounce .6s ease;}
-@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
-.success-title{font-family:'Cormorant Garamond',serif;font-size:2.1rem;margin-bottom:8px;}
-.success-id{font-size:.88rem;color:var(--deep-rose);font-weight:600;margin-bottom:5px;}
-.success-sub{font-size:.82rem;opacity:.55;line-height:1.7;margin-bottom:28px;}
-.success-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
-.btn-p{padding:11px 24px;background:var(--burgundy);color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;}
-.btn-g{padding:11px 24px;background:var(--green);color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;}
-.btn-rose{padding:11px 24px;background:var(--deep-rose);color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;}
+
+/* Step 1 — screenshot upload */
+.scr-card{background:white;border-radius:18px;padding:22px 20px;margin-bottom:14px;border:2px solid rgba(192,100,122,.12);}
+.scr-card.done{border-color:#25D366;background:#f0fdf6;}
+.scr-card-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.scr-card-sub{font-size:.76rem;opacity:.5;margin-bottom:16px;line-height:1.6;}
+.scr-drop{border:2.5px dashed rgba(192,100,122,.25);border-radius:14px;padding:26px 16px;text-align:center;cursor:pointer;transition:all .25s;background:#fdf8f5;}
+.scr-drop:hover,.scr-drop.drag{border-color:var(--deep-rose);background:rgba(192,100,122,.04);}
+.scr-drop-icon{font-size:2.2rem;margin-bottom:8px;}
+.scr-drop-text{font-size:.8rem;color:rgba(59,13,26,.5);line-height:1.6;}
+.scr-drop-text strong{color:var(--deep-rose);}
+.scr-preview{display:none;margin-top:12px;position:relative;}
+.scr-preview img{width:100%;max-height:200px;object-fit:contain;border-radius:10px;border:1.5px solid rgba(192,100,122,.2);}
+.scr-remove{position:absolute;top:6px;right:6px;width:26px;height:26px;background:rgba(220,50,50,.8);border:none;border-radius:50%;color:white;font-size:.65rem;cursor:pointer;}
+.scr-status{font-size:.76rem;margin-top:8px;text-align:center;font-weight:500;min-height:18px;}
+.scr-submit-btn{width:100%;margin-top:12px;padding:14px;background:var(--burgundy);color:white;border:none;border-radius:12px;font-family:'Jost',sans-serif;font-size:.76rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;cursor:pointer;display:none;align-items:center;justify-content:center;gap:8px;}
+.scr-submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+.scr-verified{display:none;align-items:center;gap:12px;background:#e8fdf0;border-radius:12px;padding:14px;margin-top:10px;}
+.scr-verified.show{display:flex;}
+.scr-skip{display:block;text-align:center;margin-top:10px;background:none;border:none;color:rgba(59,13,26,.35);font-size:.72rem;cursor:pointer;font-family:'Jost',sans-serif;letter-spacing:1px;}
+
+/* Step 2 — confirmed banner */
+.conf-banner{display:none;background:linear-gradient(135deg,#1a6e38,#25a055);border-radius:20px;padding:28px 20px;text-align:center;margin-bottom:14px;position:relative;overflow:hidden;}
+.conf-banner::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.07);}
+.conf-tick{width:60px;height:60px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.7rem;box-shadow:0 8px 24px rgba(0,0,0,.15);animation:tickPop .5s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes tickPop{from{transform:scale(0) rotate(-20deg)}to{transform:scale(1) rotate(0)}}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.conf-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:white;margin-bottom:5px;}
+.conf-sub{font-size:.78rem;color:rgba(255,255,255,.75);line-height:1.6;}
+.conf-tracking{display:inline-block;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);color:white;font-size:.78rem;font-weight:700;letter-spacing:2px;padding:8px 20px;border-radius:30px;margin-top:12px;cursor:pointer;}
+
+/* Timeline */
+.conf-timeline{background:white;border-radius:16px;padding:20px;margin-bottom:12px;}
+.tl-head{font-size:.6rem;letter-spacing:2px;text-transform:uppercase;opacity:.38;margin-bottom:16px;font-weight:600;}
+.tl-row{display:flex;gap:12px;position:relative;}
+.tl-row:not(:last-child)::after{content:'';position:absolute;left:13px;top:28px;bottom:-4px;width:2px;background:rgba(192,100,122,.1);}
+.tl-row.done::after{background:var(--green);}
+.tl-dot{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.72rem;z-index:1;margin-top:1px;}
+.tl-dot.done{background:var(--green);color:white;}
+.tl-dot.active{background:var(--burgundy);color:white;box-shadow:0 4px 12px rgba(59,13,26,.25);}
+.tl-dot.pending{background:rgba(192,100,122,.1);color:rgba(59,13,26,.3);}
+.tl-body{padding-bottom:18px;}
+.tl-label{font-size:.84rem;font-weight:500;}
+.tl-label.active{color:var(--burgundy);font-weight:700;}
+.tl-label.pending{color:rgba(59,13,26,.3);}
+.tl-when{font-size:.7rem;opacity:.4;margin-top:2px;}
+
+/* Items card */
+.conf-items{background:white;border-radius:16px;padding:18px 20px;margin-bottom:12px;}
+.conf-item{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(192,100,122,.07);}
+.conf-item:last-child{border-bottom:none;}
+.conf-item-img{width:48px;height:48px;border-radius:9px;object-fit:contain;background:#f5e8ec;flex-shrink:0;padding:4px;}
+.conf-item-name{flex:1;font-size:.82rem;font-weight:500;}
+.conf-item-qty{font-size:.72rem;opacity:.4;margin-top:1px;}
+.conf-item-price{font-size:.84rem;font-weight:700;color:var(--deep-rose);white-space:nowrap;}
+.conf-total{display:flex;justify-content:space-between;align-items:center;padding-top:12px;margin-top:10px;border-top:1px solid rgba(192,100,122,.12);}
+.conf-total-val{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--burgundy);}
+
+/* Action buttons after confirm */
+.conf-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+.btn-p{padding:12px 20px;background:var(--burgundy);color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;}
+.btn-g{padding:12px 20px;background:#25a055;color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;}
+.btn-rose{padding:12px 20px;background:var(--deep-rose);color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;}
 
 /* FLOAT WA */
 #floatWA{position:fixed;bottom:24px;right:24px;z-index:500;display:flex;align-items:center;gap:8px;background:var(--green);color:white;border-radius:50px;padding:12px 18px;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:1px;text-transform:uppercase;font-weight:500;text-decoration:none;box-shadow:0 6px 26px rgba(37,211,102,.4);cursor:none;animation:fa 2.5s ease-in-out infinite;}
@@ -465,16 +520,101 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
     </div>
 
     <!-- SUCCESS SCREEN -->
+    <!-- ══ ORDER FLOW: Screenshot Upload → Confirm ══ -->
     <div class="success-screen" id="successScreen">
-      <div class="success-icon">&#127872;</div>
-      <div class="success-title">Order Placed!</div>
-      <div class="success-id" id="successOrderId"></div>
-      <div class="success-sub">Thank you! Your order has been received.<br/>We&rsquo;ll confirm via WhatsApp shortly. &#127873;</div>
-      <div class="success-btns">
-        <a href="products.html" class="btn-p">Continue Shopping</a>
-        <a href="#" class="btn-rose" id="trackOrderLink">&#128230; Track My Order</a>
-        <a href="#" class="btn-g" id="confirmWA">&#128172; Confirm on WhatsApp</a>
+
+      <!-- STEP 1: Upload screenshot -->
+      <div class="scr-card" id="scrCard">
+        <div class="scr-card-title">📸 Upload Payment Screenshot</div>
+        <div class="scr-card-sub">Your order is saved! Upload a screenshot of your payment so we can verify and confirm it within 30 minutes.</div>
+
+        <div class="scr-drop" id="scrDrop"
+          onclick="document.getElementById('scrFile').click()"
+          ondragover="event.preventDefault();this.classList.add('drag')"
+          ondragleave="this.classList.remove('drag')"
+          ondrop="handleScrDrop(event)">
+          <div class="scr-drop-icon">📱</div>
+          <div class="scr-drop-text">Tap to upload your payment screenshot<br/><strong>Choose photo</strong> · JPG / PNG · Max 5MB</div>
+          <div class="scr-preview" id="scrPreview">
+            <img id="scrPreviewImg" src="" alt="Payment screenshot"/>
+            <button class="scr-remove" onclick="event.stopPropagation();removeScrFile()">✕</button>
+          </div>
+        </div>
+        <input type="file" id="scrFile" accept="image/*" style="display:none" onchange="handleScrFile(this)"/>
+        <div class="scr-status" id="scrStatus"></div>
+
+        <div class="scr-verified" id="scrVerified">
+          <span style="font-size:1.5rem;">✅</span>
+          <div style="font-size:.8rem;color:#1a7a40;font-weight:500;line-height:1.5;">Screenshot uploaded! We'll verify your payment and confirm your order via WhatsApp within 30 minutes. 🌸</div>
+        </div>
+
+        <button class="scr-submit-btn" id="scrSubmitBtn" onclick="submitScreenshot()">
+          ✅ Submit Screenshot & Confirm Order
+        </button>
+
+        <button class="scr-skip" onclick="skipScreenshot()">Skip — I'll confirm via WhatsApp instead</button>
       </div>
+
+      <!-- STEP 2: Animated confirmation (shown after screenshot) -->
+      <div class="conf-banner" id="confBanner">
+        <div class="conf-tick">✓</div>
+        <div class="conf-title">Order Confirmed! 🎁</div>
+        <div class="conf-sub">Payment screenshot received.<br/>We'll confirm via WhatsApp shortly.</div>
+        <div class="conf-tracking" id="confTrackingId" onclick="copyTracking(this)">Tracking: —</div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="conf-timeline" id="confTimeline" style="display:none">
+        <div class="tl-head">Order Status</div>
+        <div class="tl-row done">
+          <div class="tl-dot done">✓</div>
+          <div class="tl-body"><div class="tl-label">Order Placed</div><div class="tl-when" id="confTime">Just now</div></div>
+        </div>
+        <div class="tl-row done">
+          <div class="tl-dot done">✓</div>
+          <div class="tl-body"><div class="tl-label">Payment Screenshot Submitted</div><div class="tl-when">Verifying within 30 mins</div></div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot active">📦</div>
+          <div class="tl-body"><div class="tl-label active">Awaiting Admin Confirmation</div><div class="tl-when">We'll notify you on WhatsApp</div></div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot pending">🚚</div>
+          <div class="tl-body"><div class="tl-label pending">Out for Delivery</div><div class="tl-when" id="confDelivery">—</div></div>
+        </div>
+        <div class="tl-row">
+          <div class="tl-dot pending">🎉</div>
+          <div class="tl-body" style="padding-bottom:0"><div class="tl-label pending">Delivered — Enjoy! 🌸</div></div>
+        </div>
+      </div>
+
+      <!-- Items summary -->
+      <div class="conf-items" id="confItems" style="display:none">
+        <div class="tl-head">Your Items</div>
+        <div id="confItemsList"></div>
+        <div class="conf-total">
+          <span style="font-size:.78rem;opacity:.5;">Total Paid</span>
+          <span class="conf-total-val" id="confTotalVal">₹0</span>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="conf-actions" id="confActions" style="display:none">
+        <a href="products.html" class="btn-p">🛍️ Continue Shopping</a>
+        <a href="#" class="btn-rose" id="trackOrderLink">📍 Track Order</a>
+        <a href="#" class="btn-g"    id="confirmWA">💬 WhatsApp Us</a>
+      </div>
+
+      <!-- Pre-confirm: show order ID while waiting for screenshot -->
+      <div style="text-align:center;margin-top:14px;" id="preConfInfo">
+        <div style="font-size:.72rem;opacity:.4;margin-bottom:6px;">Your Order ID</div>
+        <div id="successOrderId" style="font-size:.82rem;color:var(--deep-rose);font-weight:700;letter-spacing:2px;margin-bottom:14px;cursor:pointer;" onclick="copyTracking(this)"></div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <a href="products.html" class="btn-p">Continue Shopping</a>
+          <a href="#" class="btn-rose" id="trackOrderLink2">📍 Track Order</a>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -592,15 +732,38 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
 
 <!-- UPI PAYMENT MODAL -->
 <div class="modal-overlay" id="payModal">
-  <div class="modal-box">
+  <div class="modal-box" style="max-width:400px;padding:24px 20px;">
     <button class="modal-close" onclick="closePayModal()">&#10005;</button>
     <div class="modal-title">Pay to <em>Aneesa</em></div>
-    <div class="upi-amount" id="payAmount"></div>
-    <div class="upi-sub">Pay via PhonePe / any UPI app below</div>
-    
-    <div class="upi-id-box">UPI ID<strong>8639066613@ybl</strong></div>
-    <a class="pay-phonepe" id="phonePeLink" href="#">&#128242; Open PhonePe &amp; Pay</a>
-    <button class="paid-btn" onclick="confirmPaid()">&#9989; I have paid &mdash; Confirm Order</button>
+    <div class="upi-amount" id="payAmount" style="font-size:1.8rem;font-weight:700;color:var(--deep-rose);margin-bottom:3px;"></div>
+    <div class="upi-sub" style="font-size:.74rem;opacity:.5;margin-bottom:14px;">Scan QR or tap any UPI app below</div>
+
+    <!-- QR Code -->
+    <div style="width:176px;height:176px;margin:0 auto 14px;border-radius:14px;border:2.5px solid var(--blush);overflow:hidden;background:white;display:flex;align-items:center;justify-content:center;">
+      <img id="payQRImg" src="" alt="UPI QR Code" style="width:164px;height:164px;display:block;" onerror="this.parentElement.innerHTML='<div style=\'padding:12px;font-size:.72rem;opacity:.4;\'>QR loading…</div>'"/>
+    </div>
+
+    <!-- UPI ID -->
+    <div class="upi-id-box" onclick="copyUpiId()" style="cursor:pointer;margin-bottom:12px;" title="Tap to copy">
+      <strong>UPI ID: </strong><span id="upiIdShow">8639066613@ybl</span>
+      <span style="font-size:.6rem;opacity:.35;margin-left:4px;">tap to copy</span>
+    </div>
+
+    <!-- UPI App buttons -->
+    <a id="phonePeLink" href="#" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:#5f259f;color:white;border:none;border-radius:11px;font-family:'Jost',sans-serif;font-size:.78rem;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;margin-bottom:8px;font-weight:600;">
+      📱 Open PhonePe &amp; Pay
+    </a>
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <a id="gpayLink" href="#" style="flex:1;padding:12px 8px;background:#1a73e8;color:white;border-radius:10px;font-family:'Jost',sans-serif;font-size:.72rem;text-align:center;text-decoration:none;font-weight:600;">📲 GPay</a>
+      <a id="paytmLink" href="#" style="flex:1;padding:12px 8px;background:#002970;color:white;border-radius:10px;font-family:'Jost',sans-serif;font-size:.72rem;text-align:center;text-decoration:none;font-weight:600;">Paytm</a>
+      <a id="bhimLink" href="#" style="flex:1;padding:12px 8px;background:#0f6e3e;color:white;border-radius:10px;font-family:'Jost',sans-serif;font-size:.72rem;text-align:center;text-decoration:none;font-weight:600;">BHIM</a>
+    </div>
+
+    <!-- Confirm button -->
+    <button class="paid-btn" onclick="confirmPaid()" style="width:100%;padding:15px;background:var(--green,#25a055);color:white;border:none;border-radius:12px;font-family:'Jost',sans-serif;font-size:.8rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;cursor:pointer;margin-bottom:8px;">
+      ✅ I've Paid — Confirm My Order
+    </button>
+    <div style="font-size:.64rem;opacity:.32;text-align:center;line-height:1.6;">After paying in your UPI app, tap the button above.<br/>You'll then upload your payment screenshot.</div>
   </div>
 </div>
 
@@ -608,7 +771,7 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp, getDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, getDoc, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, sendPasswordResetEmail, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const app = initializeApp({apiKey:"AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM",authDomain:"aneesa-hampers.firebaseapp.com",projectId:"aneesa-hampers",storageBucket:"aneesa-hampers.firebasestorage.app",messagingSenderId:"909653560410",appId:"1:909653560410:web:397db4fec2d9f042609c63"});
@@ -1343,12 +1506,15 @@ window.goToPayment = function() {
   if (errs.length) { toast("\u26a0\ufe0f Please fill: " + errs.join(", ")); return; }
 
   var total = Math.max(0, Cart.subtotal() - discount) + deliveryFee;
-  var note = "Aneesa Hampers Order";
-  var upiUrl = "upi://pay?pa=" + UPI_ID + "&pn=" + encodeURIComponent(UPI_NAME) + "&am=" + total + "&cu=INR&tn=" + encodeURIComponent(note);
-  var qrUrl = "https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=" + encodeURIComponent(upiUrl) + "&choe=UTF-8";
-  document.getElementById("payAmount").textContent = "\u20b9" + total.toLocaleString("en-IN");
-  // QR removed
-  document.getElementById("phonePeLink").href = "phonepe://pay?pa=" + UPI_ID + "&pn=" + encodeURIComponent(UPI_NAME) + "&am=" + total + "&cu=INR&tn=" + encodeURIComponent(note);
+  var note  = "Aneesa Hampers Order";
+  var upiStr = "upi://pay?pa=" + UPI_ID + "&pn=" + encodeURIComponent(UPI_NAME) + "&am=" + total + "&cu=INR&tn=" + encodeURIComponent(note);
+  // Fill modal
+  document.getElementById("payAmount").textContent = "₹" + total.toLocaleString("en-IN");
+  document.getElementById("payQRImg").src           = "https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=" + encodeURIComponent(upiStr) + "&choe=UTF-8";
+  document.getElementById("phonePeLink").href       = "phonepe://pay?pa=" + UPI_ID + "&pn=" + encodeURIComponent(UPI_NAME) + "&am=" + total + "&cu=INR&tn=" + encodeURIComponent(note);
+  document.getElementById("gpayLink").href          = "tez://upi/pay?pa=" + UPI_ID + "&pn=" + encodeURIComponent(UPI_NAME) + "&am=" + total + "&cu=INR&tn=" + encodeURIComponent(note);
+  document.getElementById("paytmLink").href         = "paytmmp://pay?pa=" + UPI_ID + "&pn=" + encodeURIComponent(UPI_NAME) + "&am=" + total + "&cu=INR&tn=" + encodeURIComponent(note);
+  document.getElementById("bhimLink").href          = "upi://pay?pa=" + UPI_ID + "&pn=" + encodeURIComponent(UPI_NAME) + "&am=" + total + "&cu=INR&tn=" + encodeURIComponent(note);
   document.getElementById("step2").classList.add("done");
   document.getElementById("step3").classList.add("active");
   document.getElementById("line2").classList.add("done");
@@ -1356,6 +1522,171 @@ window.goToPayment = function() {
 };
 
 window.closePayModal = function() { document.getElementById("payModal").classList.remove("open"); };
+window.copyUpiId = function() {
+  var txt = "8639066613@ybl";
+  if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(function(){ toast("✅ UPI ID copied!"); }).catch(function(){ _legacyCopy(txt); }); }
+  else { _legacyCopy(txt); }
+};
+function _legacyCopy(txt) {
+  var ta = document.createElement("textarea"); ta.value = txt;
+  document.body.appendChild(ta); ta.select(); document.execCommand("copy");
+  document.body.removeChild(ta); toast("✅ UPI ID copied!");
+}
+
+// ================================================================
+// SCREENSHOT UPLOAD FLOW
+// ================================================================
+var _scrFile = null;
+var _savedWaMsg = '';
+var _savedOrderId = '';
+var _savedTrackingId = '';
+var _savedItems = [];
+var _savedTotal = 0;
+var _savedDelivery = 'standard';
+
+window.handleScrFile = function(input) {
+  var f = input.files[0]; if (!f) return;
+  _processScrFile(f);
+};
+window.handleScrDrop = function(e) {
+  e.preventDefault();
+  document.getElementById('scrDrop').classList.remove('drag');
+  var f = e.dataTransfer.files[0];
+  if (!f || !f.type.startsWith('image/')) { toast('⚠️ Please upload an image file'); return; }
+  _processScrFile(f);
+};
+function _processScrFile(f) {
+  if (f.size > 5*1024*1024) { toast('⚠️ File too large. Max 5MB.'); return; }
+  _scrFile = f;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var pi = document.getElementById('scrPreviewImg');
+    var pv = document.getElementById('scrPreview');
+    var sb = document.getElementById('scrSubmitBtn');
+    var st = document.getElementById('scrStatus');
+    if (pi) pi.src = e.target.result;
+    if (pv) pv.style.display = 'block';
+    if (sb) sb.style.display = 'flex';
+    if (st) { st.style.color = 'var(--deep-rose)'; st.textContent = '📷 Screenshot selected — tap Submit to upload.'; }
+  };
+  reader.readAsDataURL(f);
+}
+window.removeScrFile = function() {
+  _scrFile = null;
+  document.getElementById('scrFile').value = '';
+  var pv = document.getElementById('scrPreview'); if (pv) pv.style.display = 'none';
+  var sb = document.getElementById('scrSubmitBtn'); if (sb) sb.style.display = 'none';
+  var st = document.getElementById('scrStatus'); if (st) st.textContent = '';
+};
+
+window.submitScreenshot = async function() {
+  if (!_scrFile) { toast('⚠️ Please select a screenshot first.'); return; }
+  var btn = document.getElementById('scrSubmitBtn');
+  var st  = document.getElementById('scrStatus');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Uploading…'; }
+  if (st) { st.style.color = ''; st.textContent = 'Uploading screenshot…'; }
+  try {
+    // Upload to imgbb
+    var b64 = await new Promise(function(res, rej) {
+      var r = new FileReader();
+      r.onload = function(e) { res(e.target.result.split(',')[1]); };
+      r.onerror = rej;
+      r.readAsDataURL(_scrFile);
+    });
+    var fd = new FormData(); fd.append('image', b64);
+    var resp = await fetch('https://api.imgbb.com/1/upload?key=9f8a4bb8beff4d9e610a52d2962f2a3e', { method:'POST', body:fd });
+    var data = await resp.json();
+    if (!data.success) throw new Error('Image upload failed');
+    var screenshotUrl = data.data.url;
+
+    // Update Firestore order
+    if (_savedOrderId) {
+      await updateDoc(doc(db, 'orders', _savedOrderId), {
+        paymentScreenshot: screenshotUrl,
+        screenshotUploadedAt: serverTimestamp(),
+        status: 'payment_submitted'
+      });
+    }
+
+    // Show verified badge
+    var vd = document.getElementById('scrVerified'); if (vd) vd.classList.add('show');
+    var dp = document.getElementById('scrDrop'); if (dp) { dp.style.opacity = '.5'; dp.style.pointerEvents = 'none'; }
+    var sc = document.getElementById('scrCard'); if (sc) sc.classList.add('done');
+    if (btn) btn.style.display = 'none';
+    if (st) { st.style.color = '#1a7a40'; st.textContent = '✅ Uploaded successfully!'; }
+
+    // WA message to admin with screenshot
+    var waMsg2 = '📸 *Payment Screenshot*\n━━━━━━━\n🔖 Tracking: ' + _savedTrackingId + '\n💰 ₹' + _savedTotal.toLocaleString('en-IN') + '\n🖼 Screenshot: ' + screenshotUrl + '\n\n✅ Please verify and confirm the order.';
+    var waEl = document.getElementById('confirmWA'); if (waEl) waEl.href = 'https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(waMsg2);
+
+    // Show full confirmation after short delay
+    setTimeout(function() { _showConfirmation(); }, 700);
+
+    // Auto-open WA to notify admin
+    setTimeout(function() {
+      var w = document.getElementById('confirmWA');
+      if (w && w.href && w.href !== '#') window.open(w.href, '_blank');
+    }, 1400);
+
+    toast('🌸 Screenshot uploaded! We\'ll confirm shortly.');
+  } catch(e) {
+    if (btn) { btn.disabled = false; btn.textContent = '✅ Submit Screenshot & Confirm Order'; }
+    if (st) { st.style.color = '#e05050'; st.textContent = '❌ Upload failed: ' + e.message + '. Try again or use WhatsApp.'; }
+  }
+};
+
+window.skipScreenshot = function() {
+  _showConfirmation();
+  setTimeout(function() {
+    var w = document.getElementById('confirmWA');
+    if (w && w.href && w.href !== '#') window.open(w.href, '_blank');
+  }, 600);
+};
+
+function _showConfirmation() {
+  // Hide pre-confirm info
+  var pi = document.getElementById('preConfInfo'); if (pi) pi.style.display = 'none';
+  // Show banner + timeline + items
+  var cb = document.getElementById('confBanner');     if (cb) cb.style.display = 'block';
+  var ct = document.getElementById('confTimeline');   if (ct) ct.style.display = 'block';
+  var ci = document.getElementById('confItems');      if (ci) ci.style.display = 'block';
+  var ca = document.getElementById('confActions');    if (ca) ca.style.display = 'flex';
+  // Fill tracking
+  var ctr = document.getElementById('confTrackingId'); if (ctr) ctr.textContent = 'Tracking: ' + _savedTrackingId;
+  var ctime = document.getElementById('confTime'); if (ctime) ctime.textContent = new Date().toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'});
+  // Delivery estimate
+  var ddays = _savedDelivery === 'express' ? 1 : _savedDelivery === 'pickup' ? 0 : 3;
+  var ddate = new Date(); ddate.setDate(ddate.getDate() + ddays);
+  var cd = document.getElementById('confDelivery');
+  if (cd) cd.textContent = ddays === 0 ? 'Self Pickup' : 'Expected: ' + ddate.toLocaleDateString('en-IN', {weekday:'short',day:'numeric',month:'short'});
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function _buildOrderItems(items, total, trackingId, delivery) {
+  _savedTrackingId = trackingId;
+  _savedItems      = items;
+  _savedTotal      = total;
+  _savedDelivery   = delivery || 'standard';
+  // Fill items list
+  var listEl = document.getElementById('confItemsList');
+  if (listEl) {
+    listEl.innerHTML = (items||[]).map(function(i) {
+      return '<div class="conf-item">' +
+        (i.image ? '<img class="conf-item-img" src="'+i.image+'" alt=""/>' : '<div class="conf-item-img" style="display:flex;align-items:center;justify-content:center;font-size:1.4rem;">🎁</div>') +
+        '<div style="flex:1"><div class="conf-item-name">'+(i.name||'')+'</div><div class="conf-item-qty">Qty: '+(i.qty||1)+'</div></div>' +
+        '<div class="conf-item-price">₹'+(i.price*(i.qty||1)).toLocaleString('en-IN')+'</div>' +
+        '</div>';
+    }).join('');
+  }
+  var tv = document.getElementById('confTotalVal'); if (tv) tv.textContent = '₹' + total.toLocaleString('en-IN');
+  var tl = document.getElementById('trackOrderLink');  if (tl) tl.href = 'track.html?id=' + trackingId;
+  var tl2 = document.getElementById('trackOrderLink2'); if (tl2) tl2.href = 'track.html?id=' + trackingId;
+}
+
+window.copyTracking = function(el) {
+  var txt = (el.textContent || '').trim();
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).then(function(){ toast('✅ Tracking ID copied!'); });
+};
 
 // ================================================================
 // CONFIRM PAID → SAVE ORDER TO FIREBASE (full data for admin)
@@ -1374,6 +1705,7 @@ window.confirmPaid = async function() {
       bnData.createdAt  = serverTimestamp();
       var ref = await addDoc(collection(db, 'orders'), bnData);
       currentOrderId = ref.id;
+      _savedOrderId  = ref.id;
       window._bnOrderData = null;
       localStorage.removeItem('ah_buynow');
       closePayModal();
@@ -1386,7 +1718,7 @@ window.confirmPaid = async function() {
       window.scrollTo({top:0,behavior:'smooth'});
       var soId=document.getElementById('successOrderId'); if(soId) soId.textContent='Tracking ID: '+trackingId;
       var trl2=document.getElementById('trackOrderLink2'); if(trl2) trl2.href='track.html?id='+trackingId;
-      _buildConfirmItems(bnItems, bnTotal, trackingId, 'standard');
+      _buildOrderItems(bnItems, bnTotal, trackingId, 'standard');
       var lines=bnItems.map(function(i){return '• '+i.name+' ×'+(i.qty||1)+' = ₹'+(i.price*(i.qty||1)).toLocaleString('en-IN');}).join('\n');
       var waMsg='🎁 *New Order — Aneesa Hampers*\n━━━━━━━\n👤 '+bnData.customerName+'\n📞 '+bnData.customerPhone+'\n📍 '+bnData.address+', '+bnData.city+(bnData.state?', '+bnData.state:'')+(bnData.zipCode?' - '+bnData.zipCode:'')+'\n🌍 '+bnData.country+'\n'+(bnData.giftMessage?'💌 '+bnData.giftMessage+'\n':'')+'━━━━━━━\n🛒 *Items:*\n'+lines+'\n━━━━━━━\n💰 *Total: ₹'+bnTotal.toLocaleString('en-IN')+'*\n🔖 Tracking: '+trackingId+'\n⚠️ Awaiting payment screenshot.';
       var waEl=document.getElementById('confirmWA'); if(waEl) waEl.href='https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(waMsg);
@@ -1447,36 +1779,38 @@ window.confirmPaid = async function() {
 
     var ref = await addDoc(collection(db, "orders"), orderData);
     currentOrderId = ref.id;
+    _savedOrderId  = ref.id;
     closePayModal();
 
-    // Show success
+    // Show success screen (screenshot upload step)
     document.getElementById("detailsStep").style.display = "none";
     document.getElementById("successScreen").classList.add("show");
     document.getElementById("summaryBox").style.display = "none";
-    document.getElementById("successOrderId").textContent = "Tracking ID: " + trackingId;
-    document.getElementById("trackOrderLink").href = "track.html?id=" + trackingId;
+    window.scrollTo({ top:0, behavior:"smooth" });
 
-    // WhatsApp notification to admin
+    // Fill order ID display
+    var soId = document.getElementById("successOrderId");
+    if (soId) soId.textContent = "Tracking ID: " + trackingId;
+
+    // Build order items for confirmation screen
+    _buildOrderItems(items, total, trackingId, orderData.deliveryType);
+
+    // WhatsApp message (for admin + for after screenshot)
     var lines = items.map(function(i){ return "\u2022 " + i.name + " \u00d7" + (i.qty||1) + " = \u20b9" + (i.price*(i.qty||1)).toLocaleString("en-IN"); }).join("\n");
     var waMsg =
-      "\uD83C\uDF81 *New Order \u2014 Aneesa Hampers*\n" +
-      "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n" +
-      "\uD83D\uDC64 *Name:* " + orderData.customerName + "\n" +
-      "\uD83D\uDCDE *Phone:* " + orderData.customerPhone + "\n" +
-      (orderData.customerEmail ? "\uD83D\uDCE7 *Email:* " + orderData.customerEmail + "\n" : "") +
-      "\uD83D\uDCCD *Address:* " + orderData.address + ", " + orderData.city + (orderData.state ? ", " + orderData.state : "") + " - " + orderData.zipCode + "\n" +
-      "\uD83C\uDF0D *Country:* " + orderData.country + "\n" +
-      "\uD83D\uDE9A *Delivery:* " + orderData.deliveryType + "\n" +
-      (orderData.giftMessage ? "\uD83D\uDC8C *Message:* " + orderData.giftMessage + "\n" : "") +
-      "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n" +
-      "\uD83D\uDED2 *Items:*\n" + lines + "\n" +
-      "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n" +
+      "\uD83C\uDF81 *New Order \u2014 Aneesa Hampers*\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n" +
+      "\uD83D\uDC64 " + orderData.customerName + "\n" +
+      "\uD83D\uDCDE " + orderData.customerPhone + "\n" +
+      (orderData.customerEmail ? "\uD83D\uDCE7 " + orderData.customerEmail + "\n" : "") +
+      "\uD83D\uDCCD " + orderData.address + ", " + orderData.city + (orderData.state?", "+orderData.state:"") + " \u2013 " + orderData.zipCode + "\n" +
+      "\uD83C\uDF0D " + orderData.country + " | \uD83D\uDE9A " + orderData.deliveryType + "\n" +
+      (orderData.giftMessage ? "\uD83D\uDC8C " + orderData.giftMessage + "\n" : "") +
+      "\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\uD83D\uDED2 *Items:*\n" + lines + "\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n" +
       "\uD83D\uDCB0 *Total: \u20b9" + total.toLocaleString("en-IN") + "*\n" +
-      "\u2705 *Payment: UPI Paid*\n" +
-      "\uD83D\uDD16 *Tracking ID:* " + trackingId + "\n" +
-      "\uD83C\uDD94 *Order ID:* #" + currentOrderId.slice(-6).toUpperCase();
-
-    document.getElementById("confirmWA").href = "https://wa.me/" + WA_NUM + "?text=" + encodeURIComponent(waMsg);
+      "\uD83D\uDD16 Tracking: " + trackingId + "\n\u26A0\ufe0f Awaiting payment screenshot.";
+    var waEl = document.getElementById("confirmWA");
+    if (waEl) waEl.href = "https://wa.me/" + WA_NUM + "?text=" + encodeURIComponent(waMsg);
+    _savedWaMsg = waMsg;
 
     // Save delivery address for next order
     var addrToSave = {
@@ -1674,14 +2008,16 @@ window.bnProceedToPay = function() {
     giftMessage:   giftMsg ? giftMsg.value.trim() : '',
     isBuyNow:      true
   };
-  // Open payment modal
-  var note = 'Aneesa Hampers Order';
+  // Open payment modal with all links set
+  var note   = 'Aneesa Hampers Order';
   var upiStr = 'upi://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + total + '&cu=INR&tn=' + encodeURIComponent(note);
-  document.getElementById('payAmount').textContent = '₹' + total.toLocaleString('en-IN');
-  document.getElementById('payQRImg').src = 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=' + encodeURIComponent(upiStr) + '&choe=UTF-8';
-  document.getElementById('phonePeLink').href = 'phonepe://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + total + '&cu=INR&tn=' + encodeURIComponent(note);
-  document.getElementById('gpayLink').href    = 'tez://upi/pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + total + '&cu=INR&tn=' + encodeURIComponent(note);
-  document.getElementById('paytmLink').href   = 'paytmmp://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + total + '&cu=INR&tn=' + encodeURIComponent(note);
+  var setEl  = function(id, prop, val) { var el = document.getElementById(id); if (el) el[prop] = val; };
+  setEl('payAmount',   'textContent', '₹' + total.toLocaleString('en-IN'));
+  setEl('payQRImg',    'src',  'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=' + encodeURIComponent(upiStr) + '&choe=UTF-8');
+  setEl('phonePeLink', 'href', 'phonepe://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + total + '&cu=INR&tn=' + encodeURIComponent(note));
+  setEl('gpayLink',    'href', 'tez://upi/pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + total + '&cu=INR&tn=' + encodeURIComponent(note));
+  setEl('paytmLink',   'href', 'paytmmp://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + total + '&cu=INR&tn=' + encodeURIComponent(note));
+  setEl('bhimLink',    'href', 'upi://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + total + '&cu=INR&tn=' + encodeURIComponent(note));
   document.getElementById('payModal').classList.add('open');
 };
 

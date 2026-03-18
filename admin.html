@@ -733,6 +733,20 @@ textarea.fi{resize:vertical;min-height:80px;}
 
     <div id="orderDetailBody" style="font-size:.84rem;line-height:1.85;margin-bottom:16px;background:var(--blush);border-radius:12px;padding:16px;"></div>
 
+    <!-- Payment Screenshot Viewer -->
+    <div id="screenshotSection" style="display:none;margin-bottom:14px;">
+      <div style="font-size:.6rem;letter-spacing:2px;text-transform:uppercase;opacity:.44;margin-bottom:8px;">&#128247; Payment Screenshot</div>
+      <div style="background:#fff;border-radius:12px;border:1.5px solid rgba(192,100,122,.18);overflow:hidden;">
+        <a id="screenshotLink" href="#" target="_blank">
+          <img id="screenshotImg" src="" alt="Payment screenshot" style="width:100%;max-height:220px;object-fit:contain;display:block;background:#fdf0f3;cursor:zoom-in;"/>
+        </a>
+        <div style="padding:8px 12px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(192,100,122,.1);">
+          <span style="font-size:.7rem;opacity:.5;">Tap to view full size</span>
+          <button onclick="verifyAndConfirm()" style="background:linear-gradient(135deg,#2d7a4f,#1a5e3a);color:white;border:none;border-radius:8px;padding:7px 16px;font-family:'Jost',sans-serif;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-weight:600;transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">&#9989; Verify &amp; Confirm</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Status buttons — visual selector -->
     <div style="margin-bottom:14px">
       <div style="font-size:.6rem;letter-spacing:2px;text-transform:uppercase;opacity:.44;margin-bottom:10px">Update Status</div>
@@ -748,7 +762,8 @@ textarea.fi{resize:vertical;min-height:80px;}
 
     <input type="hidden" id="newStatus"/>
     <input type="hidden" id="editOrderId"/>
-    <button class="btn btn-primary" style="width:100%;padding:12px" onclick="saveOrderStatus()">💾 Save Status Update</button>
+    <button class="btn btn-primary" style="width:100%;padding:12px" onclick="saveOrderStatus()">&#128190; Save Status Update</button>
+    <button id="verifyPayBtn" onclick="verifyAndConfirm()" style="display:none;width:100%;padding:12px;margin-top:8px;background:linear-gradient(135deg,#2d7a4f,#1a5e3a);color:white;border:none;border-radius:10px;font-family:'Jost',sans-serif;font-size:.76rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-weight:700;transition:opacity .2s;">&#9989; Verify Payment &amp; Confirm Order</button>
   </div>
 </div>
 
@@ -1077,7 +1092,7 @@ window.openOrder = function(id) {
   });
 
   const items = (o.items||[]).map(i=>`• ${i.name} ×${i.qty} = ₹${(i.price*i.qty).toLocaleString('en-IN')}`).join('<br>') || (o.productName||'—');
-  const addr  = [o.address, o.city, o.state, o.pincode].filter(Boolean).join(', ');
+  const addr  = [o.address, o.city, o.state, o.pincode||o.zipCode].filter(Boolean).join(', ');
   document.getElementById('orderDetailBody').innerHTML = `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 16px">
       <div><b>Order ID</b><br>#${o.id.slice(-6).toUpperCase()}</div>
@@ -1089,7 +1104,25 @@ window.openOrder = function(id) {
       <div><b>Total</b><br>₹${Number(o.total||0).toLocaleString('en-IN')}</div>
       <div><b>Delivery</b><br>${o.deliveryType||o.delivery||'—'}</div>
       ${o.giftMessage?`<div style="grid-column:1/-1"><b>Gift Message</b><br>${o.giftMessage}</div>`:''}
+      <div style="grid-column:1/-1"><b>Payment</b><br>${o.paymentMethod||'UPI'} — ${o.upiId||''}</div>
     </div>`;
+
+  // Show / hide screenshot viewer
+  const ssSection = document.getElementById('screenshotSection');
+  const ssImg     = document.getElementById('screenshotImg');
+  const ssLink    = document.getElementById('screenshotLink');
+  const verifyBtn = document.getElementById('verifyPayBtn');
+  if (o.screenshotUrl && o.screenshotUrl.length > 10) {
+    ssImg.src           = o.screenshotUrl;
+    ssLink.href         = o.screenshotUrl;
+    ssSection.style.display = 'block';
+    // Only show the big Verify button if not already confirmed
+    verifyBtn.style.display = (o.status !== 'confirmed' && o.status !== 'delivered') ? 'block' : 'none';
+  } else {
+    ssSection.style.display = 'none';
+    verifyBtn.style.display = 'none';
+  }
+
   document.getElementById('orderModal').classList.add('open');
 };
 
@@ -1131,6 +1164,32 @@ window.saveOrderStatus = async function() {
       }
     } else {
       toast(`✅ Order #${id.slice(-6).toUpperCase()} → "${st}"`);
+    }
+    closeModal('orderModal');
+  } catch(e) { toast('❌ Error: '+e.message, 'err'); }
+};
+
+// ── VERIFY PAYMENT & CONFIRM ORDER ──
+window.verifyAndConfirm = async function() {
+  const id = document.getElementById('editOrderId').value;
+  if (!id) return;
+  if (!confirm('Mark this order as CONFIRMED?\nThis will notify the customer via WhatsApp.')) return;
+  try {
+    await updateDoc(doc(db,'orders',id), {
+      status: 'confirmed',
+      paymentVerified: true,
+      verifiedAt: serverTimestamp()
+    });
+    const o = _orders.find(x => x.id===id);
+    const trackId = (o && o.trackingId) ? o.trackingId : ('#'+id.slice(-6).toUpperCase());
+    const name    = o ? (o.customerName||o.name||'Customer') : 'Customer';
+    const phone   = o ? (o.phone||o.customerPhone||'') : '';
+    toast('✅ Payment verified! Order confirmed.');
+    // WhatsApp notification
+    if (phone) {
+      const msg = `✅ Hi ${name}! Great news! Your Aneesa Hampers payment has been verified and your order is now *CONFIRMED* 🎀\n\nTracking ID: *${trackId}*\n\nWe’ll update you once it’s shipped! 🚚`;
+      const cleanPhone = '91' + phone.replace(/\D/g,'').slice(-10);
+      window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
     }
     closeModal('orderModal');
   } catch(e) { toast('❌ Error: '+e.message, 'err'); }
