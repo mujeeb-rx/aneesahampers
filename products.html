@@ -86,20 +86,19 @@
       position:relative;
       height:260px;
       overflow:hidden;
-      background:linear-gradient(135deg,var(--blush),#f0d4dc);
+      background:#f5e8ec;
     }
     .prod-img-wrap img{
       width:100%;height:100%;
       object-fit:contain;
-      padding:10px;
-      background:white;
+      padding:8px;
       transition:transform .5s cubic-bezier(.4,0,.2,1);
     }
     .prod-card:hover .prod-img-wrap img{transform:scale(1.05);}
 
     /* MULTI IMAGE */
-    .multi-img-wrap{position:relative;width:100%;height:100%;background:white;}
-    .multi-img-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:10px;opacity:0;transition:opacity .5s,transform .5s cubic-bezier(.4,0,.2,1);}
+    .multi-img-wrap{position:relative;width:100%;height:100%;background:#f5e8ec;}
+    .multi-img-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:8px;opacity:0;transition:opacity .5s,transform .5s cubic-bezier(.4,0,.2,1);}
     .multi-img-wrap img.shown{opacity:1;}
     .prod-card:hover .multi-img-wrap img.shown{transform:scale(1.05);}
     .img-dots{position:absolute;bottom:46px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:3;}
@@ -371,18 +370,52 @@ document.addEventListener('mousemove',e=>{ cur.style.left=e.clientX+'px';cur.sty
 // Filter state
 let allProducts = [];
 let currentCat = 'all';
+let currentSearch = '';
 const urlCat = new URLSearchParams(location.search).get('cat');
+const urlSearch = new URLSearchParams(location.search).get('search');
 if(urlCat){ currentCat=urlCat; document.querySelectorAll('.filter-pill').forEach(p=>{ p.classList.toggle('active',p.dataset.cat===urlCat); }); }
+if(urlSearch){
+  currentSearch = urlSearch.trim().toLowerCase();
+  // Fill any search inputs on page
+  document.querySelectorAll('#searchInput,#mobileSearchInput,.msb-input').forEach(function(el){ el.value=urlSearch; });
+  // Show search banner
+  setTimeout(function(){
+    var countEl=document.getElementById('productsCount');
+    if(countEl && currentSearch) countEl.setAttribute('data-search', currentSearch);
+  },100);
+}
 
 // RENDER
 function renderProducts(){
   const sort = document.getElementById('sortSelect').value;
   let list = currentCat==='all' ? [...allProducts] : allProducts.filter(p=>p.category===currentCat);
+
+  // Search filter — smart match name, description, category
+  if(currentSearch){
+    const q = currentSearch.toLowerCase();
+    list = list.filter(p=>{
+      const name=(p.name||'').toLowerCase();
+      const desc=(p.description||'').toLowerCase();
+      const cat=(p.category||'').toLowerCase();
+      const items=Array.isArray(p.items)?p.items.join(' ').toLowerCase():'';
+      return name.includes(q)||desc.includes(q)||cat.includes(q)||items.includes(q);
+    });
+  }
+
   if(sort==='low') list.sort((a,b)=>a.price-b.price);
   else if(sort==='high') list.sort((a,b)=>b.price-a.price);
 
   const countEl = document.getElementById('productsCount');
-  if(countEl) countEl.textContent = list.length ? `${list.length} item${list.length!==1?'s':''} found` : '';
+  if(countEl){
+    if(currentSearch && list.length){
+      countEl.innerHTML = `<span style="color:var(--deep-rose);font-weight:600;">${list.length} result${list.length!==1?'s':''}</span> for "<strong>${currentSearch}</strong>"`;
+    } else if(currentSearch && !list.length){
+      countEl.innerHTML = `No results for "<strong>${currentSearch}</strong>" — showing all products`;
+      list = currentCat==='all'?[...allProducts]:allProducts.filter(p=>p.category===currentCat);
+    } else {
+      countEl.textContent = list.length ? `${list.length} item${list.length!==1?'s':''} found` : '';
+    }
+  }
 
   const grid = document.getElementById('prodGrid');
   if(!list.length){

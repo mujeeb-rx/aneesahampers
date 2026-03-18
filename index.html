@@ -145,8 +145,8 @@ a{text-decoration:none;}
 .view-all-lnk:hover{opacity:1;}
 .prod-card{background:white;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s;}
 .prod-card:hover{transform:translateY(-5px);box-shadow:0 16px 44px rgba(192,100,122,.18);}
-.prod-thumb{height:196px;position:relative;overflow:hidden;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:3.5rem;}
-.prod-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;padding:8px;background:white;}
+.prod-thumb{height:196px;position:relative;overflow:hidden;background:#f5e8ec;display:flex;align-items:center;justify-content:center;font-size:3.5rem;}
+.prod-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;padding:8px;background:#f5e8ec;}
 .tag-badge{position:absolute;top:10px;left:10px;background:var(--burgundy);color:white;font-size:.57rem;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;font-weight:600;z-index:1;}
 .disc-badge{position:absolute;top:10px;right:10px;background:var(--deep-rose);color:white;font-size:.57rem;letter-spacing:1px;text-transform:uppercase;padding:4px 9px;border-radius:20px;font-weight:600;z-index:1;}
 .prod-info{padding:14px 16px 16px;}
@@ -1538,7 +1538,7 @@ onSnapshot(query(collection(db,'categories'),orderBy('order','asc')), snap => {
     const bg=c.color||'#f9e4e9';
     // Support cover photo
     const imgContent=c.coverImage
-      ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;object-position:${c.coverPosition||'50% 50%'};display:block;"/>`
+      ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;display:block;"/>`
       : (c.emoji||'🎁');
     return `<a href="products.html?cat=${c.slug||c.id}" class="cat-card ${span} reveal">
       <div class="cat-img" style="background:linear-gradient(135deg,${bg},${bg}dd)">${imgContent}</div>
@@ -1553,7 +1553,7 @@ onSnapshot(query(collection(db,'categories'),orderBy('order','asc')), snap => {
     scroll.innerHTML=cats.map(c=>{
       const bg=c.color||'#f9e4e9';
       const inner=c.coverImage
-        ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;object-position:${c.coverPosition||'50% 50%'};border-radius:50%;display:block;"/>`
+        ? `<img src="${c.coverImage}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"/>`
         : `<span>${c.emoji||'🎁'}</span>`;
       return `<a href="products.html?cat=${c.slug||c.id}" class="cat-circle-item">
         <div class="cat-circle-img" style="background:linear-gradient(135deg,${bg},${bg}cc)">${inner}</div>
@@ -1615,131 +1615,200 @@ window.addEventListener('load',()=>setTimeout(()=>document.getElementById('loade
 setTimeout(()=>document.getElementById('loader').classList.add('done'),4000);
 
 // ═══════════════════════════════════════════════
-// PROMO POPUP
+// PROMO POPUP — reads discount from Firestore siteSettings/config → welcomePopup
 // ═══════════════════════════════════════════════
 (function(){
   var STORAGE_KEY = 'ah_popup_seen_v2';
-  var shown = false;
 
-  window.ahPopupOpen = function(){
+  // Live settings — defaults, overridden from Firestore
+  var _disc      = 15;
+  var _prefix    = 'AH15';
+  var _validDays = 30;
+  var _minOrder  = 0;
+  var _active    = true;
+  var _settingsLoaded = false;
+
+  // Load popup settings from Firestore
+  function _loadSettings() {
+    try {
+      var dbRef = window._ahFirebase && window._ahFirebase.db;
+      if (!dbRef) { setTimeout(_loadSettings, 600); return; }
+      import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(function(m) {
+        m.getDoc(m.doc(dbRef, 'siteSettings', 'config')).then(function(snap) {
+          _settingsLoaded = true;
+          if (!snap.exists()) return;
+          var wp = snap.data().welcomePopup;
+          if (!wp) return;
+          _active    = wp.active !== false;
+          _disc      = Number(wp.discount) || 15;
+          _prefix    = (wp.codePrefix || ('AH' + _disc)).toUpperCase().trim();
+          _validDays = Number(wp.validDays) || 30;
+          _minOrder  = Number(wp.minOrder)  || 0;
+
+          // Update popup UI with correct values
+          _applyToUI();
+
+          // If popup should be hidden per admin, don't auto-show
+          if (!_active) {
+            clearTimeout(_autoShowTimer);
+            var fb = document.getElementById('ah-popup-float');
+            if(fb) fb.style.display = 'none';
+          }
+        }).catch(function(){_settingsLoaded=true;});
+      }).catch(function(){_settingsLoaded=true;});
+    } catch(e){_settingsLoaded=true;}
+  }
+
+  function _applyToUI() {
+    // Update headline % in both popup instances
+    document.querySelectorAll('.popup-headline span, .popup-headline-disc').forEach(function(el) {
+      el.textContent = _disc + '% OFF';
+    });
+    // Update headline text
+    document.querySelectorAll('.popup-headline').forEach(function(el) {
+      el.innerHTML = '<span>' + _disc + '% OFF</span> Awaits';
+    });
+    // Update success sub text
+    document.querySelectorAll('.popup-success-sub').forEach(function(el) {
+      el.innerHTML = 'Use this code at checkout to get <strong>' + _disc + '% OFF</strong> your first order.<br/>Valid for ' + _validDays + ' days. Share the love! 🌸';
+    });
+    // Update float bubble % badge via style injection
+    var st = document.getElementById('_ppf_st') || document.createElement('style');
+    st.id = '_ppf_st';
+    st.textContent = '#ah-popup-float::after{content:"' + _disc + '%"!important;}';
+    if(!st.parentNode) document.head.appendChild(st);
+  }
+
+  // Open / Close
+  window.ahPopupOpen = function() {
     var overlay = document.getElementById('ah-popup-overlay');
-    if(!overlay) return;
+    if (!overlay) return;
     overlay.style.display = 'flex';
     overlay.style.pointerEvents = 'all';
     setTimeout(function(){ overlay.classList.add('show'); }, 10);
-    shown = true;
-    document.getElementById('ah-popup-float').classList.remove('show');
+    var fb = document.getElementById('ah-popup-float');
+    if(fb) fb.classList.remove('show');
     document.body.style.overflow = 'hidden';
   };
 
-  window.ahPopupClose = function(){
+  window.ahPopupClose = function() {
     var overlay = document.getElementById('ah-popup-overlay');
-    if(!overlay) return;
+    if (!overlay) return;
     overlay.classList.remove('show');
     overlay.style.pointerEvents = 'none';
     setTimeout(function(){ overlay.style.display = 'none'; }, 400);
     document.body.style.overflow = '';
-    // Show floating bubble if not submitted
     var submitted = localStorage.getItem('ah_popup_submitted');
-    if(!submitted){
+    if (!submitted) {
       setTimeout(function(){
-        document.getElementById('ah-popup-float').classList.add('show');
+        var fb = document.getElementById('ah-popup-float');
+        if(fb && _active) fb.classList.add('show');
       }, 1200);
     }
   };
 
-  document.getElementById('ah-popup-close').onclick = ahPopupClose;
-  document.getElementById('ah-popup-overlay').addEventListener('click', function(e){
-    if(e.target === this) ahPopupClose();
-  });
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape') ahPopupClose();
-  });
+  // Wire close button (handle duplicate popup in HTML)
+  var closeBtns = document.querySelectorAll('#ah-popup-close');
+  closeBtns.forEach(function(btn){ btn.onclick = ahPopupClose; });
+  var overlays = document.querySelectorAll('#ah-popup-overlay');
+  overlays.forEach(function(ov){ ov.addEventListener('click', function(e){ if(e.target===this) ahPopupClose(); }); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') ahPopupClose(); });
 
-  // Generate unique discount code
-  function genCode(){
+  // Generate unique code using admin-set prefix
+  function genCode() {
     var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    var code = 'AH15-';
-    for(var i=0;i<5;i++) code += chars[Math.floor(Math.random()*chars.length)];
+    var code = _prefix + '-';
+    for(var i=0; i<5; i++) code += chars[Math.floor(Math.random()*chars.length)];
     return code;
   }
 
-  window.ahPopupSubmit = function(){
-    var name = document.getElementById('pp-name').value.trim();
-    var email = document.getElementById('pp-email').value.trim();
-    var phone = document.getElementById('pp-phone').value.trim();
-    var dob = (document.getElementById('pp-dob-d').value||'').trim() + '/' +
-              (document.getElementById('pp-dob-m').value||'').trim() + '/' +
-              (document.getElementById('pp-dob-y').value||'').trim();
-    var gender = document.getElementById('pp-gender').value;
-    var country = document.getElementById('pp-country').value;
+  // Submit form
+  window.ahPopupSubmit = function() {
+    var name    = (document.getElementById('pp-name').value || '').trim();
+    var email   = (document.getElementById('pp-email').value || '').trim();
+    var phone   = (document.getElementById('pp-phone').value || '').trim();
+    var country = (document.getElementById('pp-country').value || '+91');
+    var dob     = [(document.getElementById('pp-dob-d').value||'').trim(),
+                   (document.getElementById('pp-dob-m').value||'').trim(),
+                   (document.getElementById('pp-dob-y').value||'').trim()].join('/');
+    var gender  = (document.getElementById('pp-gender').value || '');
 
-    if(!name){ alert('Please enter your name'); return; }
-    if(!email || !email.includes('@')){ alert('Please enter a valid email'); return; }
-    if(!phone){ alert('Please enter your phone number'); return; }
+    if (!name)  { alert('Please enter your name'); return; }
+    if (!email || !email.includes('@')) { alert('Please enter a valid email'); return; }
+    if (!phone) { alert('Please enter your phone number'); return; }
 
     var btn = document.getElementById('pp-submit-btn');
     btn.disabled = true;
     btn.textContent = 'Unlocking...';
 
-    // Save to localStorage
     var code = genCode();
-    var lead = { name:name, email:email, phone:country+phone, dob:dob, gender:gender, code:code, ts: new Date().toISOString() };
+    var lead = {
+      name:name, email:email, phone:country+phone, dob:dob,
+      gender:gender, code:code, discount:_disc, prefix:_prefix,
+      ts:new Date().toISOString()
+    };
     localStorage.setItem('ah_lead', JSON.stringify(lead));
     localStorage.setItem('ah_popup_submitted', '1');
     localStorage.setItem(STORAGE_KEY, '1');
 
-    // Save to Firestore leads collection
+    // Save lead to Firestore
     try {
-      var { db } = window._ahFirebase || {};
-      if(db){
-        import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(function(m){
-          m.addDoc(m.collection(db,'leads'), {...lead, createdAt: m.serverTimestamp()}).catch(function(){});
+      var dbRef = window._ahFirebase && window._ahFirebase.db;
+      if (dbRef) {
+        import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js").then(function(m) {
+          m.addDoc(m.collection(dbRef, 'leads'), Object.assign({}, lead, {createdAt: m.serverTimestamp()})).catch(function(){});
         });
       }
-    } catch(e){}
+    } catch(e) {}
 
     setTimeout(function(){
       document.getElementById('ah-popup-form-wrap').style.display = 'none';
-      document.getElementById('pp-discount-code').textContent = code;
+      // Show correct discount %
+      document.querySelectorAll('.popup-success-sub').forEach(function(el){
+        el.innerHTML = 'Use this code at checkout to get <strong>' + _disc + '% OFF</strong> your first order.<br/>Valid for ' + _validDays + ' days. 🌸';
+      });
+      // Show the code
+      document.querySelectorAll('#pp-discount-code').forEach(function(el){ el.textContent = code; });
       document.getElementById('ah-popup-success').style.display = 'block';
       btn.disabled = false;
     }, 900);
   };
 
-  window.ahCopyCode = function(el){
+  // Copy code
+  window.ahCopyCode = function(el) {
     var code = el.textContent.trim();
-    if(navigator.clipboard){
-      navigator.clipboard.writeText(code).then(function(){
-        var orig = el.textContent;
-        el.textContent = 'Copied!';
-        setTimeout(function(){ el.textContent = orig; }, 1500);
-      });
-    } else {
+    var doCopy = function(){
       var ta = document.createElement('textarea');
       ta.value = code; document.body.appendChild(ta);
       ta.select(); document.execCommand('copy');
       document.body.removeChild(ta);
-      var orig = el.textContent;
-      el.textContent = 'Copied!';
-      setTimeout(function(){ el.textContent = orig; }, 1500);
-    }
+    };
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(code).catch(doCopy);
+    } else { doCopy(); }
+    var orig = el.textContent;
+    el.textContent = 'Copied! ✓';
+    setTimeout(function(){ el.textContent = orig; }, 1600);
   };
 
-  // Auto-show after 3 seconds — only once per session
-  var seen = localStorage.getItem(STORAGE_KEY);
+  // Auto-show after 3s, once per session
+  var _autoShowTimer = null;
+  var seen      = localStorage.getItem(STORAGE_KEY);
   var submitted = localStorage.getItem('ah_popup_submitted');
-  if(!seen && !submitted){
-    setTimeout(function(){
-      ahPopupOpen();
+  if (!seen && !submitted) {
+    _autoShowTimer = setTimeout(function() {
+      if (_active) { ahPopupOpen(); }
       localStorage.setItem(STORAGE_KEY, '1');
     }, 3000);
-  } else if(!submitted){
-    // Show float bubble if seen but not submitted
+  } else if (!submitted) {
     setTimeout(function(){
-      document.getElementById('ah-popup-float').classList.add('show');
+      var fb = document.getElementById('ah-popup-float');
+      if(fb && _active) fb.classList.add('show');
     }, 5000);
   }
+
+  // Load settings (may update UI after a moment)
+  _loadSettings();
 })();
 
 // ═══════════════════════════════════════════════

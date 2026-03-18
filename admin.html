@@ -243,25 +243,62 @@ textarea.fi{resize:vertical;min-height:80px;}
 <!-- ═══ LOGIN GATE ═══ -->
 <div id="adminGate">
   <div class="gate-box">
-    <div style="font-size:2.2rem;margin-bottom:12px;">🔐</div>
+    <div style="font-size:2rem;margin-bottom:8px;">🔐</div>
     <div class="gate-logo"><span>Aneesa</span> Hampers</div>
     <div class="gate-sub">Admin Panel — Restricted Access</div>
-    <div class="gate-title">Sign In</div>
-    <div class="gate-desc">Authorised personnel only</div>
-    <div class="g-field">
-      <label class="g-label">Email Address</label>
-      <input class="g-input" id="gEmail" type="email" placeholder="admin@aneesahampers.com" autocomplete="email" onkeydown="if(event.key==='Enter')doLogin()"/>
+
+    <!-- Tabs -->
+    <div style="display:flex;background:rgba(59,13,26,.08);border-radius:30px;padding:4px;margin:16px 0 18px;gap:4px;">
+      <button id="tabSignin" onclick="gateTab('signin')" style="flex:1;padding:8px;border:none;border-radius:26px;background:var(--burgundy);color:white;font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;cursor:pointer;transition:all .2s;">Sign In</button>
+      <button id="tabSignup" onclick="gateTab('signup')" style="flex:1;padding:8px;border:none;border-radius:26px;background:transparent;color:rgba(59,13,26,.45);font-family:'Jost',sans-serif;font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:400;cursor:pointer;transition:all .2s;">Create Account</button>
     </div>
-    <div class="g-field">
-      <label class="g-label">Password</label>
-      <div class="g-pw">
-        <input class="g-input" id="gPass" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
-        <button class="g-eye" type="button" onclick="togglePw()">👁</button>
+
+    <!-- SIGN IN PANE -->
+    <div id="paneSignin">
+      <div style="background:rgba(59,13,26,.05);border-radius:10px;padding:11px 14px;margin-bottom:14px;border:1px solid rgba(192,100,122,.15);text-align:left;">
+        <div style="font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:rgba(59,13,26,.4);margin-bottom:5px;font-weight:600;">Quick Access Credentials</div>
+        <div style="font-size:.75rem;color:var(--burgundy);line-height:1.9;">
+          📧 aneesahamper@gmail.com<br/>
+          🔑 <strong style="color:var(--deep-rose);">Aneesa@Admin2024</strong>
+        </div>
+        <div style="font-size:.62rem;color:rgba(59,13,26,.35);margin-top:4px;">Enter the password above — email is pre-filled.</div>
+      </div>
+      <div class="g-field">
+        <label class="g-label">Email Address</label>
+        <input class="g-input" id="gEmail" type="email" placeholder="aneesahamper@gmail.com" value="aneesahamper@gmail.com" autocomplete="email" onkeydown="if(event.key==='Enter')doLogin()"/>
+      </div>
+      <div class="g-field">
+        <label class="g-label">Password</label>
+        <div class="g-pw">
+          <input class="g-input" id="gPass" type="password" placeholder="Aneesa@Admin2024" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+          <button class="g-eye" type="button" onclick="togglePw()">👁</button>
+        </div>
+      </div>
+      <div class="g-err" id="gErr"></div>
+      <button class="g-btn" id="gBtn" onclick="doLogin()">Sign In to Dashboard →</button>
+      <div style="text-align:center;margin-top:10px;">
+        <button onclick="doForgotPw()" style="background:none;border:none;color:rgba(59,13,26,.4);font-family:'Jost',sans-serif;font-size:.72rem;cursor:pointer;transition:color .2s;" onmouseover="this.style.color='var(--deep-rose)'" onmouseout="this.style.color='rgba(59,13,26,.4)'">Forgot password? Send reset email</button>
       </div>
     </div>
-    <div class="g-err" id="gErr"></div>
-    <button class="g-btn" id="gBtn" onclick="doLogin()">Sign In to Dashboard →</button>
-    <div style="margin-top:16px;font-size:.65rem;opacity:.28;">🔒 This page is for authorised staff only</div>
+
+    <!-- CREATE ACCOUNT PANE -->
+    <div id="paneSignup" style="display:none;">
+      <div class="g-field"><label class="g-label">Full Name</label><input class="g-input" id="suName" type="text" placeholder="Your name"/></div>
+      <div class="g-field"><label class="g-label">Email (must be admin email)</label><input class="g-input" id="suEmail" type="email" placeholder="aneesahamper@gmail.com"/></div>
+      <div class="g-field">
+        <label class="g-label">Password (min 6 characters)</label>
+        <div class="g-pw"><input class="g-input" id="suPass" type="password" placeholder="Create a strong password"/><button class="g-eye" type="button" onclick="document.getElementById('suPass').type=document.getElementById('suPass').type==='password'?'text':'password'">👁</button></div>
+      </div>
+      <div class="g-field">
+        <label class="g-label">Admin Secret Key</label>
+        <input class="g-input" id="suSecret" type="password" placeholder="Enter secret key"/>
+        <div style="font-size:.62rem;color:rgba(59,13,26,.38);margin-top:3px;">Secret key: <strong>aneesa2024admin</strong></div>
+      </div>
+      <div class="g-err" id="suErr"></div>
+      <button class="g-btn" id="suBtn" onclick="doSignup()">Create Admin Account →</button>
+    </div>
+
+    <div style="margin-top:16px;font-size:.62rem;opacity:.25;text-align:center;">🔒 Authorised personnel only</div>
   </div>
 </div>
 
@@ -441,6 +478,57 @@ textarea.fi{resize:vertical;min-height:80px;}
           <div class="fg"><label class="fl">Message</label><input class="fi" id="fsMsg" placeholder="Eid Special — Today Only!"/></div>
         </div>
         <button class="btn btn-primary" style="width:100%;padding:11px" onclick="saveFlash()">Save Flash Sale</button>
+      </div>
+
+      <!-- ══ WELCOME POPUP DISCOUNT ══ -->
+      <div class="card">
+        <div class="card-title" style="margin-bottom:4px">🎁 Welcome Popup Discount</div>
+        <div style="font-size:.7rem;opacity:.38;margin-bottom:16px">Controls the popup shown to new visitors. The discount code they get works automatically at checkout.</div>
+
+        <!-- Live preview -->
+        <div id="popupPreview" style="background:linear-gradient(135deg,#3b0d1a,#7a2040);border-radius:14px;padding:22px 18px;text-align:center;margin-bottom:18px;position:relative;overflow:hidden;">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 30%,rgba(255,255,255,.06),transparent 70%);"></div>
+          <div style="font-size:1.6rem;margin-bottom:6px;position:relative;">🎁</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:white;font-weight:600;position:relative;" id="ppvHeadline"><span id="ppvDisc">15</span>% OFF Awaits</div>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.6);margin-top:4px;position:relative;" id="ppvSub">Enter your details to unlock your discount instantly.</div>
+          <div style="margin-top:12px;display:inline-block;background:rgba(255,255,255,.15);border:1.5px dashed rgba(255,255,255,.4);color:white;font-size:.8rem;font-weight:700;letter-spacing:3px;padding:8px 20px;border-radius:30px;position:relative;" id="ppvCode">AH15-XXXXX</div>
+          <div style="font-size:.65rem;color:rgba(255,255,255,.45);margin-top:8px;position:relative;">Valid for <span id="ppvDays">30</span> days · Min order ₹<span id="ppvMin">0</span></div>
+        </div>
+
+        <div class="form-grid">
+          <div class="fg">
+            <label class="fl">Popup Status</label>
+            <select class="fi" id="ppStatus" onchange="updatePopupPreview()">
+              <option value="true">✅ Show to visitors</option>
+              <option value="false">❌ Hidden</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="fl">Discount % <span style="color:var(--deep-rose)">*</span></label>
+            <input class="fi" id="ppDisc" type="number" placeholder="15" min="1" max="90" oninput="updatePopupPreview()"/>
+          </div>
+          <div class="fg full">
+            <label class="fl">Discount Code Prefix (e.g. AH15, ANEESA20)</label>
+            <input class="fi" id="ppPrefix" placeholder="AH15" maxlength="10" oninput="updatePopupPreview()"/>
+          </div>
+          <div class="fg full">
+            <label class="fl">Popup Subtext</label>
+            <input class="fi" id="ppSub" placeholder="Enter your details to unlock your discount instantly." oninput="updatePopupPreview()"/>
+          </div>
+          <div class="fg">
+            <label class="fl">Valid Days</label>
+            <input class="fi" id="ppDays" type="number" placeholder="30" min="1" oninput="updatePopupPreview()"/>
+          </div>
+          <div class="fg">
+            <label class="fl">Min Order Amount (₹)</label>
+            <input class="fi" id="ppMin" type="number" placeholder="0 = no minimum" min="0" oninput="updatePopupPreview()"/>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%;padding:13px;margin-top:6px;font-size:.8rem;" onclick="savePopupSettings()">
+          💾 Save — Goes Live on Homepage Instantly
+        </button>
+        <div id="ppSaveStatus" style="font-size:.72rem;text-align:center;margin-top:8px;min-height:16px;"></div>
       </div>
 
       <!-- ══ HERO TEXT EDITOR ══ -->
@@ -690,7 +778,8 @@ import {
   doc, addDoc, updateDoc, deleteDoc, setDoc, getDoc, serverTimestamp, Timestamp
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import {
-  getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+  getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  sendPasswordResetEmail, updateProfile, onAuthStateChanged, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const FB = {
@@ -712,45 +801,100 @@ const C=document.getElementById('cursor'),R=document.getElementById('cursorRing'
 if(C&&matchMedia('(pointer:fine)').matches){document.addEventListener('mousemove',e=>{C.style.left=e.clientX+'px';C.style.top=e.clientY+'px';setTimeout(()=>{R.style.left=e.clientX+'px';R.style.top=e.clientY+'px';},80)});}
 
 // ── AUTH ──
+// ── MASTER PASSWORD (works without Firebase account) ──
+const MASTER_PWD    = 'Aneesa@Admin2024';
+const ADMIN_SECRET  = 'aneesa2024admin';
+
+function showGate()  { document.getElementById('adminGate').style.display='flex'; document.getElementById('adminDash').style.display='none'; }
+function showDash()  { document.getElementById('adminGate').style.display='none'; document.getElementById('adminDash').style.display='flex'; init(); }
+
 onAuthStateChanged(auth, user => {
-  if (user && user.email === ADMIN_EMAIL) {
-    document.getElementById('adminGate').style.display = 'none';
-    document.getElementById('adminDash').style.display = 'flex';
-    init();
-  } else if (user && user.email !== ADMIN_EMAIL) {
-    signOut(auth);
-    setErr('⚠️ This account does not have admin access.');
-  } else {
-    document.getElementById('adminGate').style.display = 'flex';
-    document.getElementById('adminDash').style.display = 'none';
-  }
+  if (user && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) { showDash(); }
+  else if (user) { signOut(auth); setErr('⚠️ No admin access for this account.'); }
+  else { showGate(); }
 });
 
+// Tab switching
+window.gateTab = function(tab) {
+  const isIn = tab === 'signin';
+  document.getElementById('paneSignin').style.display = isIn ? 'block' : 'none';
+  document.getElementById('paneSignup').style.display = isIn ? 'none'  : 'block';
+  const ts=document.getElementById('tabSignin'), tu=document.getElementById('tabSignup');
+  if(ts){ ts.style.background=isIn?'var(--burgundy)':'transparent'; ts.style.color=isIn?'white':'rgba(59,13,26,.45)'; ts.style.fontWeight=isIn?'600':'400'; }
+  if(tu){ tu.style.background=!isIn?'var(--burgundy)':'transparent'; tu.style.color=!isIn?'white':'rgba(59,13,26,.45)'; tu.style.fontWeight=!isIn?'600':'400'; }
+  setErr(''); const se=document.getElementById('suErr'); if(se) se.textContent='';
+};
+
+// Sign In
 window.doLogin = async function() {
-  const e = document.getElementById('gEmail').value.trim();
-  const p = document.getElementById('gPass').value;
+  const e = (document.getElementById('gEmail').value||'').trim();
+  const p = document.getElementById('gPass').value||'';
   const btn = document.getElementById('gBtn');
   setErr('');
-  if (!e) { setErr('Please enter email.'); return; }
-  if (!p) { setErr('Please enter password.'); return; }
-  btn.textContent = 'Signing in…'; btn.disabled = true;
+  if(!p){ setErr('Please enter your password.'); return; }
+  btn.textContent='Signing in…'; btn.disabled=true;
+  // Master password — bypasses Firebase
+  if(p === MASTER_PWD){ showDash(); btn.textContent='Sign In to Dashboard →'; btn.disabled=false; return; }
+  // Firebase Auth
+  if(!e){ setErr('Please enter your email address.'); btn.textContent='Sign In to Dashboard →'; btn.disabled=false; return; }
   try {
     const r = await signInWithEmailAndPassword(auth, e, p);
-    if (r.user.email !== ADMIN_EMAIL) { await signOut(auth); setErr('❌ No admin access.'); btn.textContent = 'Sign In →'; btn.disabled = false; }
+    if(r.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()){ await signOut(auth); setErr('❌ This account has no admin access.'); }
   } catch(err) {
-    btn.textContent = 'Sign In to Dashboard →'; btn.disabled = false;
-    const m = {'auth/user-not-found':'Incorrect email or password.','auth/wrong-password':'Incorrect email or password.','auth/invalid-credential':'Incorrect email or password.','auth/invalid-email':'Invalid email.','auth/too-many-requests':'Too many attempts. Wait a few minutes.'};
-    setErr('❌ ' + (m[err.code] || err.message));
+    const m = {
+      'auth/user-not-found':'No account found. Use Create Account tab or use master password.',
+      'auth/wrong-password':'Wrong password. Try master password: Aneesa@Admin2024',
+      'auth/invalid-credential':'Wrong email or password.',
+      'auth/invalid-email':'Invalid email address.',
+      'auth/too-many-requests':'Too many attempts. Try master password: Aneesa@Admin2024',
+      'auth/network-request-failed':'Network error. Check your connection.'
+    };
+    setErr('❌ ' + (m[err.code]||err.message));
   }
+  btn.textContent='Sign In to Dashboard →'; btn.disabled=false;
 };
-function setErr(msg) { document.getElementById('gErr').textContent = msg; }
-window.togglePw = () => { const i = document.getElementById('gPass'); i.type = i.type==='password'?'text':'password'; };
-window.doAdminLogout = async function() {
-  if (!confirm('Sign out of admin panel?')) return;
-  await signOut(auth);
-  document.getElementById('adminGate').style.display = 'flex';
-  document.getElementById('adminDash').style.display = 'none';
+
+// Create Account
+window.doSignup = async function() {
+  const name   = (document.getElementById('suName')?.value||'').trim();
+  const email  = (document.getElementById('suEmail')?.value||'').trim();
+  const pass   = document.getElementById('suPass')?.value||'';
+  const secret = (document.getElementById('suSecret')?.value||'').trim();
+  const errEl  = document.getElementById('suErr');
+  const btn    = document.getElementById('suBtn');
+  if(errEl) errEl.textContent='';
+  if(!name){ if(errEl)errEl.textContent='Please enter your name.'; return; }
+  if(!email){ if(errEl)errEl.textContent='Please enter email.'; return; }
+  if(pass.length<6){ if(errEl)errEl.textContent='Password must be at least 6 characters.'; return; }
+  if(secret!==ADMIN_SECRET){ if(errEl)errEl.textContent='❌ Wrong secret key.'; return; }
+  btn.textContent='Creating…'; btn.disabled=true;
+  try {
+    const r = await createUserWithEmailAndPassword(auth, email, pass);
+    await updateProfile(r.user,{displayName:name});
+    if(r.user.email.toLowerCase()!==ADMIN_EMAIL.toLowerCase()){ await signOut(auth); if(errEl){errEl.style.color='#e05050';errEl.textContent='Account created but "'+email+'" is not the admin email. Login with '+ADMIN_EMAIL;} }
+    // onAuthStateChanged handles redirect
+  } catch(err) {
+    const m={'auth/email-already-in-use':'Account exists. Use Sign In tab.','auth/invalid-email':'Invalid email.','auth/weak-password':'Password too weak.'};
+    if(errEl) errEl.textContent = '❌ '+(m[err.code]||err.message);
+  }
+  btn.textContent='Create Admin Account →'; btn.disabled=false;
 };
+
+// Forgot Password
+window.doForgotPw = async function() {
+  const email=(document.getElementById('gEmail')?.value||'').trim();
+  if(!email){ setErr('Enter your email above first.'); return; }
+  try {
+    await sendPasswordResetEmail(auth,email);
+    const el=document.getElementById('gErr');
+    if(el){el.style.color='#25D366';el.textContent='✅ Reset email sent to '+email+'. Check your inbox.';}
+  } catch(err){ setErr('❌ '+err.message); }
+};
+
+function setErr(msg){ const el=document.getElementById('gErr'); if(el){el.style.color='#e05050';el.textContent=msg;} }
+window.togglePw=()=>{const i=document.getElementById('gPass');if(i)i.type=i.type==='password'?'text':'password';};
+window.toggleSuPw=()=>{const i=document.getElementById('suPass');if(i)i.type=i.type==='password'?'text':'password';};
+window.doAdminLogout=async()=>{if(!confirm('Sign out?'))return;await signOut(auth);showGate();};
 
 // ── MOBILE SIDEBAR ──
 window.sbToggle = () => { const s=document.getElementById('sidebar'); s.classList.contains('mob-open') ? sbClose() : sbOpen(); };
@@ -1329,6 +1473,18 @@ function loadSettings() {
     if(cfg.announcement){document.getElementById('annActive').value=cfg.announcement.active?'true':'false';document.getElementById('annText').value=cfg.announcement.text||'';}
     if(cfg.flashSale){document.getElementById('fsActive').value=cfg.flashSale.active?'true':'false';document.getElementById('fsDisc').value=cfg.flashSale.discount||'';document.getElementById('fsMsg').value=cfg.flashSale.message||'';if(cfg.flashSale.endsAt?.toDate){document.getElementById('fsEnds').value=cfg.flashSale.endsAt.toDate().toISOString().slice(0,16);}}
     if(cfg.banners){_adminBanners=cfg.banners;renderBannerList();}
+    // Load welcome popup settings
+    if(cfg.welcomePopup){
+      const wp=cfg.welcomePopup;
+      const se=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
+      se('ppStatus',  wp.active===false?'false':'true');
+      se('ppDisc',    wp.discount||15);
+      se('ppPrefix',  wp.codePrefix||('AH'+(wp.discount||15)));
+      se('ppSub',     wp.subtext||'');
+      se('ppDays',    wp.validDays||30);
+      se('ppMin',     wp.minOrder||0);
+      updatePopupPreview();
+    }
   });
 }
 window.saveAnn = async function() {
@@ -1348,6 +1504,69 @@ window.saveFlash = async function() {
   if(endsAtV) data.endsAt=Timestamp.fromDate(new Date(endsAtV));
   await setDoc(doc(db,'siteSettings','config'),{flashSale:data},{merge:true});
   toast(active?`✅ Flash Sale ON! ${discount}% off live ⚡`:'✅ Flash Sale turned off.');
+};
+
+// ═══════════════════════════════════════════════
+// WELCOME POPUP DISCOUNT
+// ═══════════════════════════════════════════════
+window.updatePopupPreview = function() {
+  const disc   = parseInt(document.getElementById('ppDisc')?.value)||15;
+  const prefix = (document.getElementById('ppPrefix')?.value||('AH'+disc)).toUpperCase().trim()||('AH'+disc);
+  const sub    = document.getElementById('ppSub')?.value||'Enter your details to unlock your discount instantly.';
+  const days   = parseInt(document.getElementById('ppDays')?.value)||30;
+  const min    = parseInt(document.getElementById('ppMin')?.value)||0;
+  const active = document.getElementById('ppStatus')?.value!=='false';
+  const el=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  el('ppvDisc', disc);
+  el('ppvCode', prefix+'-XXXXX');
+  el('ppvSub',  sub);
+  el('ppvDays', days);
+  el('ppvMin',  min);
+  const box=document.getElementById('popupPreview');
+  if(box)box.style.opacity=active?'1':'0.4';
+};
+
+window.savePopupSettings = async function() {
+  const statusEl = document.getElementById('ppSaveStatus');
+  const active   = document.getElementById('ppStatus').value !== 'false';
+  const discount = parseInt(document.getElementById('ppDisc').value)||0;
+  const prefix   = (document.getElementById('ppPrefix').value.trim().toUpperCase()||('AH'+discount)).slice(0,10);
+  const subtext  = document.getElementById('ppSub').value.trim();
+  const validDays= parseInt(document.getElementById('ppDays').value)||30;
+  const minOrder = parseInt(document.getElementById('ppMin').value)||0;
+
+  if(!discount||discount<1||discount>90){toast('⚠️ Enter valid discount % (1–90)','err');return;}
+  if(!prefix){toast('⚠️ Enter a code prefix','err');return;}
+
+  if(statusEl){statusEl.style.color='rgba(59,13,26,.5)';statusEl.textContent='Saving…';}
+
+  const wpData = {active,discount,codePrefix:prefix,subtext,validDays,minOrder,updatedAt:serverTimestamp()};
+
+  try {
+    // 1. Save to siteSettings — homepage popup reads this
+    await setDoc(doc(db,'siteSettings','config'),{welcomePopup:wpData},{merge:true});
+
+    // 2. Save prefix as a promo code so user's code works at checkout
+    await setDoc(doc(db,'promoCodes',prefix),{
+      active:true, type:'percent', value:discount,
+      minOrder, maxUses:0, used:0,
+      isPopupCode:true, codePrefix:prefix,
+      validDays, description:`Welcome popup ${discount}% OFF`,
+      updatedAt:serverTimestamp()
+    },{merge:true});
+
+    if(statusEl){
+      statusEl.style.color='#2d7a4f';
+      statusEl.textContent=`✅ Saved! Popup ${active?'is live':'hidden'}. Code prefix "${prefix}" works at checkout.`;
+      setTimeout(()=>{if(statusEl)statusEl.textContent='';},6000);
+    }
+    toast(active?`✅ Popup live! ${discount}% OFF · Code: ${prefix}-XXXXX 🎉`:'✅ Popup settings saved (hidden).');
+    updatePopupPreview();
+  } catch(e){
+    if(statusEl){statusEl.style.color='#e05050';statusEl.textContent='❌ '+e.message;}
+    toast('❌ Save failed: '+e.message,'err');
+    console.error('savePopupSettings:',e);
+  }
 };
 
 // ═══════════════════════════════════════════════
