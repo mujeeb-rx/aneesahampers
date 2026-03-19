@@ -579,17 +579,28 @@
 <a href="#" id="floatWA">💬 Order via WhatsApp</a>
 
 
-<script>
+<script type="module">
 // ============================================================
-// ANEESA HAMPERS — product.html
-// Uses Firestore REST API directly (no SDK module needed)
-// This avoids ALL Firebase module loading / init issues
+// ANEESA HAMPERS — product.html  (Firebase SDK v10)
 // ============================================================
+import { initializeApp }                    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, doc, getDoc,
+         collection, query, where,
+         getDocs, addDoc, serverTimestamp,
+         orderBy, limit }                   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getAuth, onAuthStateChanged }      from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
-const _FB_PROJECT = 'aneesa-hampers';
-const _FB_KEY     = 'AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM';
-const _FB_BASE    = `https://firestore.googleapis.com/v1/projects/${_FB_PROJECT}/databases/(default)/documents`;
-const WA_NUM      = '918639066613';
+const _app = initializeApp({
+  apiKey:            'AIzaSyCT98OpXIDMCHEiZl6PRrQ6GDziOo2hnTM',
+  authDomain:        'aneesa-hampers.firebaseapp.com',
+  projectId:         'aneesa-hampers',
+  storageBucket:     'aneesa-hampers.firebasestorage.app',
+  messagingSenderId: '909653560410',
+  appId:             '1:909653560410:web:397db4fec2d9f042609c63'
+});
+const db     = getFirestore(_app);
+const auth   = getAuth(_app);
+const WA_NUM = '918639066613';
 
 // Helpers
 const $  = id => document.getElementById(id);
@@ -623,24 +634,7 @@ try {
 } catch(e){}
 window.doLogout = () => { if(!confirm('Log out?'))return; localStorage.removeItem('ah_user'); location.href='index.html'; };
 
-// ── Firestore REST parser ──
-function _parseField(v) {
-  if(!v) return null;
-  if(v.stringValue  !== undefined) return v.stringValue;
-  if(v.integerValue !== undefined) return Number(v.integerValue);
-  if(v.doubleValue  !== undefined) return Number(v.doubleValue);
-  if(v.booleanValue !== undefined) return v.booleanValue;
-  if(v.arrayValue   !== undefined) return (v.arrayValue.values||[]).map(_parseField);
-  if(v.mapValue     !== undefined) return _parseDoc(v.mapValue.fields||{});
-  if(v.timestampValue !== undefined) return new Date(v.timestampValue);
-  if(v.nullValue    !== undefined) return null;
-  return null;
-}
-function _parseDoc(fields) {
-  const out = {};
-  for(const k in fields) out[k] = _parseField(fields[k]);
-  return out;
-}
+// Firestore SDK used — no REST parser needed
 
 // ── Show/hide loader ──
 function _showError(msg) {
@@ -686,18 +680,10 @@ function _updateWishBtns(){
 // ══════════════════════════════════════════
 async function _loadProduct() {
   try {
-    const url = `${_FB_BASE}/products/${_pid}?key=${_FB_KEY}`;
-    const res = await fetch(url);
-
-    if(res.status === 404) { clearTimeout(_tout); _showError('Product not found.'); return; }
-    if(res.status === 403) { clearTimeout(_tout); _showError('Access denied. Please sign in.'); return; }
-    if(!res.ok) { clearTimeout(_tout); _showError(`Server error (${res.status}). Please try again.`); return; }
-
-    const json = await res.json();
-    if(json.error) { clearTimeout(_tout); _showError(json.error.message||'Error loading product.'); return; }
-
-    _prod = { id: _pid, ..._parseDoc(json.fields||{}) };
+    const snap = await getDoc(doc(db, 'products', _pid));
     clearTimeout(_tout);
+    if (!snap.exists()) { _showError('Product not found. It may have been removed.'); return; }
+    _prod = { id: snap.id, ...snap.data() };
     _renderProduct(_prod);
     _wished = _getWL().includes(_pid);
     _updateWishBtns();
@@ -707,7 +693,7 @@ async function _loadProduct() {
   } catch(e) {
     clearTimeout(_tout);
     console.error('Product load error:', e);
-    _showError('Network error. Please check your connection and try again.');
+    _showError('Could not load product. Please check your connection and try again.');
   }
 }
 _loadProduct();
@@ -821,21 +807,30 @@ if(fwa)fwa.onclick=e=>{ e.preventDefault(); if(_prod)window.open(`https://wa.me/
 // ── Stars ──
 function _starsHtml(r,size='1rem'){ let h=''; for(let i=1;i<=5;i++)h+=`<span style="font-size:${size};opacity:${i<=Math.round(r)?1:.2}">⭐</span>`; return h; }
 
-// ── Reviews via REST ──
+// ── Reviews via SDK ──
 async function _loadReviews(pid){
   try{
-    const url=`${_FB_BASE}/reviews?key=${_FB_KEY}&pageSize=50`;
-    const res=await fetch(url);
-    if(!res.ok)return;
-    const json=await res.json();
-    const docs=(json.documents||[]);
-    const reviews=docs.map(d=>({id:d.name.split('/').pop(),..._parseDoc(d.fields||{})}))
-      .filter(r=>r.productId===pid)
-      .sort((a,b)=>{ const ta=a.createdAt instanceof Date?a.createdAt.getTime():0, tb=b.createdAt instanceof Date?b.createdAt.getTime():0; return tb-ta; });
+    const q = query(collection(db,'reviews'), where('productId','==',pid), orderBy('createdAt','desc'), limit(50));
+    const snap = await getDocs(q);
+    const reviews = snap.docs.map(d=>({id:d.id,...d.data()}));
     _renderReviews(reviews);
     _renderRatingSummary(reviews);
     _updateRatingDisplay(reviews);
-  }catch(e){console.warn('reviews:',e);}
+  }catch(e){
+    // fallback: try without orderBy (in case index not ready)
+    try{
+      const q2 = query(collection(db,'reviews'), where('productId','==',pid));
+      const snap2 = await getDocs(q2);
+      const reviews2 = snap2.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
+        const ta=a.createdAt?.toDate?.()?.getTime?.()??0;
+        const tb=b.createdAt?.toDate?.()?.getTime?.()??0;
+        return tb-ta;
+      });
+      _renderReviews(reviews2);
+      _renderRatingSummary(reviews2);
+      _updateRatingDisplay(reviews2);
+    }catch(e2){console.warn('reviews fallback:',e2);}
+  }
 }
 function _renderReviews(rv){
   const list=$('reviewsList'); if(!list)return;
@@ -882,7 +877,7 @@ window.selectStar=rating=>{
   const sl=$('starLabel');if(sl)sl.textContent=_starLabels[rating]||'';
 };
 
-// Submit review via REST
+// Submit review via SDK
 window.submitReview=async()=>{
   const name=($('rvName').value||'').trim(), text=($('rvText').value||'').trim();
   if(!_starRating){toast('⚠️ Please select a star rating');return;}
@@ -891,38 +886,34 @@ window.submitReview=async()=>{
   const btn=document.querySelector('.submit-review-btn');
   if(btn){btn.textContent='Submitting…';btn.disabled=true;}
   try{
-    const body={fields:{
-      productId:{stringValue:_pid},
-      name:{stringValue:name},
-      phone:{stringValue:($('rvPhone').value||'').trim()},
-      rating:{integerValue:String(_starRating)},
-      text:{stringValue:text}
-    }};
-    const res=await fetch(`${_FB_BASE}/reviews?key=${_FB_KEY}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(res.ok){
-      toast('✅ Thank you for your review! 🌸');
-      if($('rvText'))$('rvText').value='';
-      _starRating=0;
-      document.querySelectorAll('.star-btn').forEach(b=>b.textContent='☆');
-      const sl=$('starLabel');if(sl)sl.textContent='';
-      setTimeout(()=>_loadReviews(_pid),800);
-    }else{ toast('❌ Could not submit. Please try again.'); }
-  }catch(e){toast('❌ Network error. Please try again.');}
+    await addDoc(collection(db,'reviews'),{
+      productId:_pid, name, phone:($('rvPhone').value||'').trim(),
+      rating:_starRating, text, createdAt:serverTimestamp()
+    });
+    toast('✅ Thank you for your review! 🌸');
+    if($('rvName'))$('rvName').value='';
+    if($('rvText'))$('rvText').value='';
+    if($('rvPhone'))$('rvPhone').value='';
+    _starRating=0;
+    document.querySelectorAll('.star-btn').forEach(b=>b.textContent='☆');
+    const sl=$('starLabel');if(sl)sl.textContent='';
+    setTimeout(()=>_loadReviews(_pid),800);
+  }catch(e){toast('❌ Could not submit. Please try again.');}
   if(btn){btn.textContent='Submit Review ✨';btn.disabled=false;}
 };
 
-// ── Related products via REST ──
+// ── Related products via SDK ──
 async function _loadRelated(category, excludeId){
   try{
-    const url=`${_FB_BASE}/products?key=${_FB_KEY}&pageSize=20`;
-    const res=await fetch(url); if(!res.ok)return;
-    const json=await res.json();
-    let prods=(json.documents||[])
-      .map(d=>({id:d.name.split('/').pop(),..._parseDoc(d.fields||{})}))
-      .filter(p=>p.id!==excludeId);
-    // prefer same category
-    const sameCat=prods.filter(p=>p.category===category);
-    const shown=(sameCat.length>=2?sameCat:prods).slice(0,4);
+    // Try same category first
+    let snap = await getDocs(query(collection(db,'products'), where('category','==',category), limit(6)));
+    let prods = snap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.id!==excludeId);
+    // If not enough, get any products
+    if(prods.length < 2){
+      const snap2 = await getDocs(query(collection(db,'products'), orderBy('createdAt','desc'), limit(8)));
+      prods = snap2.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.id!==excludeId);
+    }
+    const shown = prods.slice(0,4);
     if(shown.length){ _renderRelated('pairedGrid','pairedSection',shown); _renderRelated('similarGrid','similarSection',shown); }
   }catch(e){console.warn('related:',e);}
 }

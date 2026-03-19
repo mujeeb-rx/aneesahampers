@@ -211,6 +211,9 @@ nav{position:fixed;top:0;width:100%;z-index:500;display:flex;align-items:center;
       <div class="acc-nav-item" onclick="showPanel('address')">
         <span class="acc-nav-icon">📍</span><span>My Address</span>
       </div>
+      <div class="acc-nav-item" onclick="showPanel('preferences')">
+        <span class="acc-nav-icon">🌍</span><span>Language &amp; Region</span>
+      </div>
     </div>
     <button class="acc-nav-logout" onclick="doLogout()">
       <span style="font-size:1rem">🔒</span><span>Sign Out</span>
@@ -269,14 +272,138 @@ nav{position:fixed;top:0;width:100%;z-index:500;display:flex;align-items:center;
           <div class="field-group"><div class="field-label">Full Address / Flat / Building</div><textarea class="field-input" id="addrLine" rows="2" placeholder="Flat no, Building name, Street…"></textarea></div>
         </div>
         <div class="field-row">
-          <div class="field-group"><div class="field-label">City</div><input class="field-input" id="addrCity" placeholder="Kadapa"/></div>
-          <div class="field-group"><div class="field-label">State</div><input class="field-input" id="addrState" placeholder="Andhra Pradesh"/></div>
+          <div class="field-group"><div class="field-label">City</div><input class="field-input" id="addrCity" placeholder="City"/></div>
+          <div class="field-group"><div class="field-label">State / Region</div><input class="field-input" id="addrState" placeholder="State or Region"/></div>
         </div>
         <div class="field-row">
-          <div class="field-group"><div class="field-label">PIN Code</div><input class="field-input" id="addrPin" placeholder="516001"/></div>
-          <div class="field-group"><div class="field-label">Landmark</div><input class="field-input" id="addrLandmark" placeholder="Near temple…"/></div>
+          <div class="field-group"><div class="field-label">ZIP / PIN Code</div><input class="field-input" id="addrPin" placeholder="e.g. 516001 or 10001"/></div>
+          <div class="field-group"><div class="field-label">Country</div>
+            <select class="field-input" id="addrCountry">
+              <option value="">Select Country</option>
+              <option value="India">🇮🇳 India</option>
+              <option value="United States">🇺🇸 United States</option>
+              <option value="United Kingdom">🇬🇧 United Kingdom</option>
+              <option value="United Arab Emirates">🇦🇪 United Arab Emirates</option>
+              <option value="Saudi Arabia">🇸🇦 Saudi Arabia</option>
+              <option value="Qatar">🇶🇦 Qatar</option>
+              <option value="Kuwait">🇰🇼 Kuwait</option>
+              <option value="Bahrain">🇧🇭 Bahrain</option>
+              <option value="Oman">🇴🇲 Oman</option>
+              <option value="Canada">🇨🇦 Canada</option>
+              <option value="Australia">🇦🇺 Australia</option>
+              <option value="Singapore">🇸🇬 Singapore</option>
+              <option value="Malaysia">🇲🇾 Malaysia</option>
+              <option value="Germany">🇩🇪 Germany</option>
+              <option value="France">🇫🇷 France</option>
+              <option value="Netherlands">🇳🇱 Netherlands</option>
+              <option value="New Zealand">🇳🇿 New Zealand</option>
+              <option value="South Africa">🇿🇦 South Africa</option>
+              <option value="Other">🌍 Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row full">
+          <div class="field-group"><div class="field-label">Landmark (optional)</div><input class="field-input" id="addrLandmark" placeholder="Near temple, school, etc."/></div>
         </div>
         <button class="save-btn" onclick="saveAddress()">💾 Save Address</button>
+      </div>
+    </div>
+
+    <!-- LANGUAGE & REGION PANEL -->
+    <div class="acc-panel" id="panel-preferences">
+      <div class="panel-title">Language &amp; <em>Region</em></div>
+      <div class="panel-sub">Set your preferred language, country and currency for a personalised experience 🌍</div>
+
+      <div class="profile-card">
+        <h3>🗣️ Preferred Language</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px;" id="langGrid">
+          <!-- filled by JS -->
+        </div>
+        <div style="font-size:.72rem;opacity:.4;margin-top:-4px;">Your selected language will be remembered for future visits.</div>
+      </div>
+
+      <div class="profile-card">
+        <h3>🌍 Country &amp; Region</h3>
+        <div class="field-row">
+          <div class="field-group">
+            <div class="field-label">Country</div>
+            <select class="field-input" id="prefCountry" onchange="updateCurrencyFromCountry()">
+              <option value="">Select your country</option>
+              <option value="IN">🇮🇳 India</option>
+              <option value="US">🇺🇸 United States</option>
+              <option value="GB">🇬🇧 United Kingdom</option>
+              <option value="AE">🇦🇪 United Arab Emirates</option>
+              <option value="SA">🇸🇦 Saudi Arabia</option>
+              <option value="QA">🇶🇦 Qatar</option>
+              <option value="KW">🇰🇼 Kuwait</option>
+              <option value="BH">🇧🇭 Bahrain</option>
+              <option value="OM">🇴🇲 Oman</option>
+              <option value="CA">🇨🇦 Canada</option>
+              <option value="AU">🇦🇺 Australia</option>
+              <option value="SG">🇸🇬 Singapore</option>
+              <option value="MY">🇲🇾 Malaysia</option>
+              <option value="DE">🇩🇪 Germany</option>
+              <option value="FR">🇫🇷 France</option>
+              <option value="NL">🇳🇱 Netherlands</option>
+              <option value="NZ">🇳🇿 New Zealand</option>
+              <option value="ZA">🇿🇦 South Africa</option>
+              <option value="PK">🇵🇰 Pakistan</option>
+              <option value="BD">🇧🇩 Bangladesh</option>
+              <option value="LK">🇱🇰 Sri Lanka</option>
+              <option value="NP">🇳🇵 Nepal</option>
+              <option value="JP">🇯🇵 Japan</option>
+              <option value="CN">🇨🇳 China</option>
+              <option value="KR">🇰🇷 South Korea</option>
+              <option value="OTHER">🌍 Other</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <div class="field-label">Display Currency</div>
+            <select class="field-input" id="prefCurrency">
+              <option value="INR">🇮🇳 INR — Indian Rupee (₹)</option>
+              <option value="USD">🇺🇸 USD — US Dollar ($)</option>
+              <option value="GBP">🇬🇧 GBP — British Pound (£)</option>
+              <option value="AED">🇦🇪 AED — UAE Dirham (د.إ)</option>
+              <option value="SAR">🇸🇦 SAR — Saudi Riyal (﷼)</option>
+              <option value="QAR">🇶🇦 QAR — Qatari Riyal (﷼)</option>
+              <option value="KWD">🇰🇼 KWD — Kuwaiti Dinar (KD)</option>
+              <option value="BHD">🇧🇭 BHD — Bahraini Dinar (BD)</option>
+              <option value="OMR">🇴🇲 OMR — Omani Rial (﷼)</option>
+              <option value="CAD">🇨🇦 CAD — Canadian Dollar (CA$)</option>
+              <option value="AUD">🇦🇺 AUD — Australian Dollar (A$)</option>
+              <option value="SGD">🇸🇬 SGD — Singapore Dollar (S$)</option>
+              <option value="MYR">🇲🇾 MYR — Malaysian Ringgit (RM)</option>
+              <option value="EUR">🇪🇺 EUR — Euro (€)</option>
+              <option value="NZD">🇳🇿 NZD — New Zealand Dollar (NZ$)</option>
+              <option value="ZAR">🇿🇦 ZAR — South African Rand (R)</option>
+              <option value="JPY">🇯🇵 JPY — Japanese Yen (¥)</option>
+            </select>
+          </div>
+        </div>
+        <div style="background:rgba(192,100,122,.06);border-radius:12px;padding:14px;font-size:.78rem;color:rgba(59,13,26,.55);line-height:1.7;margin-top:4px;">
+          💡 All prices are in INR (Indian Rupees). The display currency shows an approximate converted amount for reference. Final payment is always charged in INR.
+        </div>
+        <button class="save-btn" style="margin-top:16px;" onclick="savePreferences()">🌍 Save Region Settings</button>
+      </div>
+
+      <div class="profile-card">
+        <h3>📦 Shipping Note</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div style="background:var(--blush);border-radius:14px;padding:16px;text-align:center;">
+            <div style="font-size:1.6rem;margin-bottom:6px;">🇮🇳</div>
+            <div style="font-weight:700;font-size:.84rem;margin-bottom:3px;">India</div>
+            <div style="font-size:.72rem;opacity:.55;line-height:1.5;">FREE delivery · 2–5 days · All states</div>
+          </div>
+          <div style="background:rgba(201,169,110,.1);border-radius:14px;padding:16px;text-align:center;border:1px solid rgba(201,169,110,.2);">
+            <div style="font-size:1.6rem;margin-bottom:6px;">🌍</div>
+            <div style="font-weight:700;font-size:.84rem;margin-bottom:3px;">Worldwide</div>
+            <div style="font-size:.72rem;opacity:.55;line-height:1.5;">7–14 days · Charges apply · WhatsApp us for quote</div>
+          </div>
+        </div>
+        <a href="https://wa.me/918639066613?text=Hi%20Aneesa%20Hampers!%20I%20need%20international%20shipping%20details." target="_blank"
+          style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;padding:12px;background:#25D366;color:white;border-radius:12px;text-decoration:none;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;font-weight:600;">
+          💬 WhatsApp for International Shipping Quote
+        </a>
       </div>
     </div>
 
@@ -382,6 +509,89 @@ function populateProfile(data) {
 
 // PANEL NAVIGATION
 window.showPanel = function(id) {
+// ── LANGUAGES ──
+const LANGUAGES = [
+  {code:'en', flag:'🇬🇧', name:'English'},
+  {code:'hi', flag:'🇮🇳', name:'हिंदी'},
+  {code:'te', flag:'🇮🇳', name:'తెలుగు'},
+  {code:'ta', flag:'🇮🇳', name:'தமிழ்'},
+  {code:'ur', flag:'🇵🇰', name:'اردو'},
+  {code:'ar', flag:'🇸🇦', name:'العربية'},
+  {code:'fr', flag:'🇫🇷', name:'Français'},
+  {code:'de', flag:'🇩🇪', name:'Deutsch'},
+  {code:'es', flag:'🇪🇸', name:'Español'},
+  {code:'zh', flag:'🇨🇳', name:'中文'},
+  {code:'ja', flag:'🇯🇵', name:'日本語'},
+  {code:'ko', flag:'🇰🇷', name:'한국어'},
+  {code:'ms', flag:'🇲🇾', name:'Melayu'},
+  {code:'ml', flag:'🇮🇳', name:'മലയാളം'},
+  {code:'kn', flag:'🇮🇳', name:'ಕನ್ನಡ'},
+  {code:'bn', flag:'🇧🇩', name:'বাংলা'},
+  {code:'nl', flag:'🇳🇱', name:'Nederlands'},
+  {code:'pt', flag:'🇧🇷', name:'Português'},
+];
+
+let _selLang = localStorage.getItem('ah_lang') || 'en';
+
+function renderLangGrid() {
+  const grid = document.getElementById('langGrid');
+  if (!grid) return;
+  grid.innerHTML = LANGUAGES.map(l => `
+    <div onclick="selectLang('${l.code}')" id="lang_${l.code}"
+      style="display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;
+      border:2px solid ${_selLang===l.code?'var(--deep-rose)':'rgba(192,100,122,.15)'};
+      background:${_selLang===l.code?'rgba(192,100,122,.08)':'white'};
+      cursor:pointer;transition:all .2s;font-size:.82rem;font-weight:${_selLang===l.code?'600':'400'};
+      color:${_selLang===l.code?'var(--deep-rose)':'var(--burgundy)'};">
+      <span style="font-size:1.2rem">${l.flag}</span>${l.name}
+      ${_selLang===l.code?'<span style="margin-left:auto;font-size:.7rem">✓</span>':''}
+    </div>`).join('');
+}
+window.selectLang = function(code) {
+  _selLang = code;
+  localStorage.setItem('ah_lang', code);
+  renderLangGrid();
+  toast('✅ Language preference saved!');
+};
+
+// Country → Currency auto-fill
+const COUNTRY_CURRENCY = {
+  IN:'INR',US:'USD',GB:'GBP',AE:'AED',SA:'SAR',QA:'QAR',
+  KW:'KWD',BH:'BHD',OM:'OMR',CA:'CAD',AU:'AUD',SG:'SGD',
+  MY:'MYR',DE:'EUR',FR:'EUR',NL:'EUR',NZ:'NZD',ZA:'ZAR',
+  JP:'JPY',CN:'CNY',KR:'KRW',PK:'PKR',BD:'BDT',LK:'LKR',NP:'NPR'
+};
+window.updateCurrencyFromCountry = function() {
+  const cc = document.getElementById('prefCountry').value;
+  const cur = COUNTRY_CURRENCY[cc];
+  if (cur) {
+    const sel = document.getElementById('prefCurrency');
+    if (sel) sel.value = cur;
+  }
+};
+
+window.savePreferences = function() {
+  const country  = document.getElementById('prefCountry').value;
+  const currency = document.getElementById('prefCurrency').value;
+  const prefs = { lang:_selLang, country, currency, savedAt:Date.now() };
+  localStorage.setItem('ah_prefs', JSON.stringify(prefs));
+  toast('🌍 Region settings saved!');
+};
+
+function loadPreferences() {
+  try {
+    const p = JSON.parse(localStorage.getItem('ah_prefs')||'{}');
+    if (p.country)  { const s=document.getElementById('prefCountry');  if(s) s.value=p.country; }
+    if (p.currency) { const s=document.getElementById('prefCurrency'); if(s) s.value=p.currency; }
+    if (p.lang) { _selLang = p.lang; localStorage.setItem('ah_lang', p.lang); }
+  } catch(e) {}
+  renderLangGrid();
+}
+
+// run on load
+setTimeout(loadPreferences, 300);
+
+// ── PANEL SWITCHING ──
   document.querySelectorAll('.acc-panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.acc-nav-item').forEach(i=>i.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
