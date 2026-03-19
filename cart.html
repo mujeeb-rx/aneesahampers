@@ -368,6 +368,10 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
 .btn-g{padding:12px 20px;background:#25a055;color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;}
 .btn-rose{padding:12px 20px;background:var(--deep-rose);color:white;border:none;border-radius:30px;font-family:'Jost',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;}
 
+/* QR — desktop only */
+@media(max-width:768px){ #qrDesktopWrap{ display:none !important; } }
+@media(min-width:769px){ #qrDesktopWrap{ display:block; } }
+
 /* FLOAT WA */
 #floatWA{position:fixed;bottom:24px;right:24px;z-index:500;display:flex;align-items:center;gap:8px;background:var(--green);color:white;border-radius:50px;padding:12px 18px;font-family:'Jost',sans-serif;font-size:.73rem;letter-spacing:1px;text-transform:uppercase;font-weight:500;text-decoration:none;box-shadow:0 6px 26px rgba(37,211,102,.4);cursor:none;animation:fa 2.5s ease-in-out infinite;}
 @keyframes fa{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
@@ -899,17 +903,15 @@ nav{position:fixed;top:0;width:100%;z-index:1000;display:flex;align-items:center
         </a>
       </div>
 
-      <!-- QR Code (collapsible) -->
-      <details style="margin-bottom:12px;">
-        <summary style="font-size:.72rem;opacity:.5;cursor:pointer;text-align:center;list-style:none;padding:6px;">📷 Show QR Code to scan</summary>
-        <div style="text-align:center;margin-top:10px;">
-          <img id="payQRImg" src="" alt="UPI QR" style="width:160px;height:160px;border-radius:12px;border:2px solid var(--blush);"/>
-          <div class="upi-id-box" onclick="copyUpiId()" style="cursor:pointer;margin:8px auto 0;max-width:220px;" title="Tap to copy">
-            <strong>UPI: </strong><span id="upiIdShow">8639066613@ybl</span>
-            <span style="font-size:.58rem;opacity:.35;margin-left:4px;">tap to copy</span>
-          </div>
+      <!-- QR Code — desktop only (mobile can't scan own screen) -->
+      <div id="qrDesktopWrap" style="margin-bottom:12px;text-align:center;">
+        <img id="payQRImg" src="" alt="UPI QR" style="width:160px;height:160px;border-radius:12px;border:2px solid var(--blush);display:block;margin:0 auto 8px;"/>
+        <div class="upi-id-box" onclick="copyUpiId()" style="cursor:pointer;margin:0 auto;max-width:220px;" title="Tap to copy UPI ID">
+          <strong>UPI ID: </strong><span id="upiIdShow">8639066613@ybl</span>
+          <span style="font-size:.58rem;opacity:.35;margin-left:4px;">tap to copy</span>
         </div>
-      </details>
+        <div style="font-size:.62rem;opacity:.35;margin-top:6px;">Scan from another device to pay</div>
+      </div>
 
       <!-- Manual confirm (after direct UPI payment) -->
       <button class="paid-btn" onclick="confirmPaid()" style="width:100%;padding:14px;background:var(--green,#25a055);color:white;border:none;border-radius:12px;font-family:'Jost',sans-serif;font-size:.78rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;cursor:pointer;margin-bottom:6px;">
@@ -2462,10 +2464,10 @@ window.bnProceedToPay = function() {
     isBuyNow:    true
   };
 
-  // ── Set _rzpTotal so Razorpay button works ──
+  // ── Set totals for Razorpay ──
   window._rzpTotal = finalTotal;
 
-  // ── Fill payment modal ──
+  // ── Pre-fill UPI modal links (fallback if Razorpay fails) ──
   var note   = 'Aneesa Hampers Order';
   var upiStr = 'upi://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) +
                '&am=' + finalTotal + '&cu=INR&tn=' + encodeURIComponent(note);
@@ -2477,9 +2479,43 @@ window.bnProceedToPay = function() {
   setEl('paytmLink',   'href', 'paytmmp://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + finalTotal + '&cu=INR&tn=' + encodeURIComponent(note));
   setEl('bhimLink',    'href', 'upi://pay?pa=' + UPI_ID + '&pn=' + encodeURIComponent(UPI_NAME) + '&am=' + finalTotal + '&cu=INR&tn=' + encodeURIComponent(note));
 
-  // ── Open payment modal ──
-  var payModal = document.getElementById('payModal');
-  if (payModal) payModal.classList.add('open');
+  // ── Open Razorpay directly — no extra click needed ──
+  var name  = addr.name;
+  var phone = addr.phone || '';
+  var email = currentUser ? currentUser.email : (name.toLowerCase().replace(/\s/g,'') + '@customer.com');
+
+  var options = {
+    key:         RZP_KEY,
+    amount:      finalTotal * 100,
+    currency:    'INR',
+    name:        'Aneesa Hampers',
+    description: (_bnItem.name || 'Hamper Order'),
+    prefill:     { name: name, contact: phone, email: email },
+    theme:       { color: '#3b0d1a' },
+    modal:       { backdropclose: false },
+    handler: async function(response) {
+      var paymentId = response.razorpay_payment_id;
+      toast('✅ Payment successful! Saving your order…');
+      var items = [{ id:_bnItem.id, name:_bnItem.name, price:_bnItem.price, qty:_bnItem.qty||1, image:_bnItem.image||'' }];
+      await _saveOrderRazorpay(paymentId, finalTotal, items, name, phone);
+    }
+  };
+
+  try {
+    var rzp = new Razorpay(options);
+    rzp.on('payment.failed', function(resp) {
+      // Razorpay failed — show UPI modal as fallback
+      toast('⚠️ Razorpay error. Use UPI apps below.');
+      var payModal = document.getElementById('payModal');
+      if (payModal) payModal.classList.add('open');
+    });
+    rzp.open();
+  } catch(e) {
+    // Razorpay not loaded — fall back to UPI modal
+    console.error('Razorpay error:', e);
+    var payModal = document.getElementById('payModal');
+    if (payModal) payModal.classList.add('open');
+  }
 };
 
 // ── On page load: check if came from Buy Now ──
