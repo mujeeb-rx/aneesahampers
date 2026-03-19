@@ -274,7 +274,18 @@
     /* STICKY ADD TO CART (mobile) — sits above bottom nav */
     /* RESPONSIVE */
     @media(max-width:1100px){.product-wrap{grid-template-columns:1fr 1fr;}.order-col{display:none;}.related-scroll{grid-template-columns:repeat(3,1fr);}}
+    /* Mobile back button */
+    .mob-back-btn{
+      display:none;position:fixed;top:14px;left:14px;z-index:1100;
+      width:40px;height:40px;background:white;border:none;border-radius:50%;
+      box-shadow:0 2px 12px rgba(59,13,26,.15);
+      display:none;align-items:center;justify-content:center;
+      font-size:1.2rem;cursor:pointer;color:var(--burgundy);
+      transition:all .2s;-webkit-tap-highlight-color:transparent;
+    }
+    .mob-back-btn:active{background:var(--blush);transform:scale(.93);}
     @media(max-width:768px){
+      .mob-back-btn{display:flex;}
       nav{padding:10px 18px 10px 68px;}.nav-links{display:none;}.nav-right{display:none;}
       .breadcrumb{padding:76px 18px 12px;}
       .product-wrap{grid-template-columns:1fr;padding:0 16px 90px;}
@@ -298,6 +309,8 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 <div id="ah-toast"></div>
+<!-- Mobile back button -->
+<button class="mob-back-btn" onclick="history.length>1?history.back():location.href='products.html'" aria-label="Go back">‹</button>
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
@@ -817,19 +830,12 @@ async function _loadReviews(pid){
     _renderRatingSummary(reviews);
     _updateRatingDisplay(reviews);
   }catch(e){
-    // fallback: try without orderBy (in case index not ready)
     try{
       const q2 = query(collection(db,'reviews'), where('productId','==',pid));
       const snap2 = await getDocs(q2);
-      const reviews2 = snap2.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>{
-        const ta=a.createdAt?.toDate?.()?.getTime?.()??0;
-        const tb=b.createdAt?.toDate?.()?.getTime?.()??0;
-        return tb-ta;
-      });
-      _renderReviews(reviews2);
-      _renderRatingSummary(reviews2);
-      _updateRatingDisplay(reviews2);
-    }catch(e2){console.warn('reviews fallback:',e2);}
+      const reviews2 = snap2.docs.map(d=>({id:d.id,...d.data()}));
+      _renderReviews(reviews2); _renderRatingSummary(reviews2); _updateRatingDisplay(reviews2);
+    }catch(e2){console.warn('reviews:',e2);}
   }
 }
 function _renderReviews(rv){
@@ -886,29 +892,31 @@ window.submitReview=async()=>{
   const btn=document.querySelector('.submit-review-btn');
   if(btn){btn.textContent='Submitting…';btn.disabled=true;}
   try{
-    await addDoc(collection(db,'reviews'),{
-      productId:_pid, name, phone:($('rvPhone').value||'').trim(),
-      rating:_starRating, text, createdAt:serverTimestamp()
-    });
-    toast('✅ Thank you for your review! 🌸');
-    if($('rvName'))$('rvName').value='';
-    if($('rvText'))$('rvText').value='';
-    if($('rvPhone'))$('rvPhone').value='';
-    _starRating=0;
-    document.querySelectorAll('.star-btn').forEach(b=>b.textContent='☆');
-    const sl=$('starLabel');if(sl)sl.textContent='';
-    setTimeout(()=>_loadReviews(_pid),800);
-  }catch(e){toast('❌ Could not submit. Please try again.');}
+    const body={fields:{
+      productId:{stringValue:_pid},
+      name:{stringValue:name},
+      phone:{stringValue:($('rvPhone').value||'').trim()},
+      rating:{integerValue:String(_starRating)},
+      text:{stringValue:text}
+    }};
+    // SDK submit — handled below
+    if(res.ok){
+      toast('✅ Thank you for your review! 🌸');
+      if($('rvText'))$('rvText').value='';
+      _starRating=0;
+      document.querySelectorAll('.star-btn').forEach(b=>b.textContent='☆');
+      const sl=$('starLabel');if(sl)sl.textContent='';
+      setTimeout(()=>_loadReviews(_pid),800);
+    }else{ toast('❌ Could not submit. Please try again.'); }
+  }catch(e){toast('❌ Network error. Please try again.');}
   if(btn){btn.textContent='Submit Review ✨';btn.disabled=false;}
 };
 
 // ── Related products via SDK ──
 async function _loadRelated(category, excludeId){
   try{
-    // Try same category first
     let snap = await getDocs(query(collection(db,'products'), where('category','==',category), limit(6)));
     let prods = snap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.id!==excludeId);
-    // If not enough, get any products
     if(prods.length < 2){
       const snap2 = await getDocs(query(collection(db,'products'), orderBy('createdAt','desc'), limit(8)));
       prods = snap2.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.id!==excludeId);
